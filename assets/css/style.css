@@ -824,10 +824,6 @@ p {
   color: #FFFFFF;
   letter-spacing: 0.02em;
 }
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #FFFFFF;
-}
 
 /* Page Header Banner (for subpages) */
 .page-banner {
@@ -1320,21 +1316,22 @@ p {
 
 .amenities-card-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
+  width: 100%;
 }
 
 @media (max-width: 1024px) {
   .amenities-card-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem;
   }
 }
 
 @media (max-width: 640px) {
   .amenities-card-grid {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
   }
 }
 
@@ -1343,8 +1340,12 @@ p {
   position: relative;
   overflow: hidden;
   border-radius: var(--radius-md);
-  aspect-ratio: 4 / 3;
-  min-height: 340px;
+  aspect-ratio: 16 / 11;
+  min-height: 280px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
   background-color: #2D1D14;
   border: 1px solid rgba(216, 195, 168, 0.45);
   box-shadow: 0 10px 24px rgba(35, 21, 14, 0.12);
@@ -1521,6 +1522,42 @@ p {
   font-size: 0.9rem;
   color: var(--text-muted);
   flex: 1;
+}
+
+/* Category Filter Tabs for Amenities */
+.amenity-filter-nav {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+}
+
+.amenity-filter-btn {
+  padding: 0.65rem 1.35rem;
+  border-radius: 50px;
+  border: 1px solid var(--border-color);
+  background-color: #FFFFFF;
+  color: var(--text-espresso);
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.amenity-filter-btn:hover {
+  background-color: #FAF6F0;
+  border-color: var(--accent-gold);
+  color: var(--primary-mocha);
+}
+
+.amenity-filter-btn.active {
+  background-color: var(--primary-mocha);
+  color: #FFFFFF;
+  border-color: var(--primary-mocha);
+  box-shadow: 0 4px 12px rgba(92, 61, 46, 0.25);
 }
 
 /* Legacy Compact Amenity List Styles */

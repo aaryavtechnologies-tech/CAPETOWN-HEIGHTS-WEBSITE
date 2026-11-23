@@ -531,4 +531,26 @@ document.addEventListener('DOMContentLoaded', () => {
       startAutoPlay();
     }
   }
+
+  // 8. Amenities Batch Filter Navigation (All 40 Amenities Showcase)
+  const amenityFilterBtns = document.querySelectorAll('.amenity-filter-btn');
+  const amenityBatches = document.querySelectorAll('.amenities-group-wrapper[data-batch]');
+
+  if (amenityFilterBtns.length > 0 && amenityBatches.length > 0) {
+    amenityFilterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        amenityFilterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filterBatch = btn.getAttribute('data-batch');
+        amenityBatches.forEach(batch => {
+          if (filterBatch === 'all' || batch.getAttribute('data-batch') === filterBatch) {
+            batch.style.display = 'block';
+          } else {
+            batch.style.display = 'none';
+          }
+        });
+      });
+    });
+  }
 });
