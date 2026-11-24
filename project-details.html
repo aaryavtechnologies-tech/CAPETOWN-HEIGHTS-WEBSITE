@@ -89,8 +89,8 @@
     </div>
   </section>
 
-  <!-- Key Project Information – Promotional Carousel Banner -->
-  <section class="section-padding overview-carousel-section">
+  <!-- Key Project Information – Overview Section -->
+  <section class="section-padding overview-section">
     <div class="container">
       <div class="section-header">
         <span class="section-subtitle">Verified Information</span>
@@ -100,113 +100,93 @@
         </p>
       </div>
 
-      <!-- Promotional Overview Carousel -->
-      <div class="promo-carousel-wrapper" id="overviewCarousel" aria-roledescription="carousel" aria-label="Capetown Heights Project Overview" tabindex="0">
-        <div class="promo-carousel-inner">
-          <div class="promo-carousel-track" id="overviewTrack">
+      <!-- Static Overview Cards Grid -->
+      <div class="overview-cards-grid">
 
-            <!-- Slide 1: Project Name -->
-            <div class="promo-slide active" role="group" aria-roledescription="slide" aria-label="1 of 4: Project Name">
-              <div class="promo-slide-card">
-                <div class="promo-slide-badge-col">
-                  <div class="promo-slide-icon-crest">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
-                  </div>
-                  <span class="promo-slide-step">01 / 04</span>
-                </div>
-                <div class="promo-slide-content">
-                  <span class="promo-slide-label">PROJECT NAME</span>
-                  <h3 class="promo-slide-title">CAPETOWN HEIGHTS</h3>
-                  <p class="promo-slide-desc">A real estate development engineered for modern, balanced community living in Dadra and Nagar Haveli.</p>
-                  <div class="promo-slide-highlights">
-                    <span class="promo-pill">✦ Master Planned Community</span>
-                    <span class="promo-pill">✦ Silvassa Living</span>
-                  </div>
-                </div>
-              </div>
+        <!-- Card 1: Project Name -->
+        <div class="overview-card">
+          <div class="overview-card-header">
+            <div class="overview-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
             </div>
-
-            <!-- Slide 2: Developer -->
-            <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="2 of 4: Developer">
-              <div class="promo-slide-card">
-                <div class="promo-slide-badge-col">
-                  <div class="promo-slide-icon-crest">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
-                  </div>
-                  <span class="promo-slide-step">02 / 04</span>
-                </div>
-                <div class="promo-slide-content">
-                  <span class="promo-slide-label">DEVELOPER</span>
-                  <h3 class="promo-slide-title">NIRALI GROUP</h3>
-                  <p class="promo-slide-desc">Guided by the vision to "Redevelop New Thoughts", prioritizing enduring standards and customer trust.</p>
-                  <div class="promo-slide-highlights">
-                    <span class="promo-pill">✦ Established Regional Builder</span>
-                    <span class="promo-pill">✦ Trust &amp; Quality</span>
-                  </div>
-                </div>
-              </div>
+            <span class="overview-card-num">01</span>
+          </div>
+          <div class="overview-card-body">
+            <span class="overview-card-label">PROJECT NAME</span>
+            <h3 class="overview-card-title">CAPETOWN HEIGHTS</h3>
+            <p class="overview-card-desc">A real estate development engineered for modern, balanced community living in Dadra and Nagar Haveli.</p>
+          </div>
+          <div class="overview-card-footer">
+            <div class="overview-card-pills">
+              <span class="overview-pill">✦ Master Planned Community</span>
+              <span class="overview-pill">✦ Silvassa Living</span>
             </div>
-
-            <!-- Slide 3: Location -->
-            <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="3 of 4: Location">
-              <div class="promo-slide-card">
-                <div class="promo-slide-badge-col">
-                  <div class="promo-slide-icon-crest">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                  </div>
-                  <span class="promo-slide-step">03 / 04</span>
-                </div>
-                <div class="promo-slide-content">
-                  <span class="promo-slide-label">LOCATION</span>
-                  <h3 class="promo-slide-title">Silvassa, D&amp;NH and D&amp;D</h3>
-                  <p class="promo-slide-desc">Located at Ultan Faliya Road, Police Line Road, Silvassa (PIN: 396230, Plus Code: 7XGW+V9).</p>
-                  <div class="promo-slide-highlights">
-                    <span class="promo-pill">✦ Ultan Faliya Road</span>
-                    <span class="promo-pill">✦ PIN: 396230</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Slide 4: Project Category -->
-            <div class="promo-slide" role="group" aria-roledescription="slide" aria-label="4 of 4: Project Category">
-              <div class="promo-slide-card">
-                <div class="promo-slide-badge-col">
-                  <div class="promo-slide-icon-crest">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-                  </div>
-                  <span class="promo-slide-step">04 / 04</span>
-                </div>
-                <div class="promo-slide-content">
-                  <span class="promo-slide-label">PROJECT CATEGORY</span>
-                  <h3 class="promo-slide-title">Real Estate Development</h3>
-                  <p class="promo-slide-desc">Comprehensive development featuring 40 planned amenities and direct road connectivity.</p>
-                  <div class="promo-slide-highlights">
-                    <span class="promo-pill">✦ 40 Verified Amenities</span>
-                    <span class="promo-pill">✦ Direct Road Access</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
           </div>
         </div>
 
-        <!-- Carousel Navigation Controls -->
-        <button class="promo-carousel-nav prev" id="overviewPrevBtn" aria-label="Previous Slide">
-          <svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-        </button>
-        <button class="promo-carousel-nav next" id="overviewNextBtn" aria-label="Next Slide">
-          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
-        </button>
-
-        <!-- Carousel Pagination Dots -->
-        <div class="promo-carousel-dots" id="overviewDots" role="tablist" aria-label="Carousel pagination">
-          <button class="promo-dot active" data-index="0" role="tab" aria-selected="true" aria-label="Slide 1"></button>
-          <button class="promo-dot" data-index="1" role="tab" aria-selected="false" aria-label="Slide 2"></button>
-          <button class="promo-dot" data-index="2" role="tab" aria-selected="false" aria-label="Slide 3"></button>
-          <button class="promo-dot" data-index="3" role="tab" aria-selected="false" aria-label="Slide 4"></button>
+        <!-- Card 2: Developer -->
+        <div class="overview-card">
+          <div class="overview-card-header">
+            <div class="overview-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            </div>
+            <span class="overview-card-num">02</span>
+          </div>
+          <div class="overview-card-body">
+            <span class="overview-card-label">DEVELOPER</span>
+            <h3 class="overview-card-title">NIRALI GROUP</h3>
+            <p class="overview-card-desc">Guided by the vision to "Redevelop New Thoughts", prioritizing enduring standards and customer trust.</p>
+          </div>
+          <div class="overview-card-footer">
+            <div class="overview-card-pills">
+              <span class="overview-pill">✦ Established Regional Builder</span>
+              <span class="overview-pill">✦ Trust &amp; Quality</span>
+            </div>
+          </div>
         </div>
+
+        <!-- Card 3: Location -->
+        <div class="overview-card">
+          <div class="overview-card-header">
+            <div class="overview-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <span class="overview-card-num">03</span>
+          </div>
+          <div class="overview-card-body">
+            <span class="overview-card-label">LOCATION</span>
+            <h3 class="overview-card-title">Silvassa, D&amp;NH and D&amp;D</h3>
+            <p class="overview-card-desc">Located at Ultan Faliya Road, Police Line Road, Silvassa (PIN: 396230, Plus Code: 7XGW+V9).</p>
+          </div>
+          <div class="overview-card-footer">
+            <div class="overview-card-pills">
+              <span class="overview-pill">✦ Ultan Faliya Road</span>
+              <span class="overview-pill">✦ PIN: 396230</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Project Category -->
+        <div class="overview-card">
+          <div class="overview-card-header">
+            <div class="overview-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+            <span class="overview-card-num">04</span>
+          </div>
+          <div class="overview-card-body">
+            <span class="overview-card-label">PROJECT CATEGORY</span>
+            <h3 class="overview-card-title">Real Estate Development</h3>
+            <p class="overview-card-desc">Comprehensive development featuring 40 planned amenities and direct road connectivity.</p>
+          </div>
+          <div class="overview-card-footer">
+            <div class="overview-card-pills">
+              <span class="overview-pill">✦ 40 Verified Amenities</span>
+              <span class="overview-pill">✦ Direct Road Access</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -225,7 +205,7 @@
       <!-- Visual Presentation Notice -->
       <div class="amenity-visual-notice">
         <span class="badge">Visual Presentation</span>
-        <p>The 40 amenity cards below showcase authentic photographic representations of the planned project facilities. All 40 amenity cards (01–40) feature verified reference photographs personally supplied by the project management. For real on-site construction photographs of Capetown Heights, please view our <a href="gallery.html" style="color: var(--primary-mocha); text-decoration: underline; font-weight: 600;">Project Gallery</a>.</p>
+        <p>Images shown are architectural visualizations and artistic representations of the planned project facilities. For real on-site construction photographs of Capetown Heights, please view our <a href="gallery.html" style="color: var(--primary-mocha); text-decoration: underline; font-weight: 600;">Project Gallery</a>.</p>
       </div>
 
       <!-- Category Filter Tabs -->
@@ -245,7 +225,7 @@
         </h3>
         <div class="amenities-card-grid">
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/allotted-car-parking.jpg" alt="Allotted Car Parking" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-01-covered-parking.jpg" alt="Allotted Car Parking" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">01</span>
             <div class="amenity-bg-content">
@@ -255,7 +235,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/double-basement.jpg" alt="Double Basement" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-02-basement-ramp.jpg" alt="Double Basement" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">02</span>
             <div class="amenity-bg-content">
@@ -265,7 +245,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/multipurpose-hall.jpg" alt="Fully AC Multipurpose Hall" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-03-multipurpose-hall.jpg" alt="Fully AC Multipurpose Hall" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">03</span>
             <div class="amenity-bg-content">
@@ -275,7 +255,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/temple.jpg" alt="Temple" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-04-temple.jpg" alt="Temple" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">04</span>
             <div class="amenity-bg-content">
@@ -285,7 +265,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/gym.jpg" alt="Gym" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-05-gym.jpg" alt="Gym" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">05</span>
             <div class="amenity-bg-content">
@@ -295,7 +275,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/indoor-game.jpg" alt="Indoor Game" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-06-indoor-games.jpg" alt="Indoor Game" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">06</span>
             <div class="amenity-bg-content">
@@ -305,7 +285,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/library.jpg" alt="Library" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-07-library.jpg" alt="Library" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">07</span>
             <div class="amenity-bg-content">
@@ -315,7 +295,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/box-cricket.jpg" alt="Box Cricket" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-08-box-cricket.jpg" alt="Box Cricket" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">08</span>
             <div class="amenity-bg-content">
@@ -325,7 +305,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/gazebo.jpg" alt="Gazebo" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-09-garden-gazebo.jpg" alt="Gazebo" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">09</span>
             <div class="amenity-bg-content">
@@ -335,7 +315,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/swimming-pool.jpg" alt="Swimming pool" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-10-swimming-pool.jpg" alt="Swimming pool" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">10</span>
             <div class="amenity-bg-content">
@@ -354,7 +334,7 @@
         </h3>
         <div class="amenities-card-grid">
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/baby-pool.jpg" alt="Baby Pool" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-11-kids-splash-pool.jpg" alt="Baby Pool" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">11</span>
             <div class="amenity-bg-content">
@@ -364,7 +344,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/open-stage.jpg" alt="Open Stage" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-12-amphitheater.jpg" alt="Open Stage" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">12</span>
             <div class="amenity-bg-content">
@@ -374,7 +354,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/open-projector.jpg" alt="Open Projector" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-13-lawn-cinema.jpg" alt="Outdoor Lawn Cinema" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">13</span>
             <div class="amenity-bg-content">
@@ -384,7 +364,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/landscape-garden.jpg" alt="Landscape Garden" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-14-landscape-garden.jpg" alt="Landscape Garden" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">14</span>
             <div class="amenity-bg-content">
@@ -394,7 +374,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/flower-garden.jpg" alt="Flower Garden" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-15-flower-garden.jpg" alt="Flower Garden" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">15</span>
             <div class="amenity-bg-content">
@@ -404,7 +384,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/terrace-garden.jpg" alt="Terrace Garden" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-16-terrace-garden.jpg" alt="Terrace Garden" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">16</span>
             <div class="amenity-bg-content">
@@ -414,7 +394,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/terrace-gazebo.jpg" alt="Terrace Gazebo" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-17-terrace-gazebo.jpg" alt="Terrace Gazebo" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">17</span>
             <div class="amenity-bg-content">
@@ -424,7 +404,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/terrace-walk-way.jpg" alt="Terrace Walk Way" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-18-terrace-skywalk.jpg" alt="Terrace Walk Way" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">18</span>
             <div class="amenity-bg-content">
@@ -434,7 +414,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/yoga-deck.jpg" alt="Yoga Deck" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-19-yoga-deck.jpg" alt="Yoga Deck" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">19</span>
             <div class="amenity-bg-content">
@@ -444,7 +424,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/entry-garden.jpg" alt="Entry Garden" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-20-grand-entrance-garden.jpg" alt="Entry Garden" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">20</span>
             <div class="amenity-bg-content">
@@ -463,7 +443,7 @@
         </h3>
         <div class="amenities-card-grid">
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/guest-room.jpg" alt="Guest Room" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-21-guest-bedroom.jpg" alt="Guest Bedroom" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">21</span>
             <div class="amenity-bg-content">
@@ -473,7 +453,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/kids-play-area.jpg" alt="Kids play Area" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-22-kids-play-area.jpg" alt="Kids' Play Area" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">22</span>
             <div class="amenity-bg-content">
@@ -483,7 +463,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/senior-citizen-garden.jpg" alt="Senior Citizen Garden" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-23-senior-citizen-garden.jpg" alt="Senior Citizen Garden" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">23</span>
             <div class="amenity-bg-content">
@@ -493,7 +473,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/jogging-track.jpg" alt="Jogging Track" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-24-jogging-track.jpg" alt="Jogging Track" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">24</span>
             <div class="amenity-bg-content">
@@ -503,7 +483,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/walk-way.jpg" alt="Walk Way" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-25-pedestrian-walkway.jpg" alt="Pedestrian Walkway" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">25</span>
             <div class="amenity-bg-content">
@@ -513,7 +493,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/cctv.jpg" alt="CCTV" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-26-cctv-surveillance.jpg" alt="CCTV Surveillance" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">26</span>
             <div class="amenity-bg-content">
@@ -523,7 +503,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/video-door-security-system.jpg" alt="Video Door Security System" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-27-video-door-phone.jpg" alt="Video Door Phone" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">27</span>
             <div class="amenity-bg-content">
@@ -533,7 +513,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/main-door-digital-lock.jpg" alt="Main Door (Digital Lock)" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-28-biometric-door-lock.jpg" alt="Biometric Door Lock" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">28</span>
             <div class="amenity-bg-content">
@@ -543,7 +523,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/gas-line.jpg" alt="Gas Line" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-29-gas-pipeline.jpg" alt="Reticulated Gas Pipeline" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">29</span>
             <div class="amenity-bg-content">
@@ -553,7 +533,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/internet-connectivity.jpg" alt="Internet Connectivity" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-30-high-speed-wifi.jpg" alt="High-Speed Wi-Fi" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">30</span>
             <div class="amenity-bg-content">
@@ -572,7 +552,7 @@
         </h3>
         <div class="amenities-card-grid">
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/main-gate-fountain.jpg" alt="Main Gate Fountain" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-31-entrance-water-fountain.jpg" alt="Entrance Water Fountain" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">31</span>
             <div class="amenity-bg-content">
@@ -582,7 +562,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/garden-fountain.jpg" alt="Garden Fountain" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-32-garden-fountain.jpg" alt="Central Garden Fountain" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">32</span>
             <div class="amenity-bg-content">
@@ -592,7 +572,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/elevated-main-gate.jpg" alt="Elevated Main Gate" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-33-security-entrance-gate.jpg" alt="Security Entrance Gate" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">33</span>
             <div class="amenity-bg-content">
@@ -602,7 +582,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/fire-safety.jpg" alt="Fire Safety" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-34-fire-hydrant.jpg" alt="Fire Hydrant" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">34</span>
             <div class="amenity-bg-content">
@@ -612,7 +592,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/rain-harvesting-system.jpg" alt="Rain Harvesting System" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-35-rainwater-harvesting.jpg" alt="Rainwater Harvesting" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">35</span>
             <div class="amenity-bg-content">
@@ -622,7 +602,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/generator-backup.jpg" alt="Generator Backup" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/generator-backup.jpg" alt="Diesel Generator Backup" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">36</span>
             <div class="amenity-bg-content">
@@ -632,7 +612,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/free-mobile-charging-facility.jpg" alt="Free Mobile Charging Facility" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-37-mobile-charging-station.jpg" alt="Mobile Charging Station" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">37</span>
             <div class="amenity-bg-content">
@@ -642,7 +622,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/visitors-parking.jpg" alt="Visitors Parking" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-38-visitors-parking.jpg" alt="Visitors' Parking" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">38</span>
             <div class="amenity-bg-content">
@@ -652,7 +632,7 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/10-yrs-maintenance.jpg" alt="10 Yrs Maintenance" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-39-facility-management.jpg" alt="Facility Management" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">39</span>
             <div class="amenity-bg-content">
@@ -662,12 +642,15 @@
             </div>
           </div>
           <div class="amenity-bg-card">
-            <img src="assets/images/amenities/24-hours-water.jpg" alt="24 Hours Water" class="amenity-bg-img" loading="lazy">
+            <img src="assets/images/amenities/amenity-40-24-hours-water.jpg" alt="24 Hours Water" class="amenity-bg-img" loading="lazy">
             <div class="amenity-bg-overlay"></div>
             <span class="amenity-badge-num">40</span>
             <div class="amenity-bg-content">
               <span class="amenity-gold-accent" aria-hidden="true"></span>
               <h4 class="amenity-bg-title">24 Hours Water</h4>
+              <p class="amenity-bg-desc">Dual-source treated water distribution network with hydro-pneumatic pumping for round-the-clock water pressure.</p>
+            </div>
+          </div>
               <p class="amenity-bg-desc">Dual-source treated water distribution network with hydro-pneumatic pumping for round-the-clock water pressure.</p>
             </div>
           </div>

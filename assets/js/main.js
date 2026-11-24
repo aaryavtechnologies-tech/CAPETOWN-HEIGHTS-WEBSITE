@@ -240,156 +240,43 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. Project Details Overview Promotional Carousel
-  const overviewCarousel = document.getElementById('overviewCarousel');
-  if (overviewCarousel) {
-    const track = document.getElementById('overviewTrack');
-    const slides = track ? track.querySelectorAll('.promo-slide') : [];
-    const dots = document.querySelectorAll('.promo-dot');
-    const prevBtn = document.getElementById('overviewPrevBtn');
-    const nextBtn = document.getElementById('overviewNextBtn');
-
-    let currentIndex = 0;
-    const totalSlides = slides.length;
-    let autoPlayTimer = null;
-    const intervalMs = 4500;
-
-    const updateCarousel = (index) => {
-      if (totalSlides === 0) return;
-      currentIndex = (index + totalSlides) % totalSlides;
-
-      // Smooth horizontal sliding
-      if (track) {
-        track.style.transform = `translateX(-${currentIndex * 100}%)`;
-      }
-
-      // Update slide active states & accessibility
-      slides.forEach((slide, i) => {
-        const isActive = i === currentIndex;
-        slide.classList.toggle('active', isActive);
-        slide.setAttribute('aria-hidden', !isActive);
-      });
-
-      // Update pagination indicators
-      dots.forEach((dot, i) => {
-        const isActive = i === currentIndex;
-        dot.classList.toggle('active', isActive);
-        dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
-      });
-    };
-
-    const nextSlide = () => updateCarousel(currentIndex + 1);
-    const prevSlide = () => updateCarousel(currentIndex - 1);
-
-    const startAutoPlay = () => {
-      stopAutoPlay();
-      autoPlayTimer = setInterval(nextSlide, intervalMs);
-    };
-
-    const stopAutoPlay = () => {
-      if (autoPlayTimer) {
-        clearInterval(autoPlayTimer);
-        autoPlayTimer = null;
-      }
-    };
-
-    // Manual Arrow Controls
-    if (nextBtn) {
-      nextBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        nextSlide();
-        startAutoPlay();
-      });
-    }
-
-    if (prevBtn) {
-      prevBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        prevSlide();
-        startAutoPlay();
-      });
-    }
-
-    // Pagination Dot Controls
-    dots.forEach((dot) => {
-      dot.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetIdx = parseInt(dot.getAttribute('data-index'), 10);
-        if (!isNaN(targetIdx)) {
-          updateCarousel(targetIdx);
-          startAutoPlay();
-        }
-      });
-    });
-
-    // Pause Auto-Rotation on Hover (Desktop)
-    overviewCarousel.addEventListener('mouseenter', stopAutoPlay);
-    overviewCarousel.addEventListener('mouseleave', startAutoPlay);
-
-    // Touch Swipe Gestures for Mobile
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let touchEndX = 0;
-
-    overviewCarousel.addEventListener('touchstart', (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-      touchStartY = e.changedTouches[0].screenY;
-      stopAutoPlay();
-    }, { passive: true });
-
-    overviewCarousel.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      const touchEndY = e.changedTouches[0].screenY;
-      const deltaX = touchEndX - touchStartX;
-      const deltaY = touchEndY - touchStartY;
-
-      // Register horizontal swipe if delta exceeds threshold and is primary direction
-      if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
-        if (deltaX < 0) {
-          nextSlide();
-        } else {
-          prevSlide();
-        }
-      }
-      startAutoPlay();
-    }, { passive: true });
-
-    // Keyboard Arrow Navigation
-    overviewCarousel.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowLeft') {
-        e.preventDefault();
-        prevSlide();
-        startAutoPlay();
-      } else if (e.key === 'ArrowRight') {
-        e.preventDefault();
-        nextSlide();
-        startAutoPlay();
-      }
-    });
-
-    // Initial setup
-    updateCarousel(0);
-    startAutoPlay();
-  }
+  // 6. Project Details Overview Section (Static Cards Layout - Carousel Removed)
 
   // 7. Hero Horizontal Sliding Background Track (Home Page Only)
   const heroSection = document.getElementById('heroSection') || document.querySelector('.hero-section');
   const heroTrack = document.getElementById('heroTrack');
   const heroPrevBtn = document.getElementById('heroPrevBtn');
   const heroNextBtn = document.getElementById('heroNextBtn');
-  const heroDots = document.querySelectorAll('.hero-dot');
 
   if (heroSection && heroTrack) {
     const originalSlides = Array.from(heroTrack.querySelectorAll('.hero-slide'));
     const totalOriginal = originalSlides.length;
 
     if (totalOriginal > 1) {
-      const ROTATION_INTERVAL = 5000; // 5 seconds per slide
+      const ROTATION_INTERVAL = 4500; // Automatic slide transition every 4.5 seconds (4500ms)
       const TRANSITION_STYLE = 'transform 0.85s cubic-bezier(0.25, 1, 0.5, 1)';
       let currentIndex = 0;
       let slideTimer = null;
       let isHovered = false;
       let isTransitioning = false;
+      let transitionSafetyTimer = null;
+
+      // Ensure pagination dots precisely match totalOriginal slides
+      const paginationContainer = document.getElementById('heroPagination');
+      let heroDots = document.querySelectorAll('.hero-dot');
+      if (paginationContainer && heroDots.length !== totalOriginal) {
+        paginationContainer.innerHTML = '';
+        for (let i = 0; i < totalOriginal; i++) {
+          const dot = document.createElement('button');
+          dot.className = `hero-dot${i === 0 ? ' active' : ''}`;
+          dot.setAttribute('data-index', i);
+          dot.setAttribute('role', 'tab');
+          dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+          dot.setAttribute('aria-label', `Slide ${i + 1}`);
+          paginationContainer.appendChild(dot);
+        }
+        heroDots = document.querySelectorAll('.hero-dot');
+      }
 
       // 1. Preload all slide images into browser cache
       originalSlides.forEach((slide) => {
@@ -432,8 +319,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const moveToSlide = (targetIndex, animate = true) => {
         if (animate && !prefersReducedMotion) {
           heroTrack.style.transition = TRANSITION_STYLE;
+          clearTimeout(transitionSafetyTimer);
+          transitionSafetyTimer = setTimeout(() => {
+            isTransitioning = false;
+          }, 950);
         } else {
           heroTrack.style.transition = 'none';
+          isTransitioning = false;
         }
         heroTrack.style.transform = `translateX(-${targetIndex * 100}%)`;
         currentIndex = targetIndex;
@@ -465,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Handle seamless infinite reset on transitionend
       heroTrack.addEventListener('transitionend', (e) => {
         if (e.target !== heroTrack || e.propertyName !== 'transform') return;
+        clearTimeout(transitionSafetyTimer);
         isTransitioning = false;
 
         // If at the clone (index totalOriginal), snap back to index 0 instantly
@@ -477,43 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Navigation arrow button clicks
-      if (heroPrevBtn) {
-        heroPrevBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          prevSlide();
-          startAutoPlay();
-        });
-      }
-
-      if (heroNextBtn) {
-        heroNextBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          nextSlide();
-          startAutoPlay();
-        });
-      }
-
-      // Pagination dot clicks
-      heroDots.forEach((dot) => {
-        dot.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = parseInt(dot.getAttribute('data-index'), 10);
-          if (!isNaN(target) && target !== currentIndex) {
-            moveToSlide(target, true);
-            startAutoPlay();
-          }
-        });
-      });
-
-      // Timer Controls & Mouse Hover
-      const startAutoPlay = () => {
-        stopAutoPlay();
-        if (!isHovered) {
-          slideTimer = setInterval(nextSlide, ROTATION_INTERVAL);
-        }
-      };
-
+      // Timer Management: single well-managed interval
       const stopAutoPlay = () => {
         if (slideTimer) {
           clearInterval(slideTimer);
@@ -521,19 +378,63 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       };
 
-      // Desktop: pause on mouseenter, resume on mouseleave
-      const hasFinePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-      if (hasFinePointer) {
-        heroSection.addEventListener('mouseenter', () => {
-          isHovered = true;
-          stopAutoPlay();
-        });
+      const startAutoPlay = () => {
+        stopAutoPlay();
+        if (!isHovered && !document.hidden) {
+          slideTimer = setInterval(nextSlide, ROTATION_INTERVAL);
+        }
+      };
 
-        heroSection.addEventListener('mouseleave', () => {
-          isHovered = false;
-          startAutoPlay();
+      const resetAutoPlay = () => {
+        stopAutoPlay();
+        if (!isHovered && !document.hidden) {
+          slideTimer = setInterval(nextSlide, ROTATION_INTERVAL);
+        }
+      };
+
+      // Navigation arrow button clicks (manual navigation resets 4500ms timer)
+      if (heroPrevBtn) {
+        heroPrevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (isTransitioning) return;
+          prevSlide();
+          resetAutoPlay();
         });
       }
+
+      if (heroNextBtn) {
+        heroNextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (isTransitioning) return;
+          nextSlide();
+          resetAutoPlay();
+        });
+      }
+
+      // Pagination dot clicks (manual navigation resets 4500ms timer)
+      heroDots.forEach((dot) => {
+        dot.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (isTransitioning) return;
+          const target = parseInt(dot.getAttribute('data-index'), 10);
+          if (!isNaN(target) && target !== (currentIndex % totalOriginal)) {
+            moveToSlide(target, true);
+            resetAutoPlay();
+          }
+        });
+      });
+
+      // Pause automatic sliding while mouse is hovering anywhere over hero section
+      heroSection.addEventListener('mouseenter', () => {
+        isHovered = true;
+        stopAutoPlay();
+      });
+
+      // Resume automatic sliding when mouse leaves hero section
+      heroSection.addEventListener('mouseleave', () => {
+        isHovered = false;
+        startAutoPlay();
+      });
 
       // Touch Swipe Gestures for Mobile
       let touchStartX = 0;
@@ -554,10 +455,10 @@ document.addEventListener('DOMContentLoaded', () => {
             prevSlide();
           }
         }
-        startAutoPlay();
+        resetAutoPlay();
       }, { passive: true });
 
-      // Page visibility handling
+      // Page visibility handling (pause when tab hidden, resume when visible)
       document.addEventListener('visibilitychange', () => {
         if (document.hidden) {
           stopAutoPlay();
@@ -566,7 +467,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      // Initialize
+      // Initialize hero carousel at slide 0 and start 4500ms autoplay
       moveToSlide(0, false);
       startAutoPlay();
     }
