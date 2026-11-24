@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | CAPETOWN HEIGHTS – Management Console</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="../favicon.ico">
+  <link rel="icon" type="image/png" href="../assets/images/favicon.png">
+
+  <!-- Admin Stylesheet -->
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- =========================================================================
+       1. LOGIN VIEW (STRICTLY ID & PASSWORD ONLY)
+       ========================================================================= -->
+  <div id="loginView" class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-brand">
+          <img src="../assets/images/logo-capetown.png" alt="Capetown Heights" class="auth-logo">
+          <span class="auth-dev-badge">By Nirali Group</span>
+        </div>
+        <div class="auth-badge">Executive Console</div>
+        <h1 class="auth-title">Admin Sign In</h1>
+        <p class="auth-subtitle">Enter your Admin ID and Password to access the dashboard.</p>
+      </div>
+
+      <!-- Alert Box -->
+      <div id="loginAlert" class="auth-alert" role="alert" style="display: none;"></div>
+
+      <!-- Login Form (Only ID & Password) -->
+      <form id="loginForm" class="auth-form" novalidate>
+        <!-- Field 1: Admin ID -->
+        <div class="form-group">
+          <label for="adminId" class="form-label">
+            <span>Admin ID / Email</span>
+            <span class="label-req">*</span>
+          </label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            <input 
+              type="text" 
+              id="adminId" 
+              class="form-control" 
+              placeholder="Enter Admin ID or Email" 
+              required 
+              autocomplete="username"
+              autofocus>
+          </div>
+        </div>
+
+        <!-- Field 2: Password -->
+        <div class="form-group">
+          <label for="adminPassword" class="form-label">
+            <span>Password</span>
+            <span class="label-req">*</span>
+          </label>
+          <div class="input-wrapper">
+            <svg class="input-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+            <input 
+              type="password" 
+              id="adminPassword" 
+              class="form-control" 
+              placeholder="Enter Password" 
+              required 
+              autocomplete="current-password">
+            <button type="button" id="togglePasswordBtn" class="pwd-toggle-btn" aria-label="Toggle password visibility">
+              <svg id="eyeIcon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="loginSubmitBtn" class="btn-auth-submit">
+          <span class="btn-text">Sign In to Dashboard</span>
+          <span class="btn-spinner" style="display: none;"></span>
+        </button>
+      </form>
+
+      <div class="auth-footer-hint">
+        <span>Default Credentials:</span>
+        <code>ID: admin</code> &bull; <code>Password: admin123</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       2. FULL ADMIN DASHBOARD WORKSPACE (SIDEBAR + MULTI-MODULE VIEW)
+       ========================================================================= -->
+  <div id="dashboardView" class="app-layout" style="display: none;">
+    
+    <!-- LEFT SIDEBAR -->
+    <aside class="app-sidebar" id="appSidebar">
+      <!-- Sidebar Brand Header -->
+      <div class="sidebar-brand">
+        <a href="../index.html" target="_blank" class="brand-link" title="Open Public Website">
+          <img src="../assets/images/logo-capetown.png" alt="Capetown Heights" class="sidebar-logo">
+        </a>
+        <div class="brand-badge-row">
+          <span class="brand-badge-pill">Admin Console</span>
+          <span class="brand-badge-sub">Nirali Group</span>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="sidebar-nav">
+        
+        <div class="nav-section-title">MAIN DASHBOARD</div>
+        <button class="nav-item active" data-view="viewDashboard">
+          <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+          <span class="nav-label">Dashboard Overview</span>
+        </button>
+
+        <button class="nav-item" data-view="viewLeads">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <span class="nav-label">Leads &amp; Inquiries</span>
+          <span class="nav-badge" id="sidebarNewBadge">0</span>
+        </button>
+
+        <div class="nav-section-title">PROJECT MANAGEMENT</div>
+        <button class="nav-item" data-view="viewProjects">
+          <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+          <span class="nav-label">Projects &amp; Inventory</span>
+        </button>
+
+        <button class="nav-item" data-view="viewGallery">
+          <svg viewBox="0 0 24 24"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg>
+          <span class="nav-label">Site Gallery</span>
+        </button>
+
+        <button class="nav-item" data-view="viewAmenities">
+          <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <span class="nav-label">40 Verified Amenities</span>
+          <span class="nav-badge gold">40</span>
+        </button>
+
+        <div class="nav-section-title">DATABASE &amp; SYSTEM</div>
+        <button class="nav-item" data-view="viewDatabase">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 4.01 2 6.5v11C2 19.99 6.48 22 12 22s10-2.01 10-4.5v-11C22 4.01 17.52 2 12 2zm0 18c-4.41 0-8-1.57-8-3.5V14.6c2.09 1.47 5.09 2.4 8 2.4s5.91-.93 8-2.4v1.9c0 1.93-3.59 3.5-8 3.5zm0-5c-4.41 0-8-1.57-8-3.5V9.6c2.09 1.47 5.09 2.4 8 2.4s5.91-.93 8-2.4v1.9c0 1.93-3.59 3.5-8 3.5zm0-5c-4.41 0-8-1.57-8-3.5s3.59-3.5 8-3.5 8 1.57 8 3.5-3.59 3.5-8 3.5z"/></svg>
+          <span class="nav-label">MySQL: captown</span>
+        </button>
+
+        <button class="nav-item" data-view="viewSettings">
+          <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          <span class="nav-label">Admin Settings</span>
+        </button>
+
+      </nav>
+
+      <!-- Sidebar Footer User Profile -->
+      <div class="sidebar-footer">
+        <div class="user-card">
+          <div class="user-avatar">A</div>
+          <div class="user-meta">
+            <span class="user-name" id="sidebarAdminName">Capetown Admin</span>
+            <span class="user-role" id="sidebarAdminRole">Super Administrator</span>
+          </div>
+        </div>
+        <button id="logoutBtn" class="btn-sidebar-logout" title="Sign out">
+          <svg viewBox="0 0 24 24"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN APP CONTENT AREA -->
+    <div class="app-main">
+      
+      <!-- Top App Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <button class="sidebar-toggle-btn" id="sidebarToggleBtn" aria-label="Toggle Navigation">
+            <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+          </button>
+          
+          <div class="breadcrumb-trail">
+            <span class="bc-root">Admin Console</span>
+            <span class="bc-sep">/</span>
+            <span class="bc-current" id="breadcrumbTitle">Dashboard Overview</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Live Date Display -->
+          <div class="date-badge">
+            <svg viewBox="0 0 24 24"><path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zM9 14H7v-2h2v2zm4 0h-2v-2h2v2zm4 0h-2v-2h2v2z"/></svg>
+            <span id="currentDateStr">24 Nov 2026</span>
+          </div>
+
+          <!-- DB Indicator -->
+          <div class="header-db-pill">
+            <span class="status-dot"></span>
+            <span>MySQL: captown</span>
+          </div>
+
+          <!-- Public Website Shortcut -->
+          <a href="../index.html" target="_blank" class="btn-view-site">
+            <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5c-1.11 0-2 .9-2 2v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            <span>Public Site</span>
+          </a>
+
+          <!-- Quick Action: + New Lead -->
+          <button class="btn-quick-add" id="openAddLeadBtnTop">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            <span>+ Lead</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- VIEW PANELS CONTAINER -->
+      <div class="app-body">
+        
+        <!-- ===================================================================
+             PANEL 1: DASHBOARD OVERVIEW (ANALYTICS & SUMMARY)
+             =================================================================== -->
+        <section id="viewDashboard" class="view-panel active">
+          
+          <!-- Executive Welcome Banner -->
+          <div class="welcome-banner">
+            <div class="welcome-content">
+              <span class="welcome-tag">CAPETOWN HEIGHTS EXECUTIVE SUITE</span>
+              <h2 class="welcome-title">Welcome back, <span id="dashWelcomeName">Capetown Admin</span></h2>
+              <p class="welcome-desc">Monitor live customer leads from the website, manage Silvassa project inventories, and track database status in real-time.</p>
+            </div>
+            <div class="welcome-actions">
+              <button class="btn-dash-action" id="dashExportBtn">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span>Export Leads (CSV)</span>
+              </button>
+              <button class="btn-dash-action primary" id="dashAddLeadBtn">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Log Walk-in Lead</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 4 Executive KPI Metric Cards -->
+          <div class="kpi-grid">
+            <div class="kpi-card" data-target="viewLeads" data-filter="all">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap total">
+                  <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+                </div>
+                <span class="kpi-trend positive">+100% Verified</span>
+              </div>
+              <div class="kpi-num" id="kpiTotal">--</div>
+              <div class="kpi-label">Total Inquiries Received</div>
+              <div class="kpi-sub">All-time customer leads in MySQL</div>
+            </div>
+
+            <div class="kpi-card" data-target="viewLeads" data-filter="New">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap new">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                </div>
+                <span class="kpi-trend attention">Requires Call</span>
+              </div>
+              <div class="kpi-num text-amber" id="kpiNew">--</div>
+              <div class="kpi-label">New / Pending Leads</div>
+              <div class="kpi-sub">Awaiting initial customer callback</div>
+            </div>
+
+            <div class="kpi-card" data-target="viewLeads" data-filter="Contacted">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap contacted">
+                  <svg viewBox="0 0 24 24"><path d="M20.01 15.38c-1.23 0-2.42-.2-3.53-.56-.35-.12-.74-.03-1.01.24l-1.57 1.97c-2.83-1.35-5.43-3.9-6.86-6.82l1.97-1.61c.28-.26.37-.65.25-1.02-.37-1.11-.56-2.3-.56-3.53 0-.54-.45-.99-.99-.99H4.19C3.65 3 3 3.24 3 3.99 3 13.28 10.73 21 20.01 21c.71 0 .99-.63.99-1.18v-3.45c0-.54-.45-.99-.99-.99z"/></svg>
+                </div>
+                <span class="kpi-trend neutral">Follow-Up</span>
+              </div>
+              <div class="kpi-num text-blue" id="kpiContacted">--</div>
+              <div class="kpi-label">In Discussion / Site Visit</div>
+              <div class="kpi-sub">Active discussions in progress</div>
+            </div>
+
+            <div class="kpi-card" data-target="viewLeads" data-filter="Completed">
+              <div class="kpi-top">
+                <div class="kpi-icon-wrap completed">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </div>
+                <span class="kpi-trend success">Converted</span>
+              </div>
+              <div class="kpi-num text-green" id="kpiCompleted">--</div>
+              <div class="kpi-label">Completed / Converted</div>
+              <div class="kpi-sub">Site visit completed &amp; booked</div>
+            </div>
+          </div>
+
+          <!-- Two Column Operational Grid -->
+          <div class="dashboard-grid">
+            
+            <!-- Column 1: Recent Inquiries Stream -->
+            <div class="dash-card recent-leads-card">
+              <div class="dash-card-header">
+                <div class="dash-card-title">
+                  <svg viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                  <span>Recent Inquiries Stream</span>
+                </div>
+                <button class="btn-card-link" id="gotoLeadsViewBtn">View All Leads &rarr;</button>
+              </div>
+
+              <div class="dash-card-body p-0">
+                <div class="stream-list" id="recentLeadsStream">
+                  <div class="stream-loading">Loading recent leads...</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Column 2: Project Snapshot & Quick Actions -->
+            <div class="dash-card project-overview-card">
+              <div class="dash-card-header">
+                <div class="dash-card-title">
+                  <svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+                  <span>Capetown Heights Overview</span>
+                </div>
+                <span class="badge-status-online">RERA Verified</span>
+              </div>
+
+              <div class="dash-card-body">
+                <div class="project-mini-banner">
+                  <img src="../assets/images/building-exterior.jpg" alt="Capetown Heights" class="mini-proj-img">
+                  <div class="mini-proj-overlay">
+                    <span class="mini-proj-dev">NIRALI GROUP</span>
+                    <h4 class="mini-proj-name">Capetown Heights &bull; Silvassa</h4>
+                  </div>
+                </div>
+
+                <div class="proj-specs-grid">
+                  <div class="spec-item">
+                    <span class="spec-label">Configurations</span>
+                    <span class="spec-val">2 &amp; 3 BHK Duplex</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Amenities</span>
+                    <span class="spec-val">40 Lifestyle Facilities</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Carpet Area</span>
+                    <span class="spec-val">950 – 1850 sq.ft.</span>
+                  </div>
+                  <div class="spec-item">
+                    <span class="spec-label">Elevation</span>
+                    <span class="spec-val">G + 14 Storeys</span>
+                  </div>
+                </div>
+
+                <!-- Quick Action Buttons inside Card -->
+                <div class="proj-card-actions">
+                  <button class="btn-pill" id="gotoAmenitiesBtn">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    <span>View 40 Amenities</span>
+                  </button>
+                  <button class="btn-pill" id="gotoGalleryBtn">
+                    <svg viewBox="0 0 24 24"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg>
+                    <span>View Gallery</span>
+                  </button>
+                  <button class="btn-pill" id="gotoDbBtn">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 4.01 2 6.5v11C2 19.99 6.48 22 12 22s10-2.01 10-4.5v-11C22 4.01 17.52 2 12 2z"/></svg>
+                    <span>MySQL: captown</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             PANEL 2: LEADS & INQUIRIES CONSOLE (FULL TABLE)
+             =================================================================== -->
+        <section id="viewLeads" class="view-panel">
+          
+          <div class="panel-header-row">
+            <div>
+              <h2 class="panel-heading">Customer Inquiries &amp; Leads Management</h2>
+              <p class="panel-sub">Real-time inquiries received from Capetown Heights website with instant WhatsApp &amp; call follow-up tools.</p>
+            </div>
+            
+            <div class="panel-actions">
+              <button class="btn-action secondary" id="leadsRefreshBtn">
+                <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+                <span>Refresh</span>
+              </button>
+              
+              <button class="btn-action secondary" id="leadsExportBtn">
+                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                <span>Export CSV</span>
+              </button>
+
+              <button class="btn-action primary" id="openAddLeadBtn">
+                <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>+ Add New Lead</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Leads Table Box -->
+          <div class="table-card">
+            
+            <!-- Filter Toolbar -->
+            <div class="table-toolbar">
+              <div class="status-tabs" id="statusTabs">
+                <button class="tab-btn active" data-status="all">All Leads <span class="tab-count" id="countAll">0</span></button>
+                <button class="tab-btn" data-status="New">New <span class="tab-count" id="countNew">0</span></button>
+                <button class="tab-btn" data-status="Contacted">Contacted <span class="tab-count" id="countContacted">0</span></button>
+                <button class="tab-btn" data-status="Completed">Completed <span class="tab-count" id="countCompleted">0</span></button>
+              </div>
+
+              <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" id="searchInput" placeholder="Search by name, phone, or note..." class="search-input">
+                <button id="clearSearchBtn" class="clear-search" style="display: none;">&times;</button>
+              </div>
+            </div>
+
+            <!-- Table Responsive Wrap -->
+            <div class="table-responsive">
+              <table class="leads-table">
+                <thead>
+                  <tr>
+                    <th style="width: 140px;">Lead ID &amp; Date</th>
+                    <th style="width: 240px;">Client Info</th>
+                    <th style="width: 180px;">Project &amp; Interest</th>
+                    <th>Client Message / Note</th>
+                    <th style="width: 160px;">Status</th>
+                    <th style="width: 200px;">Admin Remarks</th>
+                    <th style="width: 100px; text-align: center;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="leadsTbody">
+                  <tr>
+                    <td colspan="7" class="loading-state">
+                      <div class="spinner"></div>
+                      <span>Loading inquiries from MySQL database...</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+              <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+              <h3>No Inquiries Found</h3>
+              <p>No customer inquiries match your current search or filter criteria.</p>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- ===================================================================
+             PANEL 3: PROJECTS & INVENTORY
+             =================================================================== -->
+        <section id="viewProjects" class="view-panel">
+          <div class="panel-header-row">
+            <div>
+              <h2 class="panel-heading">Projects &amp; Inventory</h2>
+              <p class="panel-sub">Live configuration and inventory details of Capetown Heights by Nirali Group.</p>
+            </div>
+          </div>
+
+          <div class="projects-list-container" id="projectsContainer">
+            <div class="loading-state"><div class="spinner"></div><span>Loading projects from database...</span></div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             PANEL 4: SITE GALLERY & VISUALS
+             =================================================================== -->
+        <section id="viewGallery" class="view-panel">
+          <div class="panel-header-row">
+            <div>
+              <h2 class="panel-heading">Verified Site Gallery &amp; Surroundings</h2>
+              <p class="panel-sub">Real project photography, on-site billboards, approach roads, and construction preparation.</p>
+            </div>
+          </div>
+
+          <div class="gallery-cards-grid" id="galleryContainer">
+            <div class="loading-state"><div class="spinner"></div><span>Loading gallery from database...</span></div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             PANEL 5: ALL 40 AMENITIES
+             =================================================================== -->
+        <section id="viewAmenities" class="view-panel">
+          <div class="panel-header-row">
+            <div>
+              <h2 class="panel-heading">All 40 Verified Project Amenities</h2>
+              <p class="panel-sub">Complete catalog of 40 lifestyle, wellness, and infrastructure facilities provided by Nirali Group.</p>
+            </div>
+            <a href="../index.html#amenities" target="_blank" class="btn-action secondary">
+              <span>View On Homepage ↗</span>
+            </a>
+          </div>
+
+          <div class="admin-amenities-grid" id="adminAmenitiesGrid">
+            <!-- Rendered dynamically by admin.js -->
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             PANEL 6: MYSQL DATABASE CONSOLE (CAPTOWN)
+             =================================================================== -->
+        <section id="viewDatabase" class="view-panel">
+          <div class="panel-header-row">
+            <div>
+              <h2 class="panel-heading">MySQL Database Console: <code>captown</code></h2>
+              <p class="panel-sub">Live schema inspection, table storage metrics, and SQL backup export.</p>
+            </div>
+            <a href="http://localhost/phpmyadmin" target="_blank" class="btn-action secondary">
+              <span>Open phpMyAdmin ↗</span>
+            </a>
+          </div>
+
+          <div class="db-console-card">
+            <div class="db-meta-strip" id="dbMetaStrip">
+              <div class="meta-box"><span class="meta-title">Database</span><span class="meta-value">captown</span></div>
+              <div class="meta-box"><span class="meta-title">Host / Port</span><span class="meta-value">localhost:3306</span></div>
+              <div class="meta-box"><span class="meta-title">Server Version</span><span class="meta-value" id="dbServerVersion">MariaDB 10.11</span></div>
+              <div class="meta-box"><span class="meta-title">Status</span><span class="meta-value text-green">● Connected &amp; Operational</span></div>
+            </div>
+
+            <div class="table-responsive">
+              <table class="leads-table">
+                <thead>
+                  <tr>
+                    <th>Table Name</th>
+                    <th>Storage Engine</th>
+                    <th>Total Records</th>
+                    <th>Data Size (KB)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dbTablesTbody">
+                  <tr><td colspan="5" class="loading-state"><div class="spinner"></div><span>Inspecting tables...</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             PANEL 7: ADMIN SETTINGS & PROFILE
+             =================================================================== -->
+        <section id="viewSettings" class="view-panel">
+          <div class="panel-header-row">
+            <div>
+              <h2 class="panel-heading">Admin Profile &amp; Settings</h2>
+              <p class="panel-sub">Manage administrator account credentials and system settings.</p>
+            </div>
+          </div>
+
+          <div class="settings-card">
+            <div class="settings-user-header">
+              <div class="user-large-avatar">A</div>
+              <div>
+                <h3 id="settingsAdminName">Capetown Admin</h3>
+                <p id="settingsAdminEmail">admin@capetownheights.com</p>
+                <span class="badge-role">Super Administrator</span>
+              </div>
+            </div>
+
+            <div class="settings-grid">
+              <div class="settings-box">
+                <h4>Admin Credentials</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Use these verified credentials on the login screen:</p>
+                <div class="cred-row"><span>Admin ID:</span> <code>admin</code> or <code>admin@capetownheights.com</code></div>
+                <div class="cred-row"><span>Password:</span> <code>admin123</code></div>
+                <div class="cred-row"><span>Role:</span> <code>Super Administrator</code></div>
+              </div>
+
+              <div class="settings-box">
+                <h4>Project Information</h4>
+                <div class="cred-row"><span>Project Name:</span> <strong>Capetown Heights</strong></div>
+                <div class="cred-row"><span>Developer:</span> <strong>Nirali Group</strong></div>
+                <div class="cred-row"><span>Location:</span> <strong>Silvassa, D&amp;NH</strong></div>
+                <div class="cred-row"><span>Helpline Contact:</span> <strong>9081464545</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       3. MODALS (ADD LEAD & EDIT NOTES)
+       ========================================================================= -->
+
+  <!-- Modal: Add New Lead -->
+  <div id="addLeadModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Log New Customer Lead</h3>
+        <button class="modal-close" id="closeAddModalBtn">&times;</button>
+      </div>
+      <form id="addLeadForm" class="modal-form">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Client Name <span class="label-req">*</span></label>
+            <input type="text" id="addName" class="form-control" placeholder="Full Name" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Contact Number <span class="label-req">*</span></label>
+            <input type="tel" id="addPhone" class="form-control" placeholder="10-digit Mobile Number" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Email Address (Optional)</label>
+            <input type="email" id="addEmail" class="form-control" placeholder="client@example.com">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Project</label>
+            <input type="text" id="addProject" class="form-control" value="Capetown Heights">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Interest Type</label>
+            <select id="addInterest" class="form-control">
+              <option value="Site Visit Booking">Site Visit Booking</option>
+              <option value="Direct Website Inquiry" selected>Direct Website Inquiry</option>
+              <option value="Price &amp; Floor Plan Inquiry">Price &amp; Floor Plan Inquiry</option>
+              <option value="Brochure Request">Brochure Request</option>
+              <option value="Walk-in / Phone Inquiry">Walk-in / Phone Inquiry</option>
+            </select>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Initial Status</label>
+            <select id="addStatus" class="form-control">
+              <option value="New" selected>New</option>
+              <option value="Contacted">Contacted</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Client Requirement / Note</label>
+          <textarea id="addMessage" class="form-control" rows="2" placeholder="e.g. looking for 3 BHK duplex facing pool..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Admin Follow-up Remarks</label>
+          <textarea id="addNotes" class="form-control" rows="2" placeholder="e.g. called client, requested Saturday 11 AM appointment..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelAddModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Save Lead to MySQL</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Admin Notes -->
+  <div id="notesModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Update Follow-Up Remarks</h3>
+        <button class="modal-close" id="closeNotesModalBtn">&times;</button>
+      </div>
+      <form id="notesForm" class="modal-form">
+        <input type="hidden" id="notesLeadId">
+        <div class="form-group">
+          <label class="form-label">Lead Details</label>
+          <div id="notesLeadDetails" class="lead-preview-box"></div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Status</label>
+            <select id="notesLeadStatus" class="form-control">
+              <option value="New">🟡 New</option>
+              <option value="Contacted">🔵 Contacted</option>
+              <option value="Completed">🟢 Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Follow-Up Remarks / Internal Remarks</label>
+          <textarea id="notesLeadText" class="form-control" rows="4" placeholder="Enter follow-up remarks, callback dates, or site visit feedback..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelNotesModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Update Remarks</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Admin JS Script -->
+  <script src="admin.js"></script>
+</body>
+</html>

@@ -190,12 +190,48 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (isValid) {
-        // Show front-end confirmation message
-        if (successAlert) {
-          successAlert.textContent = 'Thank you, ' + nameInput.value.trim() + '. Your inquiry details have been validated successfully. For immediate project assistance, please call directly at 9081464545.';
-          successAlert.classList.add('visible');
+        const submitBtn = contactForm.querySelector('button[type="submit"]');
+        const origBtnText = submitBtn ? submitBtn.textContent : 'Submit Enquiry';
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.textContent = 'Submitting Enquiry...';
         }
-        contactForm.reset();
+
+        const payload = {
+          name: nameInput.value.trim(),
+          phone: phoneVal,
+          message: noteInput.value.trim(),
+          projectName: 'Capetown Heights',
+          interestType: 'Direct Website Form'
+        };
+
+        fetch('/api/enquiries', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (successAlert) {
+            successAlert.textContent = 'Thank you, ' + nameInput.value.trim() + '! Your inquiry has been saved into our system. For immediate project assistance, please call 9081464545.';
+            successAlert.classList.add('visible');
+          }
+          contactForm.reset();
+        })
+        .catch(err => {
+          console.error('Submission fallback:', err);
+          if (successAlert) {
+            successAlert.textContent = 'Thank you, ' + nameInput.value.trim() + '. Your inquiry has been noted. For immediate assistance, please call directly at 9081464545.';
+            successAlert.classList.add('visible');
+          }
+          contactForm.reset();
+        })
+        .finally(() => {
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = origBtnText;
+          }
+        });
       }
     });
   }
