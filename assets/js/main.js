@@ -205,7 +205,11 @@ document.addEventListener('DOMContentLoaded', () => {
           interestType: 'Direct Website Form'
         };
 
-        fetch('/api/enquiries', {
+        const API_BASE = (window.location.protocol === 'file:' || (window.location.port !== '8000'))
+          ? 'http://localhost:8000'
+          : '';
+
+        fetch(API_BASE + '/api/enquiries', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

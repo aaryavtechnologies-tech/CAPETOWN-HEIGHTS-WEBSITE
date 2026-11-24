@@ -4,6 +4,19 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Determine API Base URL automatically
+  // If served via http://localhost:8000, use relative ''
+  // If opened via file:///, port 80 (Apache), port 5500 (Live Server), etc., route to 'http://localhost:8000'
+  const API_BASE = (window.location.protocol === 'file:' || (window.location.port !== '8000'))
+    ? 'http://localhost:8000'
+    : '';
+
+  // Show notice if not on official http://localhost:8000
+  if (window.location.protocol === 'file:' || (window.location.port !== '8000')) {
+    const protocolNotice = document.getElementById('protocolNotice');
+    if (protocolNotice) protocolNotice.style.display = 'block';
+  }
+
   // Global State
   let authToken = localStorage.getItem('capetown_admin_token');
   let currentAdmin = JSON.parse(localStorage.getItem('capetown_admin_user') || 'null');
@@ -343,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch('/api/admin/me', {
+      const res = await fetch(API_BASE + '/api/admin/me', {
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
       const data = await res.json();
@@ -430,7 +443,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setLoginLoading(true);
 
       try {
-        const res = await fetch('/api/admin/login', {
+        const res = await fetch(API_BASE + '/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id, password })
@@ -452,7 +465,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } catch (err) {
         console.error('Login error', err);
-        showLoginAlert('Unable to reach server. Please ensure MySQL and Node server are running.');
+        showLoginAlert(
+          'Unable to reach server. Please open the dashboard directly in your browser at: <a href="http://localhost:8000/admin" style="color: #92400E; font-weight: 700; text-decoration: underline;">http://localhost:8000/admin</a> (ensure Node server & MySQL are running).'
+        );
       } finally {
         setLoginLoading(false);
       }
@@ -460,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function showLoginAlert(msg) {
-    loginAlert.textContent = msg;
+    loginAlert.innerHTML = msg;
     loginAlert.style.display = 'block';
   }
 
@@ -484,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (logoutBtn) {
     logoutBtn.addEventListener('click', async () => {
       try {
-        await fetch('/api/admin/logout', {
+        await fetch(API_BASE + '/api/admin/logout', {
           method: 'POST',
           headers: { 'Authorization': 'Bearer ' + authToken }
         });
@@ -607,7 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function loadDashboardStats() {
     try {
-      const res = await fetch('/api/admin/stats', {
+      const res = await fetch(API_BASE + '/api/admin/stats', {
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
       const data = await res.json();
@@ -647,7 +662,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const initial = name.charAt(0).toUpperCase();
       const phone = lead.phone || 'N/A';
       const status = lead.status || 'New';
-      const cleanDigits = (lead.phone || '').replace(/\D/g, '');
+      const cleanDigits = (lead.phone || '').replace(/\\D/g, '');
       const waNumber = cleanDigits.length === 10 ? ('91' + cleanDigits) : cleanDigits;
 
       let statusBadge = '<span class="kpi-trend attention">New</span>';
@@ -707,7 +722,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (emptyState) emptyState.style.display = 'none';
 
     try {
-      let url = '/api/admin/enquiries?status=' + encodeURIComponent(currentFilter);
+      let url = API_BASE + '/api/admin/enquiries?status=' + encodeURIComponent(currentFilter);
       if (searchQuery) {
         url += '&search=' + encodeURIComponent(searchQuery);
       }
@@ -756,7 +771,7 @@ document.addEventListener('DOMContentLoaded', () => {
           })
         : 'N/A';
 
-      const cleanDigits = (lead.phone || '').replace(/\D/g, '');
+      const cleanDigits = (lead.phone || '').replace(/\\D/g, '');
       const waNumber = cleanDigits.length === 10 ? ('91' + cleanDigits) : cleanDigits;
       const notesPreview = (lead.notes || '').trim();
 
@@ -873,7 +888,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function updateLeadStatus(id, status) {
     try {
-      const res = await fetch('/api/admin/enquiries/' + id, {
+      const res = await fetch(API_BASE + '/api/admin/enquiries/' + id, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -897,7 +912,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function deleteLead(id) {
     try {
-      const res = await fetch('/api/admin/enquiries/' + id, {
+      const res = await fetch(API_BASE + '/api/admin/enquiries/' + id, {
         method: 'DELETE',
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
@@ -973,7 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
   [leadsExportBtn, dashExportBtn].forEach(btn => {
     if (btn) {
       btn.addEventListener('click', () => {
-        window.location.href = '/api/admin/export?token=' + authToken;
+        window.location.href = API_BASE + '/api/admin/export?token=' + authToken;
         showToast('Downloading leads CSV export...');
       });
     }
@@ -988,7 +1003,7 @@ document.addEventListener('DOMContentLoaded', () => {
     projectsContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading projects from database...</span></div>';
 
     try {
-      const res = await fetch('/api/admin/projects', {
+      const res = await fetch(API_BASE + '/api/admin/projects', {
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
       const data = await res.json();
@@ -1080,7 +1095,7 @@ document.addEventListener('DOMContentLoaded', () => {
     galleryContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading gallery from database...</span></div>';
 
     try {
-      const res = await fetch('/api/admin/gallery', {
+      const res = await fetch(API_BASE + '/api/admin/gallery', {
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
       const data = await res.json();
@@ -1184,7 +1199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dbTablesTbody.innerHTML = '<tr><td colspan="5" class="loading-state"><div class="spinner"></div><span>Inspecting MySQL captown database...</span></td></tr>';
 
     try {
-      const res = await fetch('/api/admin/database', {
+      const res = await fetch(API_BASE + '/api/admin/database', {
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
       const data = await res.json();
@@ -1273,7 +1288,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        const res = await fetch('/api/admin/enquiries', {
+        const res = await fetch(API_BASE + '/api/admin/enquiries', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1324,7 +1339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const notes = notesLeadText.value.trim();
 
       try {
-        const res = await fetch('/api/admin/enquiries/' + id, {
+        const res = await fetch(API_BASE + '/api/admin/enquiries/' + id, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json',

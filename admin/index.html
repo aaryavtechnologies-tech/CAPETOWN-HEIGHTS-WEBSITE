@@ -34,6 +34,12 @@
         <p class="auth-subtitle">Enter your Admin ID and Password to access the dashboard.</p>
       </div>
 
+      <!-- Protocol Warning Notice (if not opened via http://localhost:8000) -->
+      <div id="protocolNotice" class="protocol-notice" style="display: none;">
+        <span>Accessing via local file or external port. For live database sync, open:</span>
+        <a href="http://localhost:8000/admin" class="protocol-link">http://localhost:8000/admin</a>
+      </div>
+
       <!-- Alert Box -->
       <div id="loginAlert" class="auth-alert" role="alert" style="display: none;"></div>
 
