@@ -11,12 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ? 'http://localhost:8000'
     : '';
 
-  // Show notice if not on official http://localhost:8000
-  if (window.location.protocol === 'file:' || (window.location.port !== '8000')) {
-    const protocolNotice = document.getElementById('protocolNotice');
-    if (protocolNotice) protocolNotice.style.display = 'block';
-  }
-
   // Global State
   let authToken = localStorage.getItem('capetown_admin_token');
   let currentAdmin = JSON.parse(localStorage.getItem('capetown_admin_user') || 'null');

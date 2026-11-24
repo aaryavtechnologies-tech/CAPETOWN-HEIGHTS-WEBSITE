@@ -137,26 +137,6 @@ body {
   color: var(--text-muted);
 }
 
-.protocol-notice {
-  background: #FFFBEB;
-  border: 1px solid #FCD34D;
-  color: #92400E;
-  padding: 0.65rem 0.85rem;
-  border-radius: var(--radius-sm);
-  font-size: 0.8rem;
-  margin-bottom: 1.25rem;
-  line-height: 1.4;
-  text-align: center;
-}
-
-.protocol-link {
-  display: block;
-  margin-top: 3px;
-  color: var(--primary-mocha);
-  font-weight: 700;
-  text-decoration: underline;
-}
-
 .auth-alert {
   padding: 0.85rem 1rem;
   border-radius: var(--radius-sm);
