@@ -205,9 +205,17 @@ document.addEventListener('DOMContentLoaded', () => {
           interestType: 'Direct Website Form'
         };
 
-        const API_URL = (typeof window !== 'undefined' && window.location.protocol !== 'file:' && window.location.port === '8000')
-          ? ''
-          : 'http://localhost:8000';
+        const API_URL = (function() {
+          if (typeof window === 'undefined') return 'http://localhost:8000';
+          if (window.location.protocol === 'file:') return 'http://localhost:8000';
+          if (window.location.port === '8000') return '';
+          const host = window.location.hostname || 'localhost';
+          const proto = window.location.protocol || 'http:';
+          if (host === 'localhost' || host === '127.0.0.1' || /^(\d{1,3}\.){3}\d{1,3}$/.test(host)) {
+            return proto + '//' + host + ':8000';
+          }
+          return '';
+        })();
 
         fetch(API_URL + '/api/enquiries', {
           method: 'POST',

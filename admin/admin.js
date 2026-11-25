@@ -4,10 +4,18 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Backend API URL
-  const API_URL = (typeof window !== 'undefined' && window.location.protocol !== 'file:' && window.location.port === '8000')
-    ? ''
-    : 'http://localhost:8000';
+  // Backend API URL: Dynamically handles localhost, LAN IP (e.g. 192.168.x.x for mobile testing), and production
+  const API_URL = (function() {
+    if (typeof window === 'undefined') return 'http://localhost:8000';
+    if (window.location.protocol === 'file:') return 'http://localhost:8000';
+    if (window.location.port === '8000') return '';
+    const host = window.location.hostname || 'localhost';
+    const proto = window.location.protocol || 'http:';
+    if (host === 'localhost' || host === '127.0.0.1' || /^(\d{1,3}\.){3}\d{1,3}$/.test(host)) {
+      return proto + '//' + host + ':8000';
+    }
+    return '';
+  })();
 
   // Global State
   let authToken = localStorage.getItem('capetown_admin_token');
@@ -445,7 +453,10 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {
         console.error('Login network error', err);
         setLoginLoading(false);
-        showLoginAlert('Unable to reach server. Please ensure Node server is running on port 8000.');
+        const hostName = (window.location.hostname && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1')
+          ? window.location.hostname
+          : 'localhost';
+        showLoginAlert('Unable to reach server (' + hostName + ':8000). Please ensure Node server is running on port 8000.');
         return;
       }
 
