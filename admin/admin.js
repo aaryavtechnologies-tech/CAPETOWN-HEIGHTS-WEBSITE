@@ -789,7 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
                   <span>${escapeHtml(lead.phone)}</span>
                 </a>
                 ${cleanDigits ? `
-                  <a href="https://wa.me/${waNumber}?text=Hello%20${encodeURIComponent(lead.name || '')},%20greetings%20from%20Capetown%20Heights%20by%20Nirali%20Group." target="_blank" class="btn-wa" title="Open WhatsApp Chat">WA</a>
+                  <a href="https://wa.me/${waNumber}?text=Hello%20${encodeURIComponent(lead.name || '')},%20greetings%20from%20Capetown%20Heights%20by%20Nirali%20infra." target="_blank" class="btn-wa" title="Open WhatsApp Chat">WA</a>
                 ` : ''}
               </div>
               ${lead.email ? `<span style="font-size: 0.75rem; color: var(--text-light);">${escapeHtml(lead.email)}</span>` : ''}
@@ -1008,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
             {
               id: 1,
               name: 'Capetown Heights',
-              developer: 'Nirali Group',
+              developer: 'Nirali infra',
               location: 'Silvassa, Dadra & Nagar Haveli',
               type: '2 & 3 BHK Duplex Apartments',
               carpetArea: '950 – 1850 sq.ft.',
@@ -1016,7 +1016,7 @@ document.addEventListener('DOMContentLoaded', () => {
               totalUnits: '120 Units Planned',
               status: 'Under Construction (RERA Verified)',
               image: '../assets/images/building-exterior.jpg',
-              description: 'Capetown Heights represents the pinnacle of luxury residential living in Silvassa, meticulously developed by Nirali Group with 40 lifestyle amenities, double basement parking, and landscaped sky gardens.'
+              description: 'Capetown Heights represents the pinnacle of luxury residential living in Silvassa, meticulously developed by Nirali infra with 40 lifestyle amenities, double basement parking, and landscaped sky gardens.'
             }
           ];
 
@@ -1027,7 +1027,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
           <div class="proj-full-content">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-              <span class="auth-dev-badge">${escapeHtml(proj.developer || 'NIRALI GROUP')}</span>
+              <span class="auth-dev-badge">${escapeHtml(proj.developer || 'Nirali infra')}</span>
               <span class="badge-status-online">${escapeHtml(proj.status || 'Verified')}</span>
             </div>
             <h3 class="proj-full-title">${escapeHtml(proj.name)}</h3>

@@ -1,6 +1,6 @@
 /**
  * CAPETOWN HEIGHTS – Official Website Scripts
- * Developer: NIRALI GROUP
+ * Developer: Nirali infra
  * Front-end Only Architecture
  */
 
@@ -10,29 +10,37 @@ document.addEventListener('DOMContentLoaded', () => {
   const navMenu = document.querySelector('.nav-menu');
 
   if (mobileToggle && navMenu) {
+    const setMenuState = (isOpen) => {
+      mobileToggle.classList.toggle('active', isOpen);
+      navMenu.classList.toggle('active', isOpen);
+      mobileToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      document.body.classList.toggle('menu-open', isOpen);
+    };
+
     mobileToggle.addEventListener('click', (e) => {
       e.stopPropagation();
       const isOpen = navMenu.classList.contains('active');
-      mobileToggle.classList.toggle('active', !isOpen);
-      navMenu.classList.toggle('active', !isOpen);
-      mobileToggle.setAttribute('aria-expanded', !isOpen);
+      setMenuState(!isOpen);
     });
 
     // Close mobile menu on link click
-    navMenu.querySelectorAll('.nav-link').forEach(link => {
+    navMenu.querySelectorAll('.nav-link, .mobile-menu-cta').forEach(link => {
       link.addEventListener('click', () => {
-        mobileToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        mobileToggle.setAttribute('aria-expanded', 'false');
+        setMenuState(false);
       });
     });
 
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!navMenu.contains(e.target) && !mobileToggle.contains(e.target) && navMenu.classList.contains('active')) {
-        mobileToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        mobileToggle.setAttribute('aria-expanded', 'false');
+        setMenuState(false);
+      }
+    });
+
+    // Close mobile menu on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+        setMenuState(false);
       }
     });
   }
@@ -242,235 +250,186 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 6. Project Details Overview Section (Static Cards Layout - Carousel Removed)
 
-  // 7. Hero Horizontal Sliding Background Track (Home Page Only)
-  const heroSection = document.getElementById('heroSection') || document.querySelector('.hero-section');
-  const heroTrack = document.getElementById('heroTrack');
-  const heroPrevBtn = document.getElementById('heroPrevBtn');
-  const heroNextBtn = document.getElementById('heroNextBtn');
+  // 7. Full-Bleed 7-Image Architectural Carousel Hero (Gemini Reference Integration)
+  const heroEl = document.getElementById('hero-carousel');
+  const trackEl = document.getElementById('carousel-track');
+  const dotsEl = document.getElementById('carousel-dots');
+  const prevSlideBtn = document.getElementById('prev-slide-btn');
+  const nextSlideBtn = document.getElementById('next-slide-btn');
 
-  if (heroSection && heroTrack) {
-    const originalSlides = Array.from(heroTrack.querySelectorAll('.hero-slide'));
-    const totalOriginal = originalSlides.length;
-
-    if (totalOriginal > 1) {
-      const ROTATION_INTERVAL = 4500; // Automatic slide transition every 4.5 seconds (4500ms)
-      const TRANSITION_STYLE = 'transform 0.85s cubic-bezier(0.25, 1, 0.5, 1)';
-      let currentIndex = 0;
-      let slideTimer = null;
-      let isHovered = false;
-      let isTransitioning = false;
-      let transitionSafetyTimer = null;
-
-      // Ensure pagination dots precisely match totalOriginal slides
-      const paginationContainer = document.getElementById('heroPagination');
-      let heroDots = document.querySelectorAll('.hero-dot');
-      if (paginationContainer && heroDots.length !== totalOriginal) {
-        paginationContainer.innerHTML = '';
-        for (let i = 0; i < totalOriginal; i++) {
-          const dot = document.createElement('button');
-          dot.className = `hero-dot${i === 0 ? ' active' : ''}`;
-          dot.setAttribute('data-index', i);
-          dot.setAttribute('role', 'tab');
-          dot.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
-          dot.setAttribute('aria-label', `Slide ${i + 1}`);
-          paginationContainer.appendChild(dot);
-        }
-        heroDots = document.querySelectorAll('.hero-dot');
+  if (heroEl && trackEl && dotsEl) {
+    const architecturalSlides = [
+      {
+        url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2000&q=90',
+        alt: 'Capetown Heights Cantilevered Modern White Villa',
+        positionClass: 'pos-center'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=90',
+        alt: 'Capetown Heights Modern Luxury Residential Apartment Building Towers',
+        positionClass: 'pos-center-25'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90',
+        alt: 'Capetown Heights Poolside Courtyard & Lounge Terrace',
+        positionClass: 'pos-center'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=90',
+        alt: 'Capetown Heights Contemporary Multi-Story Residential Tower Facade',
+        positionClass: 'pos-center-30'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=90',
+        alt: 'Capetown Heights Double-Height Glass Pavilion',
+        positionClass: 'pos-center'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2000&q=90',
+        alt: 'Capetown Heights Contemporary Sunset Architecture',
+        positionClass: 'pos-center'
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=90',
+        alt: 'Capetown Heights Landscaped Residence Facade',
+        positionClass: 'pos-center'
       }
+    ];
 
-      // 1. Preload all slide images into browser cache
-      originalSlides.forEach((slide) => {
-        const bgDiv = slide.querySelector('.hero-slide-bg');
-        if (bgDiv) {
-          const match = bgDiv.style.backgroundImage.match(/url\(['"]?([^'"]+)['"]?\)/);
-          if (match && match[1]) {
-            const preloader = new Image();
-            preloader.src = match[1];
-          }
-        }
-      });
+    let currentSlide = 0;
+    let isPaused = false;
+    let autoSlideTimer = null;
 
-      // 2. Clone the first slide and append to the track for seamless infinite looping
-      const firstClone = originalSlides[0].cloneNode(true);
-      firstClone.setAttribute('data-clone', 'true');
-      firstClone.classList.remove('active');
-      heroTrack.appendChild(firstClone);
+    function initHeroCarousel() {
+      trackEl.innerHTML = '';
+      dotsEl.innerHTML = '';
 
-      const allSlides = Array.from(heroTrack.querySelectorAll('.hero-slide'));
+      architecturalSlides.forEach((slide, idx) => {
+        // Create Slide Container
+        const slideDiv = document.createElement('div');
+        slideDiv.className = `carousel-slide ${idx === 0 ? 'is-active' : ''}`;
 
-      // Check prefers-reduced-motion
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const img = document.createElement('img');
+        img.src = slide.url;
+        img.alt = slide.alt;
+        img.className = slide.positionClass;
+        img.loading = idx === 0 ? 'eager' : 'lazy';
+        img.onerror = function () {
+          this.onerror = null;
+          this.src = `https://placehold.co/1920x1080/261C14/DFC08E?text=Capetown+Heights+Architecture+${idx + 1}`;
+        };
 
-      // Update dots and active slide class
-      const updateUI = (idx) => {
-        const normalizedIdx = idx % totalOriginal;
-        heroDots.forEach((dot, dIdx) => {
-          const isActive = dIdx === normalizedIdx;
-          dot.classList.toggle('active', isActive);
-          dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        slideDiv.appendChild(img);
+        trackEl.appendChild(slideDiv);
+
+        // Create Dot Indicator
+        const dotBtn = document.createElement('button');
+        dotBtn.type = 'button';
+        dotBtn.setAttribute('aria-label', `Go to slide ${idx + 1}`);
+        dotBtn.className = idx === 0 ? 'is-active' : 'is-inactive';
+        dotBtn.addEventListener('click', () => {
+          goToSlide(idx);
+          resetAutoTimer();
         });
-
-        allSlides.forEach((slide, sIdx) => {
-          slide.classList.toggle('active', sIdx === idx);
-        });
-      };
-
-      // Move track to specific index
-      const moveToSlide = (targetIndex, animate = true) => {
-        if (animate && !prefersReducedMotion) {
-          heroTrack.style.transition = TRANSITION_STYLE;
-          clearTimeout(transitionSafetyTimer);
-          transitionSafetyTimer = setTimeout(() => {
-            isTransitioning = false;
-          }, 950);
-        } else {
-          heroTrack.style.transition = 'none';
-          isTransitioning = false;
-        }
-        heroTrack.style.transform = `translateX(-${targetIndex * 100}%)`;
-        currentIndex = targetIndex;
-        updateUI(targetIndex);
-      };
-
-      // Advance to next slide
-      const nextSlide = () => {
-        if (isTransitioning) return;
-        isTransitioning = true;
-        moveToSlide(currentIndex + 1, true);
-      };
-
-      // Go to previous slide
-      const prevSlide = () => {
-        if (isTransitioning) return;
-        isTransitioning = true;
-
-        if (currentIndex === 0) {
-          // Snap instantly to the clone at end, then animate to last original slide
-          moveToSlide(totalOriginal, false);
-          void heroTrack.offsetHeight; // Force reflow
-          moveToSlide(totalOriginal - 1, true);
-        } else {
-          moveToSlide(currentIndex - 1, true);
-        }
-      };
-
-      // Handle seamless infinite reset on transitionend
-      heroTrack.addEventListener('transitionend', (e) => {
-        if (e.target !== heroTrack || e.propertyName !== 'transform') return;
-        clearTimeout(transitionSafetyTimer);
-        isTransitioning = false;
-
-        // If at the clone (index totalOriginal), snap back to index 0 instantly
-        if (currentIndex === totalOriginal) {
-          moveToSlide(0, false);
-          void heroTrack.offsetHeight;
-          if (!prefersReducedMotion) {
-            heroTrack.style.transition = TRANSITION_STYLE;
-          }
-        }
+        dotsEl.appendChild(dotBtn);
       });
 
-      // Timer Management: single well-managed interval
-      const stopAutoPlay = () => {
-        if (slideTimer) {
-          clearInterval(slideTimer);
-          slideTimer = null;
-        }
-      };
-
-      const startAutoPlay = () => {
-        stopAutoPlay();
-        if (!isHovered && !document.hidden) {
-          slideTimer = setInterval(nextSlide, ROTATION_INTERVAL);
-        }
-      };
-
-      const resetAutoPlay = () => {
-        stopAutoPlay();
-        if (!isHovered && !document.hidden) {
-          slideTimer = setInterval(nextSlide, ROTATION_INTERVAL);
-        }
-      };
-
-      // Navigation arrow button clicks (manual navigation resets 4500ms timer)
-      if (heroPrevBtn) {
-        heroPrevBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (isTransitioning) return;
-          prevSlide();
-          resetAutoPlay();
-        });
-      }
-
-      if (heroNextBtn) {
-        heroNextBtn.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (isTransitioning) return;
-          nextSlide();
-          resetAutoPlay();
-        });
-      }
-
-      // Pagination dot clicks (manual navigation resets 4500ms timer)
-      heroDots.forEach((dot) => {
-        dot.addEventListener('click', (e) => {
-          e.preventDefault();
-          if (isTransitioning) return;
-          const target = parseInt(dot.getAttribute('data-index'), 10);
-          if (!isNaN(target) && target !== (currentIndex % totalOriginal)) {
-            moveToSlide(target, true);
-            resetAutoPlay();
-          }
-        });
-      });
-
-      // Pause automatic sliding while mouse is hovering anywhere over hero section
-      heroSection.addEventListener('mouseenter', () => {
-        isHovered = true;
-        stopAutoPlay();
-      });
-
-      // Resume automatic sliding when mouse leaves hero section
-      heroSection.addEventListener('mouseleave', () => {
-        isHovered = false;
-        startAutoPlay();
-      });
-
-      // Touch Swipe Gestures for Mobile
-      let touchStartX = 0;
-      let touchStartY = 0;
-      heroSection.addEventListener('touchstart', (e) => {
-        touchStartX = e.changedTouches[0].screenX;
-        touchStartY = e.changedTouches[0].screenY;
-        stopAutoPlay();
-      }, { passive: true });
-
-      heroSection.addEventListener('touchend', (e) => {
-        const deltaX = e.changedTouches[0].screenX - touchStartX;
-        const deltaY = e.changedTouches[0].screenY - touchStartY;
-        if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 40) {
-          if (deltaX < 0) {
-            nextSlide();
-          } else {
-            prevSlide();
-          }
-        }
-        resetAutoPlay();
-      }, { passive: true });
-
-      // Page visibility handling (pause when tab hidden, resume when visible)
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-          stopAutoPlay();
-        } else if (!isHovered) {
-          startAutoPlay();
-        }
-      });
-
-      // Initialize hero carousel at slide 0 and start 4500ms autoplay
-      moveToSlide(0, false);
-      startAutoPlay();
+      startAutoTimer();
     }
+
+    function goToSlide(index) {
+      const total = architecturalSlides.length;
+      currentSlide = ((index % total) + total) % total;
+
+      const slides = trackEl.querySelectorAll('.carousel-slide');
+      const dots = dotsEl.querySelectorAll('button');
+
+      slides.forEach((slide, idx) => {
+        if (idx === currentSlide) {
+          slide.classList.add('is-active');
+        } else {
+          slide.classList.remove('is-active');
+        }
+      });
+
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.classList.remove('is-inactive');
+          dot.classList.add('is-active');
+        } else {
+          dot.classList.remove('is-active');
+          dot.classList.add('is-inactive');
+        }
+      });
+    }
+
+    function stepSlide(delta) {
+      goToSlide(currentSlide + delta);
+      resetAutoTimer();
+    }
+
+    function startAutoTimer() {
+      if (autoSlideTimer) clearInterval(autoSlideTimer);
+      autoSlideTimer = setInterval(() => {
+        if (!isPaused && !document.hidden) {
+          goToSlide(currentSlide + 1);
+        }
+      }, 5500);
+    }
+
+    function resetAutoTimer() {
+      startAutoTimer();
+    }
+
+    // Desktop Arrow Controls
+    if (prevSlideBtn) {
+      prevSlideBtn.addEventListener('click', () => stepSlide(-1));
+    }
+    if (nextSlideBtn) {
+      nextSlideBtn.addEventListener('click', () => stepSlide(1));
+    }
+
+    // Pause autoplay on hover
+    heroEl.addEventListener('mouseenter', () => {
+      isPaused = true;
+    });
+    heroEl.addEventListener('mouseleave', () => {
+      isPaused = false;
+    });
+
+    // Keyboard Arrow Navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') stepSlide(-1);
+      if (e.key === 'ArrowRight') stepSlide(1);
+    });
+
+    // Touch Swipe Support for Mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    heroEl.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    heroEl.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 40) {
+        stepSlide(diff > 0 ? 1 : -1);
+      }
+    }, { passive: true });
+
+    // Handle document visibility
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (autoSlideTimer) clearInterval(autoSlideTimer);
+      } else {
+        startAutoTimer();
+      }
+    });
+
+    // Initialize Hero Carousel
+    initHeroCarousel();
   }
 
   // 8. Amenities Batch Filter Navigation (All 40 Amenities Showcase)

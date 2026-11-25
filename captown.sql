@@ -1,7 +1,7 @@
 -- =========================================================================
 -- CAPETOWN HEIGHTS - COMPLETE MYSQL DATABASE DUMP
 -- Database: captown
--- Developer: Nirali Group
+-- Developer: Nirali infra
 -- Compatible with MySQL 5.7+, MySQL 8.0+, MariaDB 10.4+
 -- =========================================================================
 
@@ -82,7 +82,7 @@ CREATE TABLE `projects` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `projects` (`id`, `title`, `subtitle`, `category`, `status`, `featured`, `price`, `priceNumeric`, `configurations`, `carpetArea`, `location`, `landmark`, `reraNumber`, `possession`, `totalUnits`, `image`, `description`) VALUES
-('proj-capetown-heights', 'Capetown Heights', 'Modern High-Rise Living by Nirali Group', 'Luxury Apartments', 'Ongoing', 1, 'Price on Request', 4500000, '2 BHK, 3 BHK & Duplex Penthouse', '950 - 1850 sq.ft.', 'Silvassa, Dadra & Nagar Haveli', 'Near Silvassa Bypass Road', 'DNH-RERA-2026-089', 'December 2027', '240 Units', 'assets/images/building-exterior.jpg', 'Capetown Heights offers thoughtfully planned 2 & 3 BHK modern apartments and duplex residences in Silvassa with 40 lifestyle and wellness amenities.');
+('proj-capetown-heights', 'Capetown Heights', 'Modern High-Rise Living by Nirali infra', 'Luxury Apartments', 'Ongoing', 1, 'Price on Request', 4500000, '2 BHK, 3 BHK & Duplex Penthouse', '950 - 1850 sq.ft.', 'Silvassa, Dadra & Nagar Haveli', 'Near Silvassa Bypass Road', 'DNH-RERA-2026-089', 'December 2027', '240 Units', 'assets/images/building-exterior.jpg', 'Capetown Heights offers thoughtfully planned 2 & 3 BHK modern apartments and duplex residences in Silvassa with 40 lifestyle and wellness amenities.');
 
 -- -------------------------------------------------------------------------
 -- Table: gallery
@@ -156,5 +156,5 @@ CREATE TABLE `website_content` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `website_content` (`id`, `section`, `content`) VALUES
-('contact-info', 'contact', '{\"phone\":\"9081464545\",\"email\":\"info@capetownheights.com\",\"address\":\"Silvassa, Dadra & Nagar Haveli and Daman & Diu\",\"developer\":\"Nirali Group\"}'),
+('contact-info', 'contact', '{\"phone\":\"9081464545\",\"email\":\"info@capetownheights.com\",\"address\":\"Silvassa, Dadra & Nagar Haveli and Daman & Diu\",\"developer\":\"Nirali infra\"}'),
 ('meta-highlights', 'hero', '{\"amenitiesCount\":40,\"totalFloors\":\"G+14\",\"possession\":\"2027\",\"rating\":\"4.6\"}');

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#352315"/>
+  <!-- Outer horizontal top bar -->
+  <rect x="14" y="14" width="36" height="2.6" fill="#FFFFFF"/>
+  <!-- Middle T-bar & inner vertical stems -->
+  <path d="M11 19.5H53V22.1H33.3V51H30.7V22.1H11V19.5Z" fill="#FFFFFF"/>
+  <!-- Inner left L-line -->
+  <path d="M14 25H27.8V47.5H25.2V27.6H14V25Z" fill="#FFFFFF"/>
+  <!-- Inner right L-line -->
+  <path d="M50 25H36.2V47.5H38.8V27.6H50V25Z" fill="#FFFFFF"/>
+</svg>
