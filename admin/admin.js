@@ -434,34 +434,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
       setLoginLoading(true);
 
+      let data;
       try {
         const res = await fetch(API_URL + '/api/admin/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id, password })
         });
-
-        const data = await res.json();
-
-        if (res.ok && data.success) {
-          authToken = data.token;
-          currentAdmin = data.admin;
-          localStorage.setItem('capetown_admin_token', authToken);
-          localStorage.setItem('capetown_admin_user', JSON.stringify(currentAdmin));
-
-          showToast('Welcome back, ' + (currentAdmin.name || 'Admin') + '!');
-          loginForm.reset();
-          showDashboardView();
-        } else {
-          showLoginAlert(data.message || 'Invalid Admin ID or Password.');
-        }
+        data = await res.json();
       } catch (err) {
-        console.error('Login error', err);
-        showLoginAlert(
-          'Unable to reach server. Please open the dashboard directly in your browser at: <a href="http://localhost:8000/admin" style="color: #92400E; font-weight: 700; text-decoration: underline;">http://localhost:8000/admin</a> (ensure Node server & MySQL are running).'
-        );
-      } finally {
+        console.error('Login network error', err);
         setLoginLoading(false);
+        showLoginAlert('Unable to reach server. Please ensure Node server is running on port 8000.');
+        return;
+      }
+
+      setLoginLoading(false);
+
+      if (data && data.success) {
+        authToken = data.token;
+        currentAdmin = data.admin;
+        localStorage.setItem('capetown_admin_token', authToken);
+        localStorage.setItem('capetown_admin_user', JSON.stringify(currentAdmin));
+
+        showToast('Welcome back, ' + (currentAdmin.name || 'Admin') + '!');
+        loginForm.reset();
+        try {
+          showDashboardView();
+        } catch (uiErr) {
+          console.error('Error rendering dashboard view:', uiErr);
+        }
+      } else {
+        showLoginAlert(data?.message || 'Invalid Admin ID or Password.');
       }
     });
   }

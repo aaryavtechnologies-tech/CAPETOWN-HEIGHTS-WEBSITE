@@ -6,9 +6,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CAPETOWN HEIGHTS | Real Estate Development by Nirali Group, Silvassa</title>
 
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <script>
-    // Permanent Auto-Redirect: If opened directly as local file (file:///), auto-redirect to live local server
-    if (window.location.protocol === 'file:') {
+    // Permanent Auto-Redirect: If opened directly as local file (file:///) or external port, auto-redirect to live local server
+    if (window.location.protocol === 'file:' || (window.location.hostname === 'localhost' && window.location.port !== '8000') || (window.location.hostname === '127.0.0.1' && window.location.port !== '8000')) {
       window.location.replace('http://localhost:8000/');
     }
   </script>
@@ -23,7 +27,7 @@
     rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261125_02">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="icon" type="image/png" href="assets/images/favicon.png">
 </head>
@@ -1103,7 +1107,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/main.js?v=20261125_02"></script>
 </body>
 
 </html>
