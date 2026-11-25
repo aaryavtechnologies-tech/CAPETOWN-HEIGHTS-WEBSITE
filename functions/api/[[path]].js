@@ -219,12 +219,48 @@ export async function onRequest(context) {
         success: true,
         count: 6,
         gallery: [
-          { id: 1, title: "Building Architectural Elevation", category: "Architecture", image: "../assets/images/building-exterior.jpg" },
-          { id: 2, title: "Grand Entrance & Driveway", category: "Site Atmosphere", image: "../assets/images/entrance-view.jpg" },
-          { id: 3, title: "Double Basement Parking", category: "Infrastructure", image: "../assets/images/amenities/double-basement.jpg" },
-          { id: 4, title: "Multipurpose AC Banquet Hall", category: "Clubhouse", image: "../assets/images/amenities/multipurpose-hall.jpg" },
-          { id: 5, title: "Marble Temple Sanctum", category: "Spiritual", image: "../assets/images/amenities/temple.jpg" },
-          { id: 6, title: "Rooftop Gazebo & Sky Garden", category: "Leisure", image: "../assets/images/amenities/terrace-gazebo.jpg" }
+          {
+            id: "gal-01",
+            title: "Actual Project Billboard & Entrance",
+            category: "Surroundings",
+            image: "/assets/images/site-billboard.jpg",
+            caption: "Prominent project billboard installed along the main access road."
+          },
+          {
+            id: "gal-02",
+            title: "Boundary Sign & Security Enclosure",
+            category: "Site",
+            image: "/assets/images/boundary-sign.jpg",
+            caption: "Project demarcation board identifying Capetown Heights site."
+          },
+          {
+            id: "gal-03",
+            title: "Ground Level Preparation & Excavation",
+            category: "Construction",
+            image: "/assets/images/ground-prep.jpg",
+            caption: "Ongoing earthwork and ground preparation works at site."
+          },
+          {
+            id: "gal-04",
+            title: "Site Office & Customer Experience Center",
+            category: "Amenities",
+            image: "/assets/images/site-office-building.jpg",
+            caption: "On-site facility building for site visits and engineering coordination."
+          },
+          {
+            id: "gal-05",
+            title: "Main Access Road & Approach Connectivity",
+            category: "Surroundings",
+            image: "/assets/images/site-road-view.jpg",
+            caption: "Wide paved municipal approach road connecting to Silvassa."
+          },
+          {
+            id: "gal-06",
+            title: "High-Rise Architectural Elevation",
+            category: "Exterior",
+            image: "/assets/images/building-exterior.jpg",
+            caption: "Architectural rendering showcasing the complete building elevation."
+          }
         ]
       });
     }

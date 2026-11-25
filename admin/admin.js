@@ -1194,6 +1194,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. SITE GALLERY MODULE
   // =========================================================================
 
+  function resolveAssetUrl(url) {
+    if (!url) return '';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+    const clean = url.replace(/^(\.\.\/|\.\/|\/)+/, '');
+    if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
+      return '../' + clean;
+    }
+    return '/' + clean;
+  }
+
   async function loadGallery() {
     if (!galleryContainer) return;
     galleryContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading gallery from database...</span></div>';
@@ -1208,59 +1218,59 @@ document.addEventListener('DOMContentLoaded', () => {
         ? data.gallery
         : [
             {
-              id: 1,
-              title: 'Building Architectural Elevation',
-              category: 'Architecture',
-              image: '../assets/images/building-exterior.jpg',
-              description: 'Modern elevation facade showcasing glass balconies, clean lines, and earth-tone textures.'
+              id: 'gal-01',
+              title: 'Actual Project Billboard & Entrance',
+              category: 'Surroundings',
+              image: '/assets/images/site-billboard.jpg',
+              caption: 'Prominent project billboard installed along the main access road.'
             },
             {
-              id: 2,
-              title: 'Grand Entrance & Landscaped Driveway',
-              category: 'Site Atmosphere',
-              image: '../assets/images/entrance-view.jpg',
-              description: 'Welcoming entrance gates with security barriers, fountain, and tree-lined avenues.'
+              id: 'gal-02',
+              title: 'Boundary Sign & Security Enclosure',
+              category: 'Site',
+              image: '/assets/images/boundary-sign.jpg',
+              caption: 'Project demarcation board identifying Capetown Heights site.'
             },
             {
-              id: 3,
-              title: 'Double Basement & Covered Parking',
-              category: 'Infrastructure',
-              image: '../assets/images/amenities/double-basement.jpg',
-              description: 'Two-tier subterranean residential parking with dedicated bays and wide turning aisles.'
+              id: 'gal-03',
+              title: 'Ground Level Preparation & Excavation',
+              category: 'Construction',
+              image: '/assets/images/ground-prep.jpg',
+              caption: 'Ongoing earthwork and ground preparation works at site.'
             },
             {
-              id: 4,
-              title: 'AC Multipurpose Banquet Hall',
-              category: 'Clubhouse',
-              image: '../assets/images/amenities/multipurpose-hall.jpg',
-              description: 'Climate-controlled social hall designed for family celebrations and community gatherings.'
+              id: 'gal-04',
+              title: 'Site Office & Customer Experience Center',
+              category: 'Amenities',
+              image: '/assets/images/site-office-building.jpg',
+              caption: 'On-site facility building for site visits and engineering coordination.'
             },
             {
-              id: 5,
-              title: 'Marble Temple Devotional Sanctum',
-              category: 'Spiritual',
-              image: '../assets/images/amenities/temple.jpg',
-              description: 'Serene white marble sanctum inside residential grounds for peaceful daily worship.'
+              id: 'gal-05',
+              title: 'Main Access Road & Approach Connectivity',
+              category: 'Surroundings',
+              image: '/assets/images/site-road-view.jpg',
+              caption: 'Wide paved municipal approach road connecting to Silvassa.'
             },
             {
-              id: 6,
-              title: 'Rooftop Gazebo & Sky Garden',
-              category: 'Leisure',
-              image: '../assets/images/amenities/terrace-gazebo.jpg',
-              description: 'Terrace garden with sunset viewing deck, sit-outs, and panoramic Silvassa skyline views.'
+              id: 'gal-06',
+              title: 'High-Rise Architectural Elevation',
+              category: 'Exterior',
+              image: '/assets/images/building-exterior.jpg',
+              caption: 'Architectural rendering showcasing the complete building elevation.'
             }
           ];
 
       galleryContainer.innerHTML = items.map(g => `
         <div class="gallery-admin-card">
           <div class="gallery-admin-img-wrap">
-            <img src="${g.image}" alt="${escapeHtml(g.title)}" class="gallery-admin-img" loading="lazy">
+            <img src="${resolveAssetUrl(g.image)}" alt="${escapeHtml(g.title)}" class="gallery-admin-img" loading="lazy" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='../'+this.getAttribute('src').replace(/^\\/+/,'');}">
             <span class="admin-amenity-badge">${escapeHtml(g.category || 'Gallery')}</span>
           </div>
           <div class="gallery-admin-body">
             <h4 class="gallery-admin-title">${escapeHtml(g.title)}</h4>
             <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
-              ${escapeHtml(g.description || '')}
+              ${escapeHtml(g.caption || g.description || '')}
             </p>
           </div>
         </div>
@@ -1283,7 +1293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     adminAmenitiesGrid.innerHTML = projectAmenities.map(am => `
       <div class="admin-amenity-card">
         <div class="admin-amenity-img-wrap">
-          <img src="../${am.img}" alt="${escapeHtml(am.title)}" class="admin-amenity-img" loading="lazy">
+          <img src="${resolveAssetUrl(am.img)}" alt="${escapeHtml(am.title)}" class="admin-amenity-img" loading="lazy" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='../'+this.getAttribute('src').replace(/^\\/+/,'');}">
           <span class="admin-amenity-badge">#${escapeHtml(am.num)}</span>
         </div>
         <div class="admin-amenity-content">
