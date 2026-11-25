@@ -205,7 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
           interestType: 'Direct Website Form'
         };
 
-        const API_URL = "http://localhost:8000";
+        const API_URL = (typeof window !== 'undefined' && window.location.protocol !== 'file:' && window.location.port === '8000')
+          ? ''
+          : 'http://localhost:8000';
 
         fetch(API_URL + '/api/enquiries', {
           method: 'POST',

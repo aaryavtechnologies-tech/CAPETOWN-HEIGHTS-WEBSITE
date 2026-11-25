@@ -5,7 +5,9 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   // Backend API URL
-  const API_URL = "http://localhost:8000";
+  const API_URL = (typeof window !== 'undefined' && window.location.protocol !== 'file:' && window.location.port === '8000')
+    ? ''
+    : 'http://localhost:8000';
 
   // Global State
   let authToken = localStorage.getItem('capetown_admin_token');
