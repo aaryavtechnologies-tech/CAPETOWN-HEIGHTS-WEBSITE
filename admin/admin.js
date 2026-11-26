@@ -445,6 +445,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeEditGalleryModalBtn = document.getElementById('closeEditGalleryModalBtn');
   const cancelEditGalleryModalBtn = document.getElementById('cancelEditGalleryModalBtn');
 
+  // DOM Elements - Contact Modals & Controls
+  const contactsContainer = document.getElementById('contactsContainer');
+  const openAddContactBtn = document.getElementById('openAddContactBtn');
+  const addContactModal = document.getElementById('addContactModal');
+  const addContactForm = document.getElementById('addContactForm');
+  const addContactTitle = document.getElementById('addContactTitle');
+  const addContactIsPrimary = document.getElementById('addContactIsPrimary');
+  const addContactPhone = document.getElementById('addContactPhone');
+  const addContactPhoneSub = document.getElementById('addContactPhoneSub');
+  const addContactEmail = document.getElementById('addContactEmail');
+  const addContactAddress = document.getElementById('addContactAddress');
+  const addContactPlusCode = document.getElementById('addContactPlusCode');
+  const addContactGoogleRating = document.getElementById('addContactGoogleRating');
+  const addContactDevName = document.getElementById('addContactDevName');
+  const addContactDevDesc = document.getElementById('addContactDevDesc');
+  const addContactDirectionsUrl = document.getElementById('addContactDirectionsUrl');
+  const addContactReviewsUrl = document.getElementById('addContactReviewsUrl');
+  const addContactInstagramUrl = document.getElementById('addContactInstagramUrl');
+  const addContactFacebookUrl = document.getElementById('addContactFacebookUrl');
+  const closeAddContactModalBtn = document.getElementById('closeAddContactModalBtn');
+  const cancelAddContactModalBtn = document.getElementById('cancelAddContactModalBtn');
+
+  const editContactModal = document.getElementById('editContactModal');
+  const editContactForm = document.getElementById('editContactForm');
+  const editContactId = document.getElementById('editContactId');
+  const editContactTitle = document.getElementById('editContactTitle');
+  const editContactIsPrimary = document.getElementById('editContactIsPrimary');
+  const editContactPhone = document.getElementById('editContactPhone');
+  const editContactPhoneSub = document.getElementById('editContactPhoneSub');
+  const editContactEmail = document.getElementById('editContactEmail');
+  const editContactAddress = document.getElementById('editContactAddress');
+  const editContactPlusCode = document.getElementById('editContactPlusCode');
+  const editContactGoogleRating = document.getElementById('editContactGoogleRating');
+  const editContactDevName = document.getElementById('editContactDevName');
+  const editContactDevDesc = document.getElementById('editContactDevDesc');
+  const editContactDirectionsUrl = document.getElementById('editContactDirectionsUrl');
+  const editContactReviewsUrl = document.getElementById('editContactReviewsUrl');
+  const editContactInstagramUrl = document.getElementById('editContactInstagramUrl');
+  const editContactFacebookUrl = document.getElementById('editContactFacebookUrl');
+  const closeEditContactModalBtn = document.getElementById('closeEditContactModalBtn');
+  const cancelEditContactModalBtn = document.getElementById('cancelEditContactModalBtn');
+
   const toastContainer = document.getElementById('toastContainer');
 
   // Set Current Date in Header
@@ -668,6 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'viewProjects': 'Projects & Inventory',
     'viewGallery': 'Site Gallery',
     'viewAmenities': '40 Verified Amenities',
+    'viewContact': 'Contact & Offices',
     'viewDatabase': 'MySQL: captown',
     'viewSettings': 'Admin Settings'
   };
@@ -713,6 +756,8 @@ document.addEventListener('DOMContentLoaded', () => {
       loadGallery();
     } else if (targetViewId === 'viewAmenities') {
       loadAmenities();
+    } else if (targetViewId === 'viewContact') {
+      loadContacts();
     } else if (targetViewId === 'viewDatabase') {
       loadDatabase();
     }
@@ -2166,7 +2211,424 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 8. MYSQL DATABASE CONSOLE MODULE
+  // 8. CONTACT & PROJECT OFFICES MODULE (CRUD)
+  // =========================================================================
+
+  const defaultProjectContacts = [
+    {
+      id: "contact-01",
+      title: "Capetown Heights Project Office",
+      is_primary: 1,
+      phone: "9081464545",
+      phone_subtitle: "Available for direct inquiries & site visit coordination",
+      email: "info@niraliinfra.com",
+      address: "Ultan Faliya Road, Police Line Road, Silvassa, Dadra and Nagar Haveli and Daman and Diu – 396230.",
+      plus_code: "7XGW+V9, Silvassa",
+      developer_name: "Nirali infra",
+      developer_desc: "Real Estate Builders & Construction Company",
+      google_rating: "4.6 / 5 Rating (19 Customer Reviews)",
+      directions_url: "https://maps.app.goo.gl/NA9WehdJfaJx9NKr7?g_st=ac",
+      reviews_url: "https://g.page/r/CZH57F8d6TNIEAE/review",
+      instagram_url: "https://www.instagram.com/niraliinfrasilvassa?utm_source=ig_web_button_share_sheet&lqvp=ZDNlZDc0MzIxNw%3D%3D",
+      facebook_url: "https://www.facebook.com/niraliinfrasilvassa"
+    }
+  ];
+
+  let liveContacts = [];
+
+  function updateContactCounters(count) {
+    const heading = document.getElementById('contactHeading');
+    if (heading) heading.textContent = `Project Offices & Contact Details (${count})`;
+    const sidebarBadge = document.getElementById('sidebarContactBadge');
+    if (sidebarBadge) sidebarBadge.textContent = String(count);
+  }
+
+  function renderContactsList(items) {
+    if (!contactsContainer) return;
+    if (!items || items.length === 0) {
+      contactsContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: #fff; border-radius: 8px; border: 1px dashed var(--border-color);">
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">No contact offices registered.</p>
+          <button type="button" class="btn-action primary" onclick="document.getElementById('openAddContactBtn')?.click()">+ Add First Contact Office</button>
+        </div>
+      `;
+      return;
+    }
+
+    contactsContainer.innerHTML = items.map(c => {
+      const idStr = escapeHtml(String(c.id || ''));
+      const titleStr = escapeHtml(c.title || 'Project Office');
+      const isPrimary = c.is_primary == 1 || c.is_primary === true;
+      const phoneStr = escapeHtml(c.phone || '');
+      const phoneSub = escapeHtml(c.phone_subtitle || 'Available for direct inquiries & site visit coordination');
+      const emailStr = escapeHtml(c.email || '');
+      const addressStr = escapeHtml(c.address || '');
+      const plusCode = escapeHtml(c.plus_code || '');
+      const devName = escapeHtml(c.developer_name || 'Nirali infra');
+      const devDesc = escapeHtml(c.developer_desc || 'Real Estate Builders & Construction Company');
+      const ratingStr = escapeHtml(c.google_rating || '4.6 / 5 Rating');
+
+      return `
+        <div class="contact-admin-card" data-id="${idStr}">
+          <div class="contact-admin-header">
+            <div>
+              <h3 class="contact-admin-title">${titleStr}</h3>
+              ${isPrimary ? '<span class="status-badge new" style="margin-top: 4px; display: inline-block;">★ Primary Contact Office</span>' : ''}
+            </div>
+            <div style="font-size: 0.82rem; color: var(--accent-gold); font-weight: 700;">
+              ID: ${idStr}
+            </div>
+          </div>
+
+          <div class="contact-admin-body">
+            <!-- Phone -->
+            <div class="contact-admin-item">
+              <div class="contact-admin-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              </div>
+              <div>
+                <div class="contact-admin-label">Primary Contact Number</div>
+                <div class="contact-admin-val"><a href="tel:${phoneStr}">${phoneStr}</a></div>
+                <div class="contact-admin-sub">${phoneSub}</div>
+              </div>
+            </div>
+
+            <!-- Address -->
+            <div class="contact-admin-item">
+              <div class="contact-admin-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              </div>
+              <div>
+                <div class="contact-admin-label">Project Site Address</div>
+                <div class="contact-admin-val">${addressStr}</div>
+                ${plusCode ? `<div class="contact-admin-sub">Google Plus Code: <strong>${plusCode}</strong></div>` : ''}
+              </div>
+            </div>
+
+            <!-- Developer -->
+            <div class="contact-admin-item">
+              <div class="contact-admin-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg>
+              </div>
+              <div>
+                <div class="contact-admin-label">Developer</div>
+                <div class="contact-admin-val">${devName}</div>
+                <div class="contact-admin-sub">${devDesc}</div>
+              </div>
+            </div>
+
+            <!-- Rating -->
+            <div class="contact-admin-item">
+              <div class="contact-admin-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              </div>
+              <div>
+                <div class="contact-admin-label">Google Business Profile</div>
+                <div class="contact-admin-val">${ratingStr}</div>
+              </div>
+            </div>
+
+            <!-- Links -->
+            <div class="contact-admin-links">
+              ${c.directions_url ? `<a href="${escapeHtml(c.directions_url)}" target="_blank" class="contact-admin-link-pill">📍 Get Directions</a>` : ''}
+              ${c.reviews_url ? `<a href="${escapeHtml(c.reviews_url)}" target="_blank" class="contact-admin-link-pill">★ Google Reviews</a>` : ''}
+              ${c.instagram_url ? `<a href="${escapeHtml(c.instagram_url)}" target="_blank" class="contact-admin-link-pill">📸 Instagram</a>` : ''}
+              ${c.facebook_url ? `<a href="${escapeHtml(c.facebook_url)}" target="_blank" class="contact-admin-link-pill">👍 Facebook</a>` : ''}
+              ${emailStr ? `<a href="mailto:${emailStr}" class="contact-admin-link-pill">✉ ${emailStr}</a>` : ''}
+            </div>
+          </div>
+
+          <div class="contact-admin-footer">
+            <span style="font-size: 0.78rem; color: var(--text-muted);">
+              ${isPrimary ? 'Active on Contact Page' : 'Secondary Office'}
+            </span>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn-amenity-action edit" data-action="edit-contact" data-id="${idStr}">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                <span>Edit</span>
+              </button>
+              <button type="button" class="btn-amenity-action delete" data-action="delete-contact" data-id="${idStr}">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>Delete</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  async function loadContacts() {
+    if (!contactsContainer) return;
+
+    if (!liveContacts || liveContacts.length === 0) {
+      try {
+        const stored = localStorage.getItem('capetown_contacts');
+        if (stored) {
+          liveContacts = JSON.parse(stored);
+        }
+      } catch (e) {}
+
+      if (!liveContacts || liveContacts.length === 0) {
+        liveContacts = JSON.parse(JSON.stringify(defaultProjectContacts));
+      }
+
+      renderContactsList(liveContacts);
+      updateContactCounters(liveContacts.length);
+    }
+
+    try {
+      const res = await fetch(API_URL + '/api/admin/contacts', {
+        headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.contacts) && data.contacts.length > 0) {
+          liveContacts = data.contacts;
+          try {
+            localStorage.setItem('capetown_contacts', JSON.stringify(liveContacts));
+          } catch(e) {}
+          renderContactsList(liveContacts);
+          updateContactCounters(liveContacts.length);
+        }
+      }
+    } catch (err) {
+      console.warn('Unable to reach server for contacts, using cached data:', err);
+    }
+  }
+
+  // Open Add Contact Modal
+  if (openAddContactBtn && addContactModal) {
+    openAddContactBtn.addEventListener('click', () => {
+      if (addContactForm) addContactForm.reset();
+      if (addContactIsPrimary) addContactIsPrimary.checked = liveContacts.length === 0;
+      addContactModal.style.display = 'flex';
+      if (addContactTitle) addContactTitle.focus();
+    });
+  }
+
+  // Close Add Contact Modal
+  if (closeAddContactModalBtn && addContactModal) {
+    closeAddContactModalBtn.addEventListener('click', () => {
+      addContactModal.style.display = 'none';
+    });
+  }
+  if (cancelAddContactModalBtn && addContactModal) {
+    cancelAddContactModalBtn.addEventListener('click', () => {
+      addContactModal.style.display = 'none';
+    });
+  }
+
+  // Add Contact Form Submit
+  if (addContactForm) {
+    addContactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = addContactTitle ? addContactTitle.value.trim() : '';
+      const is_primary = addContactIsPrimary ? (addContactIsPrimary.checked ? 1 : 0) : 0;
+      const phone = addContactPhone ? addContactPhone.value.trim() : '';
+      const phone_subtitle = addContactPhoneSub ? addContactPhoneSub.value.trim() : '';
+      const email = addContactEmail ? addContactEmail.value.trim() : '';
+      const address = addContactAddress ? addContactAddress.value.trim() : '';
+      const plus_code = addContactPlusCode ? addContactPlusCode.value.trim() : '';
+      const google_rating = addContactGoogleRating ? addContactGoogleRating.value.trim() : '';
+      const developer_name = addContactDevName ? addContactDevName.value.trim() : '';
+      const developer_desc = addContactDevDesc ? addContactDevDesc.value.trim() : '';
+      const directions_url = addContactDirectionsUrl ? addContactDirectionsUrl.value.trim() : '';
+      const reviews_url = addContactReviewsUrl ? addContactReviewsUrl.value.trim() : '';
+      const instagram_url = addContactInstagramUrl ? addContactInstagramUrl.value.trim() : '';
+      const facebook_url = addContactFacebookUrl ? addContactFacebookUrl.value.trim() : '';
+
+      if (!title || !phone || !address) {
+        showToast('Please fill in Title, Contact Number, and Address.', 'error');
+        return;
+      }
+
+      const id = 'contact-' + Date.now();
+      const newContact = {
+        id, title, is_primary, phone, phone_subtitle, email, address, plus_code,
+        google_rating, developer_name, developer_desc,
+        directions_url, reviews_url, instagram_url, facebook_url
+      };
+
+      if (is_primary === 1) {
+        liveContacts.forEach(c => c.is_primary = 0);
+      }
+
+      liveContacts.unshift(newContact);
+
+      try {
+        localStorage.setItem('capetown_contacts', JSON.stringify(liveContacts));
+      } catch (err) {}
+
+      renderContactsList(liveContacts);
+      updateContactCounters(liveContacts.length);
+      addContactModal.style.display = 'none';
+      showToast('Contact office added successfully!', 'success');
+
+      try {
+        await fetch(API_URL + '/api/admin/contacts', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify(newContact)
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, saved locally:', apiErr);
+      }
+    });
+  }
+
+  // Close Edit Contact Modal
+  if (closeEditContactModalBtn && editContactModal) {
+    closeEditContactModalBtn.addEventListener('click', () => {
+      editContactModal.style.display = 'none';
+    });
+  }
+  if (cancelEditContactModalBtn && editContactModal) {
+    cancelEditContactModalBtn.addEventListener('click', () => {
+      editContactModal.style.display = 'none';
+    });
+  }
+
+  // Edit Contact Form Submit
+  if (editContactForm) {
+    editContactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = editContactId ? editContactId.value : '';
+      const title = editContactTitle ? editContactTitle.value.trim() : '';
+      const is_primary = editContactIsPrimary ? (editContactIsPrimary.checked ? 1 : 0) : 0;
+      const phone = editContactPhone ? editContactPhone.value.trim() : '';
+      const phone_subtitle = editContactPhoneSub ? editContactPhoneSub.value.trim() : '';
+      const email = editContactEmail ? editContactEmail.value.trim() : '';
+      const address = editContactAddress ? editContactAddress.value.trim() : '';
+      const plus_code = editContactPlusCode ? editContactPlusCode.value.trim() : '';
+      const google_rating = editContactGoogleRating ? editContactGoogleRating.value.trim() : '';
+      const developer_name = editContactDevName ? editContactDevName.value.trim() : '';
+      const developer_desc = editContactDevDesc ? editContactDevDesc.value.trim() : '';
+      const directions_url = editContactDirectionsUrl ? editContactDirectionsUrl.value.trim() : '';
+      const reviews_url = editContactReviewsUrl ? editContactReviewsUrl.value.trim() : '';
+      const instagram_url = editContactInstagramUrl ? editContactInstagramUrl.value.trim() : '';
+      const facebook_url = editContactFacebookUrl ? editContactFacebookUrl.value.trim() : '';
+
+      if (!id || !title || !phone || !address) {
+        showToast('Please fill in Title, Contact Number, and Address.', 'error');
+        return;
+      }
+
+      if (is_primary === 1) {
+        liveContacts.forEach(c => {
+          if (String(c.id) !== String(id)) c.is_primary = 0;
+        });
+      }
+
+      const idx = liveContacts.findIndex(c => String(c.id) === String(id));
+      if (idx !== -1) {
+        liveContacts[idx] = {
+          ...liveContacts[idx],
+          title, is_primary, phone, phone_subtitle, email, address, plus_code,
+          google_rating, developer_name, developer_desc,
+          directions_url, reviews_url, instagram_url, facebook_url
+        };
+      }
+
+      try {
+        localStorage.setItem('capetown_contacts', JSON.stringify(liveContacts));
+      } catch (err) {}
+
+      renderContactsList(liveContacts);
+      updateContactCounters(liveContacts.length);
+      editContactModal.style.display = 'none';
+      showToast('Contact office updated successfully!', 'success');
+
+      try {
+        await fetch(API_URL + '/api/admin/contacts/' + encodeURIComponent(id), {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify({
+            title, is_primary, phone, phone_subtitle, email, address, plus_code,
+            google_rating, developer_name, developer_desc,
+            directions_url, reviews_url, instagram_url, facebook_url
+          })
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, updated locally:', apiErr);
+      }
+    });
+  }
+
+  // Event Delegation on Contacts Container for Edit & Delete buttons
+  if (contactsContainer) {
+    contactsContainer.addEventListener('click', async (e) => {
+      const editBtn = e.target.closest('[data-action="edit-contact"]');
+      const deleteBtn = e.target.closest('[data-action="delete-contact"]');
+
+      if (editBtn) {
+        const id = editBtn.getAttribute('data-id');
+        const item = liveContacts.find(c => String(c.id) === String(id));
+        if (!item) return;
+
+        if (editContactId) editContactId.value = item.id;
+        if (editContactTitle) editContactTitle.value = item.title || '';
+        if (editContactIsPrimary) editContactIsPrimary.checked = item.is_primary == 1 || item.is_primary === true;
+        if (editContactPhone) editContactPhone.value = item.phone || '';
+        if (editContactPhoneSub) editContactPhoneSub.value = item.phone_subtitle || '';
+        if (editContactEmail) editContactEmail.value = item.email || '';
+        if (editContactAddress) editContactAddress.value = item.address || '';
+        if (editContactPlusCode) editContactPlusCode.value = item.plus_code || '';
+        if (editContactGoogleRating) editContactGoogleRating.value = item.google_rating || '';
+        if (editContactDevName) editContactDevName.value = item.developer_name || '';
+        if (editContactDevDesc) editContactDevDesc.value = item.developer_desc || '';
+        if (editContactDirectionsUrl) editContactDirectionsUrl.value = item.directions_url || '';
+        if (editContactReviewsUrl) editContactReviewsUrl.value = item.reviews_url || '';
+        if (editContactInstagramUrl) editContactInstagramUrl.value = item.instagram_url || '';
+        if (editContactFacebookUrl) editContactFacebookUrl.value = item.facebook_url || '';
+
+        if (editContactModal) editContactModal.style.display = 'flex';
+        return;
+      }
+
+      if (deleteBtn) {
+        const id = deleteBtn.getAttribute('data-id');
+        if (liveContacts.length <= 1) {
+          showToast('Cannot delete the only remaining contact office.', 'error');
+          return;
+        }
+
+        const item = liveContacts.find(c => String(c.id) === String(id));
+        const itemTitle = item ? item.title : id;
+
+        if (!confirm('Are you sure you want to delete "' + itemTitle + '" from contact offices?')) {
+          return;
+        }
+
+        liveContacts = liveContacts.filter(c => String(c.id) !== String(id));
+        try {
+          localStorage.setItem('capetown_contacts', JSON.stringify(liveContacts));
+        } catch (err) {}
+
+        renderContactsList(liveContacts);
+        updateContactCounters(liveContacts.length);
+        showToast('Contact office deleted successfully!', 'success');
+
+        try {
+          await fetch(API_URL + '/api/admin/contacts/' + encodeURIComponent(id), {
+            method: 'DELETE',
+            headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+          });
+        } catch (apiErr) {
+          console.warn('Backend sync failed, deleted locally:', apiErr);
+        }
+      }
+    });
+  }
+
+  // =========================================================================
+  // 9. MYSQL DATABASE CONSOLE MODULE
   // =========================================================================
 
   async function loadDatabase() {

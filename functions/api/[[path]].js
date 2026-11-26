@@ -96,6 +96,27 @@ let defaultGallery = [
   }
 ];
 
+let defaultContacts = [
+  {
+    id: "contact-01",
+    title: "Capetown Heights Project Office",
+    is_primary: 1,
+    phone: "9081464545",
+    phone_subtitle: "Available for direct inquiries & site visit coordination",
+    email: "info@niraliinfra.com",
+    address: "Ultan Faliya Road, Police Line Road, Silvassa, Dadra and Nagar Haveli and Daman and Diu – 396230.",
+    plus_code: "7XGW+V9, Silvassa",
+    developer_name: "Nirali infra",
+    developer_desc: "Real Estate Builders & Construction Company",
+    google_rating: "4.6 / 5 Rating (19 Customer Reviews)",
+    directions_url: "https://maps.app.goo.gl/NA9WehdJfaJx9NKr7?g_st=ac",
+    reviews_url: "https://g.page/r/CZH57F8d6TNIEAE/review",
+    instagram_url: "https://www.instagram.com/niraliinfrasilvassa?utm_source=ig_web_button_share_sheet&lqvp=ZDNlZDc0MzIxNw%3D%3D",
+    facebook_url: "https://www.facebook.com/niraliinfrasilvassa",
+    createdAt: new Date().toISOString()
+  }
+];
+
 let defaultAmenities = [
   {
     "num": "01",
@@ -629,7 +650,97 @@ export async function onRequest(context) {
       return jsonResponse({ success: true, message: "Gallery photo deleted successfully." });
     }
 
-    // 11. Database Diagnostics
+    // 11. Contact & Office Info (CRUD: Fetch, Add, Edit, Delete)
+    if ((path === "/api/contact" || path === "/api/contacts" || path === "/api/admin/contact" || path === "/api/admin/contacts") && method === "GET") {
+      return jsonResponse({
+        success: true,
+        count: defaultContacts.length,
+        contacts: defaultContacts,
+        primaryContact: defaultContacts.length > 0 ? defaultContacts[0] : null
+      });
+    }
+
+    if ((path === "/api/admin/contact" || path === "/api/admin/contacts") && method === "POST") {
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      if (!body.title || !body.title.trim()) {
+        return jsonResponse({ success: false, message: "Office / Contact Title is required." }, 400);
+      }
+      if (!body.phone || !body.phone.trim()) {
+        return jsonResponse({ success: false, message: "Contact Phone Number is required." }, 400);
+      }
+      if (!body.address || !body.address.trim()) {
+        return jsonResponse({ success: false, message: "Site / Office Address is required." }, 400);
+      }
+      const newContact = {
+        id: body.id || `contact-${Date.now()}`,
+        title: body.title.trim(),
+        is_primary: body.is_primary ? 1 : 0,
+        phone: body.phone.trim(),
+        phone_subtitle: (body.phone_subtitle || "Available for direct inquiries & site visit coordination").trim(),
+        email: (body.email || "info@niraliinfra.com").trim(),
+        address: body.address.trim(),
+        plus_code: (body.plus_code || "7XGW+V9, Silvassa").trim(),
+        developer_name: (body.developer_name || "Nirali infra").trim(),
+        developer_desc: (body.developer_desc || "Real Estate Builders & Construction Company").trim(),
+        google_rating: (body.google_rating || "4.6 / 5 Rating (19 Customer Reviews)").trim(),
+        directions_url: (body.directions_url || "").trim(),
+        reviews_url: (body.reviews_url || "").trim(),
+        instagram_url: (body.instagram_url || "").trim(),
+        facebook_url: (body.facebook_url || "").trim(),
+        createdAt: new Date().toISOString()
+      };
+      if (newContact.is_primary === 1) {
+        defaultContacts.forEach(c => c.is_primary = 0);
+      }
+      defaultContacts.unshift(newContact);
+      return jsonResponse({
+        success: true,
+        message: "Contact office added successfully.",
+        item: newContact
+      });
+    }
+
+    if ((path.startsWith("/api/admin/contact/") || path.startsWith("/api/admin/contacts/")) && method === "PUT") {
+      const targetId = decodeURIComponent(path.split("/admin/contact")[1].replace(/^\/s?\//, ""));
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      const idx = defaultContacts.findIndex(c => String(c.id) === String(targetId));
+      if (idx !== -1) {
+        if (body.is_primary) {
+          defaultContacts.forEach(c => c.is_primary = 0);
+        }
+        defaultContacts[idx] = {
+          ...defaultContacts[idx],
+          title: body.title ? body.title.trim() : defaultContacts[idx].title,
+          is_primary: body.is_primary ? 1 : (body.is_primary === false || body.is_primary === 0 ? 0 : defaultContacts[idx].is_primary),
+          phone: body.phone ? body.phone.trim() : defaultContacts[idx].phone,
+          phone_subtitle: body.phone_subtitle !== undefined ? body.phone_subtitle.trim() : defaultContacts[idx].phone_subtitle,
+          email: body.email !== undefined ? body.email.trim() : defaultContacts[idx].email,
+          address: body.address ? body.address.trim() : defaultContacts[idx].address,
+          plus_code: body.plus_code !== undefined ? body.plus_code.trim() : defaultContacts[idx].plus_code,
+          developer_name: body.developer_name !== undefined ? body.developer_name.trim() : defaultContacts[idx].developer_name,
+          developer_desc: body.developer_desc !== undefined ? body.developer_desc.trim() : defaultContacts[idx].developer_desc,
+          google_rating: body.google_rating !== undefined ? body.google_rating.trim() : defaultContacts[idx].google_rating,
+          directions_url: body.directions_url !== undefined ? body.directions_url.trim() : defaultContacts[idx].directions_url,
+          reviews_url: body.reviews_url !== undefined ? body.reviews_url.trim() : defaultContacts[idx].reviews_url,
+          instagram_url: body.instagram_url !== undefined ? body.instagram_url.trim() : defaultContacts[idx].instagram_url,
+          facebook_url: body.facebook_url !== undefined ? body.facebook_url.trim() : defaultContacts[idx].facebook_url
+        };
+      }
+      return jsonResponse({ success: true, message: "Contact office updated successfully." });
+    }
+
+    if ((path.startsWith("/api/admin/contact/") || path.startsWith("/api/admin/contacts/")) && method === "DELETE") {
+      const targetId = decodeURIComponent(path.split("/admin/contact")[1].replace(/^\/s?\//, ""));
+      if (defaultContacts.length <= 1) {
+        return jsonResponse({ success: false, message: "Cannot delete the only remaining contact office." }, 400);
+      }
+      defaultContacts = defaultContacts.filter(c => String(c.id) !== String(targetId));
+      return jsonResponse({ success: true, message: "Contact office deleted successfully." });
+    }
+
+    // 12. Database Diagnostics
     if (path === "/api/admin/database") {
       return jsonResponse({
         success: true,
@@ -640,7 +751,8 @@ export async function onRequest(context) {
           { table_name: "enquiries", engine: "Serverless", table_rows: defaultEnquiries.length, data_length: 32768 },
           { table_name: "amenities", engine: "Serverless", table_rows: defaultAmenities.length, data_length: 49152 },
           { table_name: "projects", engine: "Serverless", table_rows: 1, data_length: 16384 },
-          { table_name: "gallery", engine: "Serverless", table_rows: defaultGallery.length, data_length: 65536 }
+          { table_name: "gallery", engine: "Serverless", table_rows: defaultGallery.length, data_length: 65536 },
+          { table_name: "contacts", engine: "Serverless", table_rows: defaultContacts.length, data_length: 32768 }
         ]
       });
     }

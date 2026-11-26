@@ -38,7 +38,7 @@
   <link rel="alternate icon" type="image/x-icon" href="../favicon.ico">
 
   <!-- Admin Stylesheet -->
-  <link rel="stylesheet" href="admin.css?v=20261125_05">
+  <link rel="stylesheet" href="admin.css?v=20261126_08_refresh">
 </head>
 <body>
 
@@ -164,6 +164,12 @@
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
           <span class="nav-label" id="sidebarAmenitiesLabel">40 Verified Amenities</span>
           <span class="nav-badge gold" id="sidebarAmenitiesBadge">40</span>
+        </button>
+
+        <button class="nav-item" data-view="viewContact">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          <span class="nav-label" id="sidebarContactLabel">Contact &amp; Offices</span>
+          <span class="nav-badge gold" id="sidebarContactBadge">1</span>
         </button>
 
         <div class="nav-section-title">DATABASE &amp; SYSTEM</div>
@@ -547,7 +553,32 @@
         </section>
 
         <!-- ===================================================================
-             PANEL 6: MYSQL DATABASE CONSOLE (CAPTOWN)
+             PANEL 6: CONTACT & PROJECT OFFICES
+             =================================================================== -->
+        <section id="viewContact" class="view-panel">
+          <div class="panel-header-row">
+            <div>
+              <h2 class="panel-heading" id="contactHeading">Project Offices &amp; Contact Details</h2>
+              <p class="panel-sub" id="contactSubtitle">Official project office address, primary contact numbers, developer info, and public channels shown on the contact page.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <button type="button" class="btn-action primary" id="openAddContactBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>+ Add Office / Contact</span>
+              </button>
+              <a href="../contact.html" target="_blank" class="btn-action secondary">
+                <span>View On Contact Page ↗</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="contacts-cards-grid" id="contactsContainer">
+            <div class="loading-state"><div class="spinner"></div><span>Loading contact offices from database...</span></div>
+          </div>
+        </section>
+
+        <!-- ===================================================================
+             PANEL 7: MYSQL DATABASE CONSOLE (CAPTOWN)
              =================================================================== -->
         <section id="viewDatabase" class="view-panel">
           <div class="panel-header-row">
@@ -953,10 +984,177 @@
     </div>
   </div>
 
+  <!-- Modal: Add New Contact Office -->
+  <div id="addContactModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3>Add Project Office / Contact Info</h3>
+        <button class="modal-close" id="closeAddContactModalBtn">&times;</button>
+      </div>
+      <form id="addContactForm" class="modal-form">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Office / Contact Title <span class="label-req">*</span></label>
+            <input type="text" id="addContactTitle" class="form-control" placeholder="e.g. Capetown Heights Project Office" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Primary Office?</label>
+            <div style="display: flex; align-items: center; gap: 0.5rem; height: 42px;">
+              <input type="checkbox" id="addContactIsPrimary" style="width: 18px; height: 18px; cursor: pointer;" checked>
+              <label for="addContactIsPrimary" style="font-size: 0.88rem; cursor: pointer; color: var(--dark-espresso);">Set as Main Contact</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Primary Contact Number <span class="label-req">*</span></label>
+            <input type="text" id="addContactPhone" class="form-control" placeholder="e.g. 9081464545" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="addContactEmail" class="form-control" placeholder="e.g. info@niraliinfra.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Availability / Subtitle</label>
+          <input type="text" id="addContactPhoneSub" class="form-control" placeholder="e.g. Available for direct inquiries &amp; site visit coordination">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Site Address <span class="label-req">*</span></label>
+          <textarea id="addContactAddress" class="form-control" rows="2" placeholder="e.g. Ultan Faliya Road, Police Line Road, Silvassa, Dadra and Nagar Haveli and Daman and Diu – 396230." required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Google Plus Code / Landmark</label>
+            <input type="text" id="addContactPlusCode" class="form-control" placeholder="e.g. 7XGW+V9, Silvassa">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Google Rating &amp; Reviews</label>
+            <input type="text" id="addContactGoogleRating" class="form-control" placeholder="e.g. 4.6 / 5 Rating (19 Customer Reviews)">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Developer Entity Name</label>
+            <input type="text" id="addContactDevName" class="form-control" placeholder="e.g. Nirali infra">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Developer Subtitle</label>
+            <input type="text" id="addContactDevDesc" class="form-control" placeholder="e.g. Real Estate Builders &amp; Construction Company">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Official Channels &amp; Links</label>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <input type="url" id="addContactDirectionsUrl" class="form-control" placeholder="Get Directions URL (Google Maps link)">
+            <input type="url" id="addContactReviewsUrl" class="form-control" placeholder="Google Reviews URL">
+            <input type="url" id="addContactInstagramUrl" class="form-control" placeholder="Instagram Profile URL">
+            <input type="url" id="addContactFacebookUrl" class="form-control" placeholder="Facebook Page URL">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelAddContactModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Save Contact Office</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Contact Office -->
+  <div id="editContactModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog" style="max-width: 680px;">
+      <div class="modal-header">
+        <h3>Edit Project Office / Contact Info</h3>
+        <button class="modal-close" id="closeEditContactModalBtn">&times;</button>
+      </div>
+      <form id="editContactForm" class="modal-form">
+        <input type="hidden" id="editContactId">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Office / Contact Title <span class="label-req">*</span></label>
+            <input type="text" id="editContactTitle" class="form-control" placeholder="e.g. Capetown Heights Project Office" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Primary Office?</label>
+            <div style="display: flex; align-items: center; gap: 0.5rem; height: 42px;">
+              <input type="checkbox" id="editContactIsPrimary" style="width: 18px; height: 18px; cursor: pointer;">
+              <label for="editContactIsPrimary" style="font-size: 0.88rem; cursor: pointer; color: var(--dark-espresso);">Set as Main Contact</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Primary Contact Number <span class="label-req">*</span></label>
+            <input type="text" id="editContactPhone" class="form-control" placeholder="e.g. 9081464545" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Email Address</label>
+            <input type="email" id="editContactEmail" class="form-control" placeholder="e.g. info@niraliinfra.com">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Availability / Subtitle</label>
+          <input type="text" id="editContactPhoneSub" class="form-control" placeholder="e.g. Available for direct inquiries &amp; site visit coordination">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Site Address <span class="label-req">*</span></label>
+          <textarea id="editContactAddress" class="form-control" rows="2" placeholder="e.g. Ultan Faliya Road, Police Line Road, Silvassa, Dadra and Nagar Haveli and Daman and Diu – 396230." required></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Google Plus Code / Landmark</label>
+            <input type="text" id="editContactPlusCode" class="form-control" placeholder="e.g. 7XGW+V9, Silvassa">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Google Rating &amp; Reviews</label>
+            <input type="text" id="editContactGoogleRating" class="form-control" placeholder="e.g. 4.6 / 5 Rating (19 Customer Reviews)">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Developer Entity Name</label>
+            <input type="text" id="editContactDevName" class="form-control" placeholder="e.g. Nirali infra">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Developer Subtitle</label>
+            <input type="text" id="editContactDevDesc" class="form-control" placeholder="e.g. Real Estate Builders &amp; Construction Company">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Official Channels &amp; Links</label>
+          <div style="display: flex; flex-direction: column; gap: 0.6rem;">
+            <input type="url" id="editContactDirectionsUrl" class="form-control" placeholder="Get Directions URL (Google Maps link)">
+            <input type="url" id="editContactReviewsUrl" class="form-control" placeholder="Google Reviews URL">
+            <input type="url" id="editContactInstagramUrl" class="form-control" placeholder="Instagram Profile URL">
+            <input type="url" id="editContactFacebookUrl" class="form-control" placeholder="Facebook Page URL">
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelEditContactModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Update Contact Office</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Admin JS Script -->
-  <script src="admin.js?v=20261126_05"></script>
+  <script src="admin.js?v=20261126_08_refresh"></script>
 </body>
 </html>

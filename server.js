@@ -536,6 +536,215 @@ app.delete('/api/admin/gallery/:id', authenticateAdmin, async (req, res) => {
 });
 
 // =========================================================================
+// CONTACT & OFFICE INFO CRUD API (Fetch, Add, Edit, Delete)
+// =========================================================================
+
+// Fetch Contact Offices (Public & Admin)
+app.get(['/api/contact', '/api/contacts', '/api/admin/contact', '/api/admin/contacts'], async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT * FROM contacts ORDER BY is_primary DESC, createdAt ASC');
+    res.json({
+      success: true,
+      count: rows.length,
+      contacts: rows,
+      primaryContact: rows.length > 0 ? rows[0] : null
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Add New Contact Office
+app.post(['/api/admin/contact', '/api/admin/contacts'], authenticateAdmin, async (req, res) => {
+  try {
+    const {
+      title,
+      phone,
+      phone_subtitle,
+      email,
+      address,
+      plus_code,
+      developer_name,
+      developer_desc,
+      google_rating,
+      directions_url,
+      reviews_url,
+      instagram_url,
+      facebook_url,
+      is_primary
+    } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ success: false, message: 'Office / Contact Title is required.' });
+    }
+    if (!phone || !phone.trim()) {
+      return res.status(400).json({ success: false, message: 'Contact Phone Number is required.' });
+    }
+    if (!address || !address.trim()) {
+      return res.status(400).json({ success: false, message: 'Site / Office Address is required.' });
+    }
+
+    const id = req.body.id || `contact-${Date.now()}`;
+    const isPrimaryVal = is_primary ? 1 : 0;
+
+    if (isPrimaryVal === 1) {
+      await pool.query('UPDATE contacts SET is_primary = 0');
+    }
+
+    await pool.query(
+      `INSERT INTO contacts (
+        id, title, is_primary, phone, phone_subtitle, email, address, plus_code,
+        developer_name, developer_desc, google_rating, directions_url, reviews_url, instagram_url, facebook_url
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        id,
+        title.trim(),
+        isPrimaryVal,
+        phone.trim(),
+        (phone_subtitle || 'Available for direct inquiries & site visit coordination').trim(),
+        (email || 'info@niraliinfra.com').trim(),
+        address.trim(),
+        (plus_code || '7XGW+V9, Silvassa').trim(),
+        (developer_name || 'Nirali infra').trim(),
+        (developer_desc || 'Real Estate Builders & Construction Company').trim(),
+        (google_rating || '4.6 / 5 Rating (19 Customer Reviews)').trim(),
+        (directions_url || '').trim(),
+        (reviews_url || '').trim(),
+        (instagram_url || '').trim(),
+        (facebook_url || '').trim()
+      ]
+    );
+
+    // Sync website_content
+    try {
+      const contentJson = JSON.stringify({
+        phone: phone.trim(),
+        email: (email || 'info@niraliinfra.com').trim(),
+        address: address.trim(),
+        developer: (developer_name || 'Nirali infra').trim()
+      });
+      await pool.query(
+        'INSERT INTO website_content (id, section, content) VALUES ("contact-info", "contact", ?) ON DUPLICATE KEY UPDATE content = ?',
+        [contentJson, contentJson]
+      );
+    } catch (scErr) {}
+
+    res.json({
+      success: true,
+      message: 'Contact office added successfully.',
+      item: { id, title: title.trim(), phone: phone.trim(), address: address.trim() }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Update Contact Office
+app.put(['/api/admin/contact/:id', '/api/admin/contacts/:id'], authenticateAdmin, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const {
+      title,
+      phone,
+      phone_subtitle,
+      email,
+      address,
+      plus_code,
+      developer_name,
+      developer_desc,
+      google_rating,
+      directions_url,
+      reviews_url,
+      instagram_url,
+      facebook_url,
+      is_primary
+    } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ success: false, message: 'Office / Contact Title is required.' });
+    }
+    if (!phone || !phone.trim()) {
+      return res.status(400).json({ success: false, message: 'Contact Phone Number is required.' });
+    }
+    if (!address || !address.trim()) {
+      return res.status(400).json({ success: false, message: 'Site / Office Address is required.' });
+    }
+
+    if (is_primary) {
+      await pool.query('UPDATE contacts SET is_primary = 0 WHERE id != ?', [id]);
+    }
+
+    await pool.query(
+      `UPDATE contacts SET
+        title = ?, is_primary = ?, phone = ?, phone_subtitle = ?, email = ?,
+        address = ?, plus_code = ?, developer_name = ?, developer_desc = ?,
+        google_rating = ?, directions_url = ?, reviews_url = ?, instagram_url = ?, facebook_url = ?
+      WHERE id = ?`,
+      [
+        title.trim(),
+        is_primary ? 1 : 0,
+        phone.trim(),
+        (phone_subtitle || '').trim(),
+        (email || '').trim(),
+        address.trim(),
+        (plus_code || '').trim(),
+        (developer_name || '').trim(),
+        (developer_desc || '').trim(),
+        (google_rating || '').trim(),
+        (directions_url || '').trim(),
+        (reviews_url || '').trim(),
+        (instagram_url || '').trim(),
+        (facebook_url || '').trim(),
+        id
+      ]
+    );
+
+    // Sync website_content if primary
+    if (is_primary) {
+      try {
+        const contentJson = JSON.stringify({
+          phone: phone.trim(),
+          email: (email || 'info@niraliinfra.com').trim(),
+          address: address.trim(),
+          developer: (developer_name || 'Nirali infra').trim()
+        });
+        await pool.query(
+          'INSERT INTO website_content (id, section, content) VALUES ("contact-info", "contact", ?) ON DUPLICATE KEY UPDATE content = ?',
+          [contentJson, contentJson]
+        );
+      } catch (scErr) {}
+    }
+
+    res.json({
+      success: true,
+      message: 'Contact office updated successfully.',
+      item: { id, title: title.trim(), phone: phone.trim(), address: address.trim() }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Delete Contact Office
+app.delete(['/api/admin/contact/:id', '/api/admin/contacts/:id'], authenticateAdmin, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [rows] = await pool.query('SELECT COUNT(*) AS count FROM contacts');
+    if (rows[0].count <= 1) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot delete the only remaining contact office. At least one contact office must exist.'
+      });
+    }
+
+    await pool.query('DELETE FROM contacts WHERE id = ?', [id]);
+    res.json({ success: true, message: `Contact office ${id} deleted successfully.` });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// =========================================================================
 // AMENITIES CRUD API (Fetch, Add, Edit, Delete)
 // =========================================================================
 
@@ -699,7 +908,9 @@ app.get('/api/admin/database', authenticateAdmin, async (req, res) => {
 // 4. STATIC ASSETS & ADMIN ROUTING
 // =========================================================================
 
-// Serve Static Files from Root Directory
+// Serve Static Files from Root Directory & Aliased Paths
+app.use('/admin/assets', express.static(path.join(__dirname, 'assets')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.use(express.static(path.join(__dirname)));
 
 // Admin Portal Entry

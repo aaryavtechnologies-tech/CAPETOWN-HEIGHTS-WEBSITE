@@ -110,6 +110,54 @@ async function initDatabase() {
       }
     }
 
+    // Ensure contacts table exists
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS contacts (
+        id VARCHAR(100) PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        is_primary TINYINT(1) DEFAULT 1,
+        phone VARCHAR(50) NOT NULL,
+        phone_subtitle VARCHAR(255) DEFAULT 'Available for direct inquiries & site visit coordination',
+        email VARCHAR(255) DEFAULT 'info@niraliinfra.com',
+        address TEXT NOT NULL,
+        plus_code VARCHAR(100) DEFAULT '7XGW+V9, Silvassa',
+        developer_name VARCHAR(255) DEFAULT 'Nirali infra',
+        developer_desc VARCHAR(255) DEFAULT 'Real Estate Builders & Construction Company',
+        google_rating VARCHAR(100) DEFAULT '4.6 / 5 Rating (19 Customer Reviews)',
+        directions_url TEXT,
+        reviews_url TEXT,
+        instagram_url TEXT,
+        facebook_url TEXT,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    const [contactCount] = await conn.query('SELECT COUNT(*) AS count FROM contacts');
+    if (contactCount[0].count === 0) {
+      await conn.query(`
+        INSERT INTO contacts (id, title, is_primary, phone, phone_subtitle, email, address, plus_code, developer_name, developer_desc, google_rating, directions_url, reviews_url, instagram_url, facebook_url)
+        VALUES (
+          'contact-01',
+          'Capetown Heights Project Office',
+          1,
+          '9081464545',
+          'Available for direct inquiries & site visit coordination',
+          'info@niraliinfra.com',
+          'Ultan Faliya Road, Police Line Road, Silvassa, Dadra and Nagar Haveli and Daman and Diu – 396230.',
+          '7XGW+V9, Silvassa',
+          'Nirali infra',
+          'Real Estate Builders & Construction Company',
+          '4.6 / 5 Rating (19 Customer Reviews)',
+          'https://maps.app.goo.gl/NA9WehdJfaJx9NKr7?g_st=ac',
+          'https://g.page/r/CZH57F8d6TNIEAE/review',
+          'https://www.instagram.com/niraliinfrasilvassa?utm_source=ig_web_button_share_sheet&lqvp=ZDNlZDc0MzIxNw%3D%3D',
+          'https://www.facebook.com/niraliinfrasilvassa'
+        )
+      `);
+      console.log('[MySQL] Seeded default project office into contacts table');
+    }
+
     conn.release();
     return true;
   } catch (err) {

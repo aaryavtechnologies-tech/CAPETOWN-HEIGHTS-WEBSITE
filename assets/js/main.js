@@ -461,4 +461,79 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+
+  // 9. Dynamic Contact Page Details Synchronization
+  async function loadDynamicContactInfo() {
+    const titleEl = document.getElementById('projectOfficeTitle');
+    const phoneLinkEl = document.getElementById('projectOfficePhoneLink');
+    const phoneSubEl = document.getElementById('projectOfficePhoneSub');
+    const addressEl = document.getElementById('projectOfficeAddress');
+    const plusCodeEl = document.getElementById('projectOfficePlusCode');
+    const devNameEl = document.getElementById('projectOfficeDevName');
+    const devDescEl = document.getElementById('projectOfficeDevDesc');
+    const ratingEl = document.getElementById('projectOfficeRating');
+    const dirLinkEl = document.getElementById('projectOfficeDirectionsLink');
+    const revLinkEl = document.getElementById('projectOfficeReviewsLink');
+    const igLinkEl = document.getElementById('projectOfficeInstagramLink');
+    const fbLinkEl = document.getElementById('projectOfficeFacebookLink');
+
+    if (!titleEl && !phoneLinkEl && !addressEl) return;
+
+    function applyContact(c) {
+      if (!c) return;
+      if (titleEl && c.title) titleEl.textContent = c.title;
+      if (phoneLinkEl && c.phone) {
+        phoneLinkEl.textContent = c.phone;
+        phoneLinkEl.href = 'tel:' + c.phone.replace(/\s+/g, '');
+      }
+      if (phoneSubEl && c.phone_subtitle) phoneSubEl.textContent = c.phone_subtitle;
+      if (addressEl && c.address) addressEl.textContent = c.address;
+      if (plusCodeEl && c.plus_code) plusCodeEl.textContent = c.plus_code;
+      if (devNameEl && c.developer_name) devNameEl.textContent = c.developer_name;
+      if (devDescEl && c.developer_desc) devDescEl.textContent = c.developer_desc;
+      if (ratingEl && c.google_rating) ratingEl.textContent = c.google_rating;
+      if (dirLinkEl && c.directions_url) dirLinkEl.href = c.directions_url;
+      if (revLinkEl && c.reviews_url) revLinkEl.href = c.reviews_url;
+      if (igLinkEl && c.instagram_url) igLinkEl.href = c.instagram_url;
+      if (fbLinkEl && c.facebook_url) fbLinkEl.href = c.facebook_url;
+    }
+
+    try {
+      const stored = localStorage.getItem('capetown_contacts');
+      if (stored) {
+        const list = JSON.parse(stored);
+        if (Array.isArray(list) && list.length > 0) {
+          const primary = list.find(c => c.is_primary == 1 || c.is_primary === true) || list[0];
+          applyContact(primary);
+        }
+      }
+    } catch (e) {}
+
+    const apiUrl = (function() {
+      if (typeof window === 'undefined') return '';
+      if (window.location.port === '8000') return '';
+      const host = window.location.hostname || 'localhost';
+      const proto = window.location.protocol || 'http:';
+      if (host === 'localhost' || host === '127.0.0.1' || /^(\d{1,3}\.){3}\d{1,3}$/.test(host)) {
+        return proto + '//' + host + ':8000';
+      }
+      return '';
+    })();
+
+    try {
+      const res = await fetch(apiUrl + '/api/contact');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && data.contacts && data.contacts.length > 0) {
+          const primary = data.primaryContact || data.contacts.find(c => c.is_primary == 1 || c.is_primary === true) || data.contacts[0];
+          applyContact(primary);
+          try {
+            localStorage.setItem('capetown_contacts', JSON.stringify(data.contacts));
+          } catch (e) {}
+        }
+      }
+    } catch (err) {}
+  }
+
+  loadDynamicContactInfo();
 });
