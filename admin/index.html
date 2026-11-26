@@ -156,7 +156,8 @@
 
         <button class="nav-item" data-view="viewGallery">
           <svg viewBox="0 0 24 24"><path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 2h14v-2H4V6H2z"/></svg>
-          <span class="nav-label">Site Gallery</span>
+          <span class="nav-label" id="sidebarGalleryLabel">Site Gallery</span>
+          <span class="nav-badge gold" id="sidebarGalleryBadge">6</span>
         </button>
 
         <button class="nav-item" data-view="viewAmenities">
@@ -501,8 +502,17 @@
         <section id="viewGallery" class="view-panel">
           <div class="panel-header-row">
             <div>
-              <h2 class="panel-heading">Verified Site Gallery &amp; Surroundings</h2>
-              <p class="panel-sub">Real project photography, on-site billboards, approach roads, and construction preparation.</p>
+              <h2 class="panel-heading" id="galleryHeading">Verified Site Gallery &amp; Surroundings</h2>
+              <p class="panel-sub" id="gallerySubtitle">Real project photography, on-site billboards, approach roads, and construction preparation.</p>
+            </div>
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <button type="button" class="btn-action primary" id="openAddGalleryBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>+ Add Photo</span>
+              </button>
+              <a href="../index.html#gallery" target="_blank" class="btn-action secondary">
+                <span>View On Homepage ↗</span>
+              </a>
             </div>
           </div>
 
@@ -830,10 +840,123 @@
     </div>
   </div>
 
+  <!-- Modal: Add Gallery Photo -->
+  <div id="addGalleryModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Add Site Gallery Photo</h3>
+        <button class="modal-close" id="closeAddGalleryModalBtn">&times;</button>
+      </div>
+      <form id="addGalleryForm" class="modal-form">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Photo Title <span class="label-req">*</span></label>
+            <input type="text" id="addGalleryTitle" class="form-control" placeholder="e.g. Main Entrance Gate &amp; Security" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Category <span class="label-req">*</span></label>
+            <select id="addGalleryCategory" class="form-control" required>
+              <option value="Surroundings">Surroundings</option>
+              <option value="Site" selected>Site</option>
+              <option value="Construction">Construction</option>
+              <option value="Amenities">Amenities</option>
+              <option value="Exterior">Exterior</option>
+              <option value="Interior">Interior</option>
+              <option value="Architecture">Architecture</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Gallery Photo <span class="label-req">*</span></label>
+          <div class="amenity-simple-img-box">
+            <img id="addGalleryPreviewImg" src="" alt="Preview" class="amenity-simple-preview" style="display: none;" title="Click to change photo">
+            <div class="amenity-simple-action-row">
+              <input type="file" id="addGalleryFileInput" accept="image/*" style="display: none;">
+              <input type="hidden" id="addGalleryImg" required>
+              <button type="button" class="btn-action primary" id="addGalleryChangeBtn" style="padding: 0.5rem 1.1rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+                <span id="addGalleryBtnText">Choose Image</span>
+              </button>
+              <span id="addGalleryStatusText" class="amenity-simple-status">No photo selected</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Caption / Description</label>
+          <textarea id="addGalleryCaption" class="form-control" rows="3" placeholder="Enter brief details or description of this photograph..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelAddGalleryModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Save Photo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Gallery Photo -->
+  <div id="editGalleryModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Edit Site Gallery Photo</h3>
+        <button class="modal-close" id="closeEditGalleryModalBtn">&times;</button>
+      </div>
+      <form id="editGalleryForm" class="modal-form">
+        <input type="hidden" id="editGalleryId">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Photo Title <span class="label-req">*</span></label>
+            <input type="text" id="editGalleryTitle" class="form-control" placeholder="e.g. Ground Level Preparation" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Category <span class="label-req">*</span></label>
+            <select id="editGalleryCategory" class="form-control" required>
+              <option value="Surroundings">Surroundings</option>
+              <option value="Site">Site</option>
+              <option value="Construction">Construction</option>
+              <option value="Amenities">Amenities</option>
+              <option value="Exterior">Exterior</option>
+              <option value="Interior">Interior</option>
+              <option value="Architecture">Architecture</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Gallery Photo <span class="label-req">*</span></label>
+          <div class="amenity-simple-img-box">
+            <img id="editGalleryPreviewImg" src="" alt="Preview" class="amenity-simple-preview" title="Click to change photo">
+            <div class="amenity-simple-action-row">
+              <input type="file" id="editGalleryFileInput" accept="image/*" style="display: none;">
+              <input type="hidden" id="editGalleryImg" required>
+              <button type="button" class="btn-action primary" id="editGalleryChangeBtn" style="padding: 0.5rem 1.1rem;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+                <span>Change Image</span>
+              </button>
+              <span id="editGalleryStatusText" class="amenity-simple-status">Click button to change photo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Caption / Description</label>
+          <textarea id="editGalleryCaption" class="form-control" rows="3" placeholder="Enter brief details or description of this photograph..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelEditGalleryModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Update Photo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Admin JS Script -->
-  <script src="admin.js?v=20261126_04"></script>
+  <script src="admin.js?v=20261126_05"></script>
 </body>
 </html>

@@ -444,11 +444,92 @@ app.get('/api/admin/projects', authenticateAdmin, async (req, res) => {
   }
 });
 
-// Fetch Gallery Items
-app.get('/api/admin/gallery', authenticateAdmin, async (req, res) => {
+// =========================================================================
+// GALLERY CRUD API (Fetch, Add, Edit, Delete)
+// =========================================================================
+
+// Fetch Gallery Items (Public & Admin)
+app.get(['/api/gallery', '/api/admin/gallery'], async (req, res) => {
   try {
-    const [rows] = await pool.query('SELECT * FROM gallery ORDER BY createdAt DESC');
+    const [rows] = await pool.query('SELECT * FROM gallery ORDER BY createdAt DESC, id ASC');
     res.json({ success: true, count: rows.length, gallery: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Add New Gallery Item
+app.post('/api/admin/gallery', authenticateAdmin, async (req, res) => {
+  try {
+    const { title, category, project, image, caption } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({ success: false, message: 'Gallery title is required.' });
+    }
+    if (!image || !image.trim()) {
+      return res.status(400).json({ success: false, message: 'Gallery image is required.' });
+    }
+
+    const id = req.body.id || `gal-${Date.now()}`;
+    const cat = (category || 'Site').trim();
+    const proj = (project || 'Capetown Heights').trim();
+    const cap = (caption || '').trim();
+
+    await pool.query(
+      'INSERT INTO gallery (id, title, category, project, image, caption) VALUES (?, ?, ?, ?, ?, ?)',
+      [id, title.trim(), cat, proj, image.trim(), cap]
+    );
+
+    res.json({
+      success: true,
+      message: 'Gallery photo added successfully.',
+      item: { id, title: title.trim(), category: cat, project: proj, image: image.trim(), caption: cap }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Update Gallery Item
+app.put('/api/admin/gallery/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { title, category, project, image, caption } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({ success: false, message: 'Gallery title is required.' });
+    }
+
+    const cat = (category || 'Site').trim();
+    const proj = (project || 'Capetown Heights').trim();
+    const cap = (caption || '').trim();
+
+    if (image && image.trim()) {
+      await pool.query(
+        'UPDATE gallery SET title = ?, category = ?, project = ?, image = ?, caption = ? WHERE id = ?',
+        [title.trim(), cat, proj, image.trim(), cap, id]
+      );
+    } else {
+      await pool.query(
+        'UPDATE gallery SET title = ?, category = ?, project = ?, caption = ? WHERE id = ?',
+        [title.trim(), cat, proj, cap, id]
+      );
+    }
+
+    res.json({
+      success: true,
+      message: 'Gallery photo updated successfully.',
+      item: { id, title: title.trim(), category: cat, project: proj, caption: cap }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Delete Gallery Item
+app.delete('/api/admin/gallery/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const id = req.params.id;
+    await pool.query('DELETE FROM gallery WHERE id = ?', [id]);
+    res.json({ success: true, message: `Gallery item ${id} deleted successfully.` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

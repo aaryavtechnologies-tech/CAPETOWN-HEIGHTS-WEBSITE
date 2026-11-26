@@ -45,6 +45,57 @@ const defaultEnquiries = [
   }
 ];
 
+let defaultGallery = [
+  {
+    id: "gal-01",
+    title: "Actual Project Billboard & Entrance",
+    category: "Surroundings",
+    project: "Capetown Heights",
+    image: "assets/images/site-billboard.jpg",
+    caption: "Prominent project billboard installed along the main access road."
+  },
+  {
+    id: "gal-02",
+    title: "Boundary Sign & Security Enclosure",
+    category: "Site",
+    project: "Capetown Heights",
+    image: "assets/images/boundary-sign.jpg",
+    caption: "Project demarcation board identifying Capetown Heights site."
+  },
+  {
+    id: "gal-03",
+    title: "Ground Level Preparation & Excavation",
+    category: "Construction",
+    project: "Capetown Heights",
+    image: "assets/images/ground-prep.jpg",
+    caption: "Ongoing earthwork and ground preparation works at site."
+  },
+  {
+    id: "gal-04",
+    title: "Site Office & Customer Experience Center",
+    category: "Amenities",
+    project: "Capetown Heights",
+    image: "assets/images/site-office-building.jpg",
+    caption: "On-site facility building for site visits and engineering coordination."
+  },
+  {
+    id: "gal-05",
+    title: "Main Access Road & Approach Connectivity",
+    category: "Surroundings",
+    project: "Capetown Heights",
+    image: "assets/images/site-road-view.jpg",
+    caption: "Wide paved municipal approach road connecting to Silvassa."
+  },
+  {
+    id: "gal-06",
+    title: "High-Rise Architectural Elevation",
+    category: "Exterior",
+    project: "Capetown Heights",
+    image: "assets/images/building-exterior.jpg",
+    caption: "Architectural rendering showcasing the complete building elevation."
+  }
+];
+
 let defaultAmenities = [
   {
     "num": "01",
@@ -516,56 +567,66 @@ export async function onRequest(context) {
       });
     }
 
-    // 10. Gallery Items
-    if (path === "/api/admin/gallery") {
+    // 10. Gallery Items (CRUD: Fetch, Add, Edit, Delete)
+    if ((path === "/api/gallery" || path === "/api/admin/gallery") && method === "GET") {
       return jsonResponse({
         success: true,
-        count: 6,
-        gallery: [
-          {
-            id: "gal-01",
-            title: "Actual Project Billboard & Entrance",
-            category: "Surroundings",
-            image: "/assets/images/site-billboard.jpg",
-            caption: "Prominent project billboard installed along the main access road."
-          },
-          {
-            id: "gal-02",
-            title: "Boundary Sign & Security Enclosure",
-            category: "Site",
-            image: "/assets/images/boundary-sign.jpg",
-            caption: "Project demarcation board identifying Capetown Heights site."
-          },
-          {
-            id: "gal-03",
-            title: "Ground Level Preparation & Excavation",
-            category: "Construction",
-            image: "/assets/images/ground-prep.jpg",
-            caption: "Ongoing earthwork and ground preparation works at site."
-          },
-          {
-            id: "gal-04",
-            title: "Site Office & Customer Experience Center",
-            category: "Amenities",
-            image: "/assets/images/site-office-building.jpg",
-            caption: "On-site facility building for site visits and engineering coordination."
-          },
-          {
-            id: "gal-05",
-            title: "Main Access Road & Approach Connectivity",
-            category: "Surroundings",
-            image: "/assets/images/site-road-view.jpg",
-            caption: "Wide paved municipal approach road connecting to Silvassa."
-          },
-          {
-            id: "gal-06",
-            title: "High-Rise Architectural Elevation",
-            category: "Exterior",
-            image: "/assets/images/building-exterior.jpg",
-            caption: "Architectural rendering showcasing the complete building elevation."
-          }
-        ]
+        count: defaultGallery.length,
+        gallery: defaultGallery
       });
+    }
+
+    if (path === "/api/admin/gallery" && method === "POST") {
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      if (!body.title || !body.title.trim()) {
+        return jsonResponse({ success: false, message: "Gallery title is required." }, 400);
+      }
+      if (!body.image || !body.image.trim()) {
+        return jsonResponse({ success: false, message: "Gallery image is required." }, 400);
+      }
+      const newItem = {
+        id: body.id || `gal-${Date.now()}`,
+        title: body.title.trim(),
+        category: (body.category || "Site").trim(),
+        project: (body.project || "Capetown Heights").trim(),
+        image: body.image.trim(),
+        caption: (body.caption || "").trim(),
+        createdAt: new Date().toISOString()
+      };
+      defaultGallery.unshift(newItem);
+      return jsonResponse({
+        success: true,
+        message: "Gallery photo added successfully.",
+        item: newItem
+      });
+    }
+
+    if (path.startsWith("/api/admin/gallery/") && method === "PUT") {
+      const targetId = decodeURIComponent(path.split("/api/admin/gallery/")[1]);
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      if (!body.title || !body.title.trim()) {
+        return jsonResponse({ success: false, message: "Gallery title is required." }, 400);
+      }
+      const idx = defaultGallery.findIndex(g => String(g.id) === String(targetId));
+      if (idx !== -1) {
+        defaultGallery[idx] = {
+          ...defaultGallery[idx],
+          title: body.title.trim(),
+          category: (body.category || "Site").trim(),
+          project: (body.project || "Capetown Heights").trim(),
+          image: body.image && body.image.trim() ? body.image.trim() : defaultGallery[idx].image,
+          caption: body.caption !== undefined ? body.caption.trim() : defaultGallery[idx].caption
+        };
+      }
+      return jsonResponse({ success: true, message: "Gallery photo updated successfully." });
+    }
+
+    if (path.startsWith("/api/admin/gallery/") && method === "DELETE") {
+      const targetId = decodeURIComponent(path.split("/api/admin/gallery/")[1]);
+      defaultGallery = defaultGallery.filter(g => String(g.id) !== String(targetId));
+      return jsonResponse({ success: true, message: "Gallery photo deleted successfully." });
     }
 
     // 11. Database Diagnostics
@@ -579,7 +640,7 @@ export async function onRequest(context) {
           { table_name: "enquiries", engine: "Serverless", table_rows: defaultEnquiries.length, data_length: 32768 },
           { table_name: "amenities", engine: "Serverless", table_rows: defaultAmenities.length, data_length: 49152 },
           { table_name: "projects", engine: "Serverless", table_rows: 1, data_length: 16384 },
-          { table_name: "gallery", engine: "Serverless", table_rows: 6, data_length: 65536 }
+          { table_name: "gallery", engine: "Serverless", table_rows: defaultGallery.length, data_length: 65536 }
         ]
       });
     }

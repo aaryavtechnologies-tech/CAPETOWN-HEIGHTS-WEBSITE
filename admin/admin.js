@@ -415,6 +415,36 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeEditAmenityModalBtn = document.getElementById('closeEditAmenityModalBtn');
   const cancelEditAmenityModalBtn = document.getElementById('cancelEditAmenityModalBtn');
 
+  // DOM Elements - Gallery Modals & Controls
+  const openAddGalleryBtn = document.getElementById('openAddGalleryBtn');
+  const addGalleryModal = document.getElementById('addGalleryModal');
+  const addGalleryForm = document.getElementById('addGalleryForm');
+  const addGalleryTitle = document.getElementById('addGalleryTitle');
+  const addGalleryCategory = document.getElementById('addGalleryCategory');
+  const addGalleryImg = document.getElementById('addGalleryImg');
+  const addGalleryCaption = document.getElementById('addGalleryCaption');
+  const addGalleryFileInput = document.getElementById('addGalleryFileInput');
+  const addGalleryChangeBtn = document.getElementById('addGalleryChangeBtn');
+  const addGalleryBtnText = document.getElementById('addGalleryBtnText');
+  const addGalleryPreviewImg = document.getElementById('addGalleryPreviewImg');
+  const addGalleryStatusText = document.getElementById('addGalleryStatusText');
+  const closeAddGalleryModalBtn = document.getElementById('closeAddGalleryModalBtn');
+  const cancelAddGalleryModalBtn = document.getElementById('cancelAddGalleryModalBtn');
+
+  const editGalleryModal = document.getElementById('editGalleryModal');
+  const editGalleryForm = document.getElementById('editGalleryForm');
+  const editGalleryId = document.getElementById('editGalleryId');
+  const editGalleryTitle = document.getElementById('editGalleryTitle');
+  const editGalleryCategory = document.getElementById('editGalleryCategory');
+  const editGalleryImg = document.getElementById('editGalleryImg');
+  const editGalleryCaption = document.getElementById('editGalleryCaption');
+  const editGalleryFileInput = document.getElementById('editGalleryFileInput');
+  const editGalleryChangeBtn = document.getElementById('editGalleryChangeBtn');
+  const editGalleryPreviewImg = document.getElementById('editGalleryPreviewImg');
+  const editGalleryStatusText = document.getElementById('editGalleryStatusText');
+  const closeEditGalleryModalBtn = document.getElementById('closeEditGalleryModalBtn');
+  const cancelEditGalleryModalBtn = document.getElementById('cancelEditGalleryModalBtn');
+
   const toastContainer = document.getElementById('toastContainer');
 
   // Set Current Date in Header
@@ -1222,85 +1252,462 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 6. SITE GALLERY MODULE
+  // 6. SITE GALLERY MODULE (CRUD)
   // =========================================================================
+
+  const defaultSiteGallery = [
+    {
+      id: "gal-01",
+      title: "Actual Project Billboard & Entrance",
+      category: "Surroundings",
+      image: "assets/images/site-billboard.jpg",
+      caption: "Prominent project billboard installed along the main access road."
+    },
+    {
+      id: "gal-02",
+      title: "Boundary Sign & Security Enclosure",
+      category: "Site",
+      image: "assets/images/boundary-sign.jpg",
+      caption: "Project demarcation board identifying Capetown Heights site."
+    },
+    {
+      id: "gal-03",
+      title: "Ground Level Preparation & Excavation",
+      category: "Construction",
+      image: "assets/images/ground-prep.jpg",
+      caption: "Ongoing earthwork and ground preparation works at site."
+    },
+    {
+      id: "gal-04",
+      title: "Site Office & Customer Experience Center",
+      category: "Amenities",
+      image: "assets/images/site-office-building.jpg",
+      caption: "On-site facility building for site visits and engineering coordination."
+    },
+    {
+      id: "gal-05",
+      title: "Main Access Road & Approach Connectivity",
+      category: "Surroundings",
+      image: "assets/images/site-road-view.jpg",
+      caption: "Wide paved municipal approach road connecting to Silvassa."
+    },
+    {
+      id: "gal-06",
+      title: "High-Rise Architectural Elevation",
+      category: "Exterior",
+      image: "assets/images/building-exterior.jpg",
+      caption: "Architectural rendering showcasing the complete building elevation."
+    }
+  ];
+
+  let liveGallery = [];
+
+  function resolveGalleryImg(url) {
+    if (!url) return '../assets/images/building-exterior.jpg';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+    if (url.startsWith('../')) return url;
+    if (url.startsWith('/')) return '..' + url;
+    return '../' + url;
+  }
+
+  function updateGalleryCounters(count) {
+    const heading = document.getElementById('galleryHeading');
+    if (heading) heading.textContent = `Verified Site Gallery & Surroundings (${count})`;
+    const sidebarBadge = document.getElementById('sidebarGalleryBadge');
+    if (sidebarBadge) sidebarBadge.textContent = String(count);
+  }
+
+  function renderGalleryList(items) {
+    if (!galleryContainer) return;
+    if (!items || items.length === 0) {
+      galleryContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: #fff; border-radius: 8px; border: 1px dashed var(--border-color);">
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">No gallery photos currently registered.</p>
+          <button type="button" class="btn-action primary" onclick="document.getElementById('openAddGalleryBtn')?.click()">+ Add First Photo</button>
+        </div>
+      `;
+      return;
+    }
+
+    galleryContainer.innerHTML = items.map(g => {
+      const idStr = escapeHtml(String(g.id || ''));
+      const titleStr = escapeHtml(g.title || 'Untitled Photo');
+      const catStr = escapeHtml(g.category || 'Site');
+      const captionStr = escapeHtml(g.caption || g.description || '');
+      const imgPath = resolveGalleryImg(g.image || g.img || '');
+
+      return `
+        <div class="gallery-admin-card" data-id="${idStr}">
+          <div class="gallery-admin-img-wrap">
+            <img src="${imgPath}" alt="${titleStr}" class="gallery-admin-img" loading="lazy" onerror="this.src='../assets/images/building-exterior.jpg'">
+            <span class="admin-amenity-badge">${catStr}</span>
+          </div>
+          <div class="gallery-admin-body">
+            <h4 class="gallery-admin-title">${titleStr}</h4>
+            <p class="gallery-admin-desc">${captionStr}</p>
+          </div>
+          <div class="gallery-admin-footer">
+            <button type="button" class="btn-amenity-action edit" data-action="edit-gallery" data-id="${idStr}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              <span>Edit</span>
+            </button>
+            <button type="button" class="btn-amenity-action delete" data-action="delete-gallery" data-id="${idStr}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
 
   async function loadGallery() {
     if (!galleryContainer) return;
-    galleryContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading gallery from database...</span></div>';
 
+    // First load from localStorage or defaults
+    if (!liveGallery || liveGallery.length === 0) {
+      try {
+        const stored = localStorage.getItem('capetown_gallery');
+        if (stored) {
+          liveGallery = JSON.parse(stored);
+        }
+      } catch (e) {}
+
+      if (!liveGallery || liveGallery.length === 0) {
+        liveGallery = JSON.parse(JSON.stringify(defaultSiteGallery));
+      }
+
+      renderGalleryList(liveGallery);
+      updateGalleryCounters(liveGallery.length);
+    }
+
+    // Attempt to fetch fresh from server
     try {
       const res = await fetch(API_URL + '/api/admin/gallery', {
-        headers: { 'Authorization': 'Bearer ' + authToken }
+        headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
       });
-      const data = await res.json();
-
-      let items = (res.ok && data.success && data.gallery && data.gallery.length > 0)
-        ? data.gallery
-        : [
-            {
-              id: 1,
-              title: 'Building Architectural Elevation',
-              category: 'Architecture',
-              image: '../assets/images/building-exterior.jpg',
-              description: 'Modern elevation facade showcasing glass balconies, clean lines, and earth-tone textures.'
-            },
-            {
-              id: 2,
-              title: 'Grand Entrance & Landscaped Driveway',
-              category: 'Site Atmosphere',
-              image: '../assets/images/entrance-view.jpg',
-              description: 'Welcoming entrance gates with security barriers, fountain, and tree-lined avenues.'
-            },
-            {
-              id: 3,
-              title: 'Double Basement & Covered Parking',
-              category: 'Infrastructure',
-              image: '../assets/images/amenities/double-basement.jpg',
-              description: 'Two-tier subterranean residential parking with dedicated bays and wide turning aisles.'
-            },
-            {
-              id: 4,
-              title: 'AC Multipurpose Banquet Hall',
-              category: 'Clubhouse',
-              image: '../assets/images/amenities/multipurpose-hall.jpg',
-              description: 'Climate-controlled social hall designed for family celebrations and community gatherings.'
-            },
-            {
-              id: 5,
-              title: 'Marble Temple Devotional Sanctum',
-              category: 'Spiritual',
-              image: '../assets/images/amenities/temple.jpg',
-              description: 'Serene white marble sanctum inside residential grounds for peaceful daily worship.'
-            },
-            {
-              id: 6,
-              title: 'Rooftop Gazebo & Sky Garden',
-              category: 'Leisure',
-              image: '../assets/images/amenities/terrace-gazebo.jpg',
-              description: 'Terrace garden with sunset viewing deck, sit-outs, and panoramic Silvassa skyline views.'
-            }
-          ];
-
-      galleryContainer.innerHTML = items.map(g => `
-        <div class="gallery-admin-card">
-          <div class="gallery-admin-img-wrap">
-            <img src="${g.image}" alt="${escapeHtml(g.title)}" class="gallery-admin-img" loading="lazy">
-            <span class="admin-amenity-badge">${escapeHtml(g.category || 'Gallery')}</span>
-          </div>
-          <div class="gallery-admin-body">
-            <h4 class="gallery-admin-title">${escapeHtml(g.title)}</h4>
-            <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
-              ${escapeHtml(g.description || '')}
-            </p>
-          </div>
-        </div>
-      `).join('');
-
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.gallery) && data.gallery.length > 0) {
+          liveGallery = data.gallery.map(g => ({
+            id: String(g.id),
+            title: g.title,
+            category: g.category || 'Site',
+            project: g.project || 'Capetown Heights',
+            image: g.image || g.img || '',
+            caption: g.caption || g.description || ''
+          }));
+          try {
+            localStorage.setItem('capetown_gallery', JSON.stringify(liveGallery));
+          } catch(e) {}
+          renderGalleryList(liveGallery);
+          updateGalleryCounters(liveGallery.length);
+        }
+      }
     } catch (err) {
-      console.error('Error loading gallery', err);
-      galleryContainer.innerHTML = '<div style="color: #C53030; padding: 2rem;">Error loading gallery images.</div>';
+      console.warn('Unable to reach server for gallery, using cached data:', err);
     }
+  }
+
+  // Gallery Image Picker Handler
+  async function processGalleryImageFile(file, imgInputEl, previewImgEl, statusTextEl, isAddModal) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (JPG, PNG, WEBP).', 'error');
+      return;
+    }
+
+    const fileSizeKb = Math.round(file.size / 1024);
+    if (statusTextEl) {
+      statusTextEl.textContent = `Reading ${file.name} (${fileSizeKb} KB)...`;
+      statusTextEl.classList.remove('success');
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target.result;
+      if (previewImgEl) {
+        previewImgEl.src = dataUrl;
+        previewImgEl.style.display = 'block';
+      }
+
+      if (isAddModal && addGalleryBtnText) {
+        addGalleryBtnText.textContent = 'Change Image';
+      }
+
+      if (imgInputEl) imgInputEl.value = dataUrl;
+
+      try {
+        if (statusTextEl) statusTextEl.textContent = `Saving ${file.name}...`;
+        const res = await fetch(API_URL + '/api/admin/upload-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify({ image: dataUrl, name: file.name })
+        });
+        const d = await res.json();
+        if (res.ok && d.success && d.url) {
+          if (imgInputEl) imgInputEl.value = d.url;
+          if (statusTextEl) {
+            statusTextEl.textContent = `✓ Image selected: ${file.name}`;
+            statusTextEl.classList.add('success');
+          }
+          showToast('Image updated successfully!', 'success');
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend image upload fallback to Data URL:', err);
+      }
+
+      if (statusTextEl) {
+        statusTextEl.textContent = `✓ Image selected: ${file.name} (${fileSizeKb} KB)`;
+        statusTextEl.classList.add('success');
+      }
+      showToast('Image updated!', 'success');
+    };
+
+    reader.onerror = () => {
+      showToast('Failed to read image file from device.', 'error');
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Open Add Gallery Modal
+  if (openAddGalleryBtn && addGalleryModal) {
+    openAddGalleryBtn.addEventListener('click', () => {
+      if (addGalleryForm) addGalleryForm.reset();
+      if (addGalleryPreviewImg) {
+        addGalleryPreviewImg.src = '';
+        addGalleryPreviewImg.style.display = 'none';
+      }
+      if (addGalleryImg) addGalleryImg.value = '';
+      if (addGalleryBtnText) addGalleryBtnText.textContent = 'Choose Image';
+      if (addGalleryStatusText) {
+        addGalleryStatusText.textContent = 'No photo selected';
+        addGalleryStatusText.classList.remove('success');
+      }
+      addGalleryModal.style.display = 'flex';
+      if (addGalleryTitle) addGalleryTitle.focus();
+    });
+  }
+
+  // Close Add Gallery Modal
+  if (closeAddGalleryModalBtn && addGalleryModal) {
+    closeAddGalleryModalBtn.addEventListener('click', () => {
+      addGalleryModal.style.display = 'none';
+    });
+  }
+  if (cancelAddGalleryModalBtn && addGalleryModal) {
+    cancelAddGalleryModalBtn.addEventListener('click', () => {
+      addGalleryModal.style.display = 'none';
+    });
+  }
+
+  // Add Gallery - Image Picker (Single Click)
+  if (addGalleryChangeBtn && addGalleryFileInput) {
+    addGalleryChangeBtn.addEventListener('click', () => addGalleryFileInput.click());
+  }
+  if (addGalleryPreviewImg && addGalleryFileInput) {
+    addGalleryPreviewImg.addEventListener('click', () => addGalleryFileInput.click());
+  }
+  if (addGalleryFileInput) {
+    addGalleryFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processGalleryImageFile(e.target.files[0], addGalleryImg, addGalleryPreviewImg, addGalleryStatusText, true);
+      }
+    });
+  }
+
+  // Save New Gallery Photo Form Submission
+  if (addGalleryForm) {
+    addGalleryForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = addGalleryTitle ? addGalleryTitle.value.trim() : '';
+      const category = addGalleryCategory ? addGalleryCategory.value.trim() : 'Site';
+      const img = addGalleryImg ? addGalleryImg.value.trim() : '';
+      const caption = addGalleryCaption ? addGalleryCaption.value.trim() : '';
+
+      if (!title) {
+        showToast('Please enter a photo title.', 'error');
+        return;
+      }
+      if (!img) {
+        showToast('Please choose an image for the photo.', 'error');
+        if (addGalleryFileInput) addGalleryFileInput.click();
+        return;
+      }
+
+      const id = 'gal-' + Date.now();
+      const newPhoto = { id, title, category, project: 'Capetown Heights', image: img, img, caption, description: caption };
+
+      liveGallery.unshift(newPhoto);
+
+      try {
+        localStorage.setItem('capetown_gallery', JSON.stringify(liveGallery));
+      } catch (err) {}
+
+      renderGalleryList(liveGallery);
+      updateGalleryCounters(liveGallery.length);
+      addGalleryModal.style.display = 'none';
+      showToast('Gallery photo added successfully!', 'success');
+
+      // Persist to Backend API
+      try {
+        await fetch(API_URL + '/api/admin/gallery', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify(newPhoto)
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, saved locally:', apiErr);
+      }
+    });
+  }
+
+  // Close Edit Gallery Modal
+  if (closeEditGalleryModalBtn && editGalleryModal) {
+    closeEditGalleryModalBtn.addEventListener('click', () => {
+      editGalleryModal.style.display = 'none';
+    });
+  }
+  if (cancelEditGalleryModalBtn && editGalleryModal) {
+    cancelEditGalleryModalBtn.addEventListener('click', () => {
+      editGalleryModal.style.display = 'none';
+    });
+  }
+
+  // Edit Gallery - Image Picker (Single Click)
+  if (editGalleryChangeBtn && editGalleryFileInput) {
+    editGalleryChangeBtn.addEventListener('click', () => editGalleryFileInput.click());
+  }
+  if (editGalleryPreviewImg && editGalleryFileInput) {
+    editGalleryPreviewImg.addEventListener('click', () => editGalleryFileInput.click());
+  }
+  if (editGalleryFileInput) {
+    editGalleryFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processGalleryImageFile(e.target.files[0], editGalleryImg, editGalleryPreviewImg, editGalleryStatusText, false);
+      }
+    });
+  }
+
+  // Update Gallery Photo Form Submission
+  if (editGalleryForm) {
+    editGalleryForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = editGalleryId ? editGalleryId.value : '';
+      const title = editGalleryTitle ? editGalleryTitle.value.trim() : '';
+      const category = editGalleryCategory ? editGalleryCategory.value.trim() : 'Site';
+      const img = editGalleryImg ? editGalleryImg.value.trim() : '';
+      const caption = editGalleryCaption ? editGalleryCaption.value.trim() : '';
+
+      if (!id || !title || !img) {
+        showToast('Please fill in title and select an image.', 'error');
+        return;
+      }
+
+      const idx = liveGallery.findIndex(g => String(g.id) === String(id));
+      if (idx !== -1) {
+        liveGallery[idx] = {
+          ...liveGallery[idx],
+          title,
+          category,
+          image: img,
+          img,
+          caption,
+          description: caption
+        };
+      }
+
+      try {
+        localStorage.setItem('capetown_gallery', JSON.stringify(liveGallery));
+      } catch (err) {}
+
+      renderGalleryList(liveGallery);
+      updateGalleryCounters(liveGallery.length);
+      editGalleryModal.style.display = 'none';
+      showToast('Gallery photo updated successfully!', 'success');
+
+      // Persist to Backend API
+      try {
+        await fetch(API_URL + '/api/admin/gallery/' + encodeURIComponent(id), {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify({ title, category, project: 'Capetown Heights', image: img, caption })
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, updated locally:', apiErr);
+      }
+    });
+  }
+
+  // Event Delegation on Gallery Container for Edit & Delete buttons
+  if (galleryContainer) {
+    galleryContainer.addEventListener('click', async (e) => {
+      const editBtn = e.target.closest('[data-action="edit-gallery"]');
+      const deleteBtn = e.target.closest('[data-action="delete-gallery"]');
+
+      if (editBtn) {
+        const id = editBtn.getAttribute('data-id');
+        const item = liveGallery.find(g => String(g.id) === String(id));
+        if (!item) return;
+
+        if (editGalleryId) editGalleryId.value = item.id;
+        if (editGalleryTitle) editGalleryTitle.value = item.title;
+        if (editGalleryCategory) editGalleryCategory.value = item.category || 'Site';
+        if (editGalleryImg) editGalleryImg.value = item.image || item.img || '';
+        if (editGalleryCaption) editGalleryCaption.value = item.caption || item.description || '';
+
+        if (editGalleryPreviewImg) {
+          editGalleryPreviewImg.src = resolveGalleryImg(item.image || item.img || '');
+          editGalleryPreviewImg.style.display = 'block';
+        }
+        if (editGalleryStatusText) {
+          editGalleryStatusText.textContent = 'Current photo loaded';
+          editGalleryStatusText.classList.remove('success');
+        }
+
+        if (editGalleryModal) editGalleryModal.style.display = 'flex';
+        return;
+      }
+
+      if (deleteBtn) {
+        const id = deleteBtn.getAttribute('data-id');
+        const item = liveGallery.find(g => String(g.id) === String(id));
+        const itemTitle = item ? item.title : id;
+
+        if (!confirm('Are you sure you want to delete "' + itemTitle + '" from the gallery?')) {
+          return;
+        }
+
+        liveGallery = liveGallery.filter(g => String(g.id) !== String(id));
+        try {
+          localStorage.setItem('capetown_gallery', JSON.stringify(liveGallery));
+        } catch (err) {}
+
+        renderGalleryList(liveGallery);
+        updateGalleryCounters(liveGallery.length);
+        showToast('Photo deleted successfully!', 'success');
+
+        // Persist to Backend API
+        try {
+          await fetch(API_URL + '/api/admin/gallery/' + encodeURIComponent(id), {
+            method: 'DELETE',
+            headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+          });
+        } catch (apiErr) {
+          console.warn('Backend sync failed, deleted locally:', apiErr);
+        }
+      }
+    });
   }
 
   // =========================================================================
