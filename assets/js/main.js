@@ -218,14 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
           submitBtn.textContent = 'Submitting Enquiry...';
         }
 
-        const payload = {
-          name: nameInput.value.trim(),
-          phone: phoneVal,
-          message: noteInput.value.trim(),
-          projectName: 'Capetown Heights',
-          interestType: 'Direct Website Form'
-        };
-
         // Cache locally for instant multi-tab visibility in Admin Console
         const localEnquiry = {
           id: `enq-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
@@ -239,6 +231,15 @@ document.addEventListener('DOMContentLoaded', () => {
           source: 'Website Direct',
           notes: '',
           createdAt: new Date().toISOString()
+        };
+
+        const payload = {
+          id: localEnquiry.id,
+          name: localEnquiry.name,
+          phone: localEnquiry.phone,
+          message: localEnquiry.message,
+          projectName: localEnquiry.projectName,
+          interestType: localEnquiry.interestType
         };
 
         try {

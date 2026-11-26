@@ -96,7 +96,7 @@ app.post('/api/enquiries', async (req, res) => {
     }
 
     const leadMessage = (message || note || '').trim();
-    const id = `enq-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const id = (req.body.id && req.body.id.trim()) ? req.body.id.trim() : `enq-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
     const finalProject = (projectName || 'Capetown Heights').trim();
     const finalInterest = (interestType || 'Direct Website Inquiry').trim();
 
@@ -373,7 +373,7 @@ app.post('/api/admin/enquiries', authenticateAdmin, async (req, res) => {
       return res.status(400).json({ success: false, message: 'Name and Phone number are required.' });
     }
 
-    const id = `enq-${Date.now()}`;
+    const id = (req.body.id && req.body.id.trim()) ? req.body.id.trim() : `enq-${Date.now()}`;
     await pool.query(
       `INSERT INTO enquiries (id, name, phone, email, projectName, interestType, message, status, notes, createdAt)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,

@@ -28,6 +28,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const DEFAULT_LEADS = [
     {
+      id: 'enq-1795689834183',
+      name: 'Himanshu Manoj Singh',
+      phone: '919328603748',
+      email: '',
+      projectName: 'Capetown Heights',
+      interestType: 'Direct Website Form',
+      message: 'fxnvxcnxcvn',
+      status: 'New',
+      source: 'Website Direct',
+      notes: '',
+      createdAt: '2026-11-26T10:43:00.000Z'
+    },
+    {
       id: 'enq-101',
       name: 'Rohan Sharma',
       phone: '9876543210',
@@ -68,13 +81,48 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  function getDeletedEnquiryIds() {
+    try {
+      const stored = localStorage.getItem('capetown_deleted_enquiries');
+      if (stored) return new Set(JSON.parse(stored));
+    } catch (e) {}
+    return new Set();
+  }
+
+  function markEnquiryDeleted(id) {
+    try {
+      const deleted = getDeletedEnquiryIds();
+      deleted.add(String(id));
+      localStorage.setItem('capetown_deleted_enquiries', JSON.stringify([...deleted]));
+    } catch (e) {}
+  }
+
   function getLocalEnquiries() {
+    const deletedIds = getDeletedEnquiryIds();
+    let leads = [];
     try {
       const stored = localStorage.getItem('capetown_enquiries');
-      if (stored) return JSON.parse(stored);
+      if (stored) leads = JSON.parse(stored);
     } catch (e) {}
-    localStorage.setItem('capetown_enquiries', JSON.stringify(DEFAULT_LEADS));
-    return DEFAULT_LEADS;
+
+    const leadMap = new Map();
+    DEFAULT_LEADS.forEach(l => {
+      if (l && l.id && !deletedIds.has(String(l.id))) {
+        leadMap.set(String(l.id), l);
+      }
+    });
+    leads.forEach(l => {
+      if (l && l.id && !deletedIds.has(String(l.id))) {
+        const existing = leadMap.get(String(l.id));
+        leadMap.set(String(l.id), existing ? { ...existing, ...l } : l);
+      }
+    });
+
+    const combined = Array.from(leadMap.values()).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    try {
+      localStorage.setItem('capetown_enquiries', JSON.stringify(combined));
+    } catch (e) {}
+    return combined;
   }
 
   // 40 Verified Project Amenities Catalog
@@ -868,14 +916,22 @@ document.addEventListener('DOMContentLoaded', () => {
       console.warn('API stats unavailable, calculating from stored leads', err);
     }
 
+    const leads = getLocalEnquiries();
     if (!s) {
-      const leads = getLocalEnquiries();
       s = {
         total: leads.length,
         newLeads: leads.filter(l => (l.status || 'New') === 'New').length,
         contacted: leads.filter(l => l.status === 'Contacted').length,
         completed: leads.filter(l => l.status === 'Completed').length
       };
+    } else {
+      const localTotal = leads.length;
+      if (localTotal > s.total) {
+        s.total = localTotal;
+        s.newLeads = leads.filter(l => (l.status || 'New') === 'New').length;
+        s.contacted = leads.filter(l => l.status === 'Contacted').length;
+        s.completed = leads.filter(l => l.status === 'Completed').length;
+      }
     }
 
     // KPI Numbers
@@ -965,45 +1021,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (emptyState) emptyState.style.display = 'none';
 
-    let loaded = false;
-    try {
-      let url = API_URL + '/api/admin/enquiries?status=' + encodeURIComponent(currentFilter);
-      if (searchQuery) {
-        url += '&search=' + encodeURIComponent(searchQuery);
-      }
+    const deletedIds = getDeletedEnquiryIds();
+    let localLeads = getLocalEnquiries();
+    let serverLeads = [];
 
+    try {
+      let url = API_URL + '/api/admin/enquiries?status=all';
       const res = await fetch(url, {
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
       if (res.ok) {
         const data = await res.json();
-        if (data.success && data.enquiries) {
-          allEnquiries = data.enquiries;
-          loaded = true;
+        if (data.success && Array.isArray(data.enquiries)) {
+          serverLeads = data.enquiries;
         }
       }
     } catch (err) {
       console.warn('API enquiries unavailable, reading from local storage', err);
     }
 
-    if (!loaded) {
-      let localLeads = getLocalEnquiries();
-      if (currentFilter !== 'all') {
-        localLeads = localLeads.filter(l => (l.status || 'New').toLowerCase() === currentFilter.toLowerCase());
+    // Merge server leads and local leads by ID
+    const mergedMap = new Map();
+    DEFAULT_LEADS.forEach(lead => {
+      if (lead && lead.id && !deletedIds.has(String(lead.id))) {
+        mergedMap.set(String(lead.id), lead);
       }
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        localLeads = localLeads.filter(l => 
-          (l.name || '').toLowerCase().includes(q) ||
-          (l.phone || '').toLowerCase().includes(q) ||
-          (l.message || '').toLowerCase().includes(q)
-        );
+    });
+    serverLeads.forEach(lead => {
+      if (lead && lead.id && !deletedIds.has(String(lead.id))) {
+        mergedMap.set(String(lead.id), lead);
       }
-      allEnquiries = localLeads;
+    });
+    localLeads.forEach(lead => {
+      if (lead && lead.id && !deletedIds.has(String(lead.id))) {
+        const existing = mergedMap.get(String(lead.id));
+        mergedMap.set(String(lead.id), existing ? { ...existing, ...lead } : lead);
+      }
+    });
+
+    let combined = Array.from(mergedMap.values()).sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+    try {
+      localStorage.setItem('capetown_enquiries', JSON.stringify(combined));
+    } catch (e) {}
+
+    let filtered = combined;
+    if (currentFilter !== 'all') {
+      filtered = filtered.filter(l => (l.status || 'New').toLowerCase() === currentFilter.toLowerCase());
+    }
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      filtered = filtered.filter(l => 
+        (l.name || '').toLowerCase().includes(q) ||
+        (l.phone || '').toLowerCase().includes(q) ||
+        (l.message || '').toLowerCase().includes(q)
+      );
     }
 
+    allEnquiries = filtered;
     renderTable(allEnquiries);
-    renderRecentLeadsStream(allEnquiries);
+    renderRecentLeadsStream(combined);
   }
 
   function renderTable(enquiries) {
@@ -1171,6 +1247,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function deleteLead(id) {
+    markEnquiryDeleted(id);
     allEnquiries = allEnquiries.filter(l => String(l.id) !== String(id));
     const leads = getLocalEnquiries().filter(l => String(l.id) !== String(id));
     localStorage.setItem('capetown_enquiries', JSON.stringify(leads));
@@ -3153,6 +3230,21 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      const leadId = `enq-${Date.now()}`;
+      const newLead = {
+        id: leadId,
+        name,
+        phone,
+        email: email || '',
+        projectName: projectName || 'Capetown Heights',
+        interestType: interestType || 'Direct Inquiry',
+        status: status || 'New',
+        message: message || '',
+        notes: notes || '',
+        source: 'Admin Console',
+        createdAt: new Date().toISOString()
+      };
+
       try {
         const res = await fetch(API_URL + '/api/admin/enquiries', {
           method: 'POST',
@@ -3160,45 +3252,25 @@ document.addEventListener('DOMContentLoaded', () => {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + authToken
           },
-          body: JSON.stringify({
-            name, phone, email, projectName, interestType, status, message, notes
-          })
+          body: JSON.stringify(newLead)
         });
-
-        try {
-          await fetch(API_URL + '/api/admin/enquiries', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + authToken
-            },
-            body: JSON.stringify({
-              name, phone, email, projectName, interestType, status, message, notes
-            })
-          });
-        } catch (e) {}
-
-        const newLead = {
-          id: 'enq-' + Date.now().toString().slice(-4),
-          name, phone, email, projectName: projectName || 'Capetown Heights',
-          interestType: interestType || 'Direct Inquiry',
-          status: status || 'New',
-          message: message || '',
-          notes: notes || '',
-          source: 'Admin Console',
-          createdAt: new Date().toISOString()
-        };
-        const local = getLocalEnquiries();
-        local.unshift(newLead);
-        localStorage.setItem('capetown_enquiries', JSON.stringify(local));
-
-        addLeadModal.style.display = 'none';
-        showToast('New lead added successfully!');
-        loadDashboardStats();
-        loadEnquiries();
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.id) newLead.id = data.id;
+          else if (data && data.enquiry && data.enquiry.id) newLead.id = data.enquiry.id;
+        }
       } catch (err) {
-        alert('Error processing lead.');
+        console.warn('API error saving lead:', err);
       }
+
+      const local = getLocalEnquiries();
+      local.unshift(newLead);
+      localStorage.setItem('capetown_enquiries', JSON.stringify(local));
+
+      addLeadModal.style.display = 'none';
+      showToast('New lead added successfully!');
+      loadDashboardStats();
+      loadEnquiries();
     });
   }
 
