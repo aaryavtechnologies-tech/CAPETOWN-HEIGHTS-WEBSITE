@@ -434,11 +434,154 @@ app.get('/api/admin/export', authenticateAdmin, async (req, res) => {
   }
 });
 
-// Fetch Projects
-app.get('/api/admin/projects', authenticateAdmin, async (req, res) => {
+// =========================================================================
+// PROJECTS CRUD API (Fetch, Add, Edit, Delete)
+// =========================================================================
+
+// Fetch Projects (Public & Admin)
+app.get(['/api/projects', '/api/admin/projects'], async (req, res) => {
   try {
     const [rows] = await pool.query('SELECT * FROM projects ORDER BY featured DESC, createdAt DESC');
-    res.json({ success: true, count: rows.length, projects: rows });
+    const mapped = rows.map(r => ({
+      id: r.id,
+      title: r.title || r.name || 'Capetown Heights',
+      name: r.title || r.name || 'Capetown Heights',
+      developer: r.developer || r.subtitle || 'NIRALI GROUP',
+      status: r.status || 'Under Construction',
+      configurations: r.configurations || r.type || 'Luxury Residential & Commercial Development',
+      type: r.configurations || r.type || 'Luxury Residential & Commercial Development',
+      location: r.location || 'Silvassa, Dadra & Nagar Haveli',
+      carpetArea: r.carpetArea || '950 – 1850 sq.ft.',
+      elevation: r.elevation || 'G + 14 Storeys',
+      totalUnits: r.totalUnits || '180',
+      amenitiesCount: r.amenities || '40 Lifestyle Facilities',
+      amenities: r.amenities || '40 Lifestyle Facilities',
+      image: r.image || 'assets/images/building-exterior.jpg',
+      description: r.description || ''
+    }));
+    res.json({ success: true, count: mapped.length, projects: mapped });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Add New Project
+app.post('/api/admin/projects', authenticateAdmin, async (req, res) => {
+  try {
+    const { title, name, developer, status, configurations, type, location, carpetArea, elevation, totalUnits, amenities, image, description } = req.body;
+    const projectTitle = (title || name || '').trim();
+    if (!projectTitle) {
+      return res.status(400).json({ success: false, message: 'Project title is required.' });
+    }
+
+    const projectId = req.body.id || `proj-${Date.now()}`;
+    const dev = (developer || 'NIRALI GROUP').trim();
+    const st = (status || 'Under Construction').trim();
+    const config = (configurations || type || 'Luxury Residential & Commercial Development').trim();
+    const loc = (location || 'Silvassa, Dadra & Nagar Haveli').trim();
+    const carpet = (carpetArea || '950 – 1850 sq.ft.').trim();
+    const elev = (elevation || 'G + 14 Storeys').trim();
+    const units = (totalUnits || '180').trim();
+    const am = (amenities || '40 Lifestyle Facilities').trim();
+    const img = (image || 'assets/images/building-exterior.jpg').trim();
+    const desc = (description || '').trim();
+
+    await pool.query(
+      `INSERT INTO projects (id, title, developer, status, configurations, location, carpetArea, elevation, totalUnits, amenities, image, description, featured)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+      [projectId, projectTitle, dev, st, config, loc, carpet, elev, units, am, img, desc]
+    );
+
+    const newProject = {
+      id: projectId,
+      title: projectTitle,
+      name: projectTitle,
+      developer: dev,
+      status: st,
+      configurations: config,
+      type: config,
+      location: loc,
+      carpetArea: carpet,
+      elevation: elev,
+      totalUnits: units,
+      amenitiesCount: am,
+      amenities: am,
+      image: img,
+      description: desc
+    };
+
+    res.json({ success: true, message: 'Project added successfully.', project: newProject });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Edit Project
+app.put('/api/admin/projects/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { title, name, developer, status, configurations, type, location, carpetArea, elevation, totalUnits, amenities, image, description } = req.body;
+    const projectTitle = (title || name || '').trim();
+    if (!projectTitle) {
+      return res.status(400).json({ success: false, message: 'Project title is required.' });
+    }
+
+    const dev = (developer || 'NIRALI GROUP').trim();
+    const st = (status || 'Under Construction').trim();
+    const config = (configurations || type || 'Luxury Residential & Commercial Development').trim();
+    const loc = (location || 'Silvassa, Dadra & Nagar Haveli').trim();
+    const carpet = (carpetArea || '950 – 1850 sq.ft.').trim();
+    const elev = (elevation || 'G + 14 Storeys').trim();
+    const units = (totalUnits || '180').trim();
+    const am = (amenities || '40 Lifestyle Facilities').trim();
+    const img = (image || 'assets/images/building-exterior.jpg').trim();
+    const desc = (description || '').trim();
+
+    await pool.query(
+      `UPDATE projects 
+       SET title = ?, developer = ?, status = ?, configurations = ?, location = ?, carpetArea = ?, elevation = ?, totalUnits = ?, amenities = ?, image = ?, description = ?
+       WHERE id = ?`,
+      [projectTitle, dev, st, config, loc, carpet, elev, units, am, img, desc, id]
+    );
+
+    const updatedProject = {
+      id,
+      title: projectTitle,
+      name: projectTitle,
+      developer: dev,
+      status: st,
+      configurations: config,
+      type: config,
+      location: loc,
+      carpetArea: carpet,
+      elevation: elev,
+      totalUnits: units,
+      amenitiesCount: am,
+      amenities: am,
+      image: img,
+      description: desc
+    };
+
+    res.json({ success: true, message: 'Project updated successfully.', project: updatedProject });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Delete Project
+app.delete('/api/admin/projects/:id', authenticateAdmin, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const [rows] = await pool.query('SELECT COUNT(*) AS count FROM projects');
+    if (rows[0].count <= 1) {
+      return res.status(400).json({
+        success: false,
+        message: 'Cannot delete the only remaining project. At least one project must exist.'
+      });
+    }
+
+    await pool.query('DELETE FROM projects WHERE id = ?', [id]);
+    res.json({ success: true, message: `Project ${id} deleted successfully.` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }

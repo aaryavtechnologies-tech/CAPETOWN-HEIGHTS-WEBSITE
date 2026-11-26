@@ -117,6 +117,26 @@ let defaultContacts = [
   }
 ];
 
+let defaultProjects = [
+  {
+    id: "proj-capetown-heights",
+    name: "Capetown Heights",
+    title: "Capetown Heights",
+    developer: "NIRALI GROUP",
+    status: "Under Construction",
+    type: "Luxury Residential & Commercial Development",
+    configurations: "Luxury Residential & Commercial Development",
+    location: "Silvassa, Dadra & Nagar Haveli",
+    carpetArea: "950 – 1850 sq.ft.",
+    elevation: "G + 14 Storeys",
+    totalUnits: "180",
+    amenitiesCount: "40 Lifestyle Facilities",
+    amenities: "40 Lifestyle Facilities",
+    image: "assets/images/building-exterior.jpg",
+    description: "Capetown Heights represents the pinnacle of luxury residential living in Silvassa, meticulously developed by Nirali infra with 40 lifestyle amenities, double basement parking, and landscaped sky gardens."
+  }
+];
+
 let defaultAmenities = [
   {
     "num": "01",
@@ -578,23 +598,85 @@ export async function onRequest(context) {
       });
     }
 
-    // 9. Projects & Inventory
-    if (path === "/api/admin/projects") {
+    // 9. Projects & Inventory (CRUD: Fetch, Add, Edit, Delete)
+    if ((path === "/api/projects" || path === "/api/admin/projects") && method === "GET") {
       return jsonResponse({
         success: true,
-        count: 1,
-        projects: [
-          {
-            id: 1,
-            name: "Capetown Heights",
-            type: "Luxury Residential & Commercial Development",
-            location: "Silvassa, Dadra & Nagar Haveli",
-            totalUnits: 180,
-            status: "Under Construction",
-            developer: "Nirali Group"
-          }
-        ]
+        count: defaultProjects.length,
+        projects: defaultProjects
       });
+    }
+
+    if (path === "/api/admin/projects" && method === "POST") {
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      const title = (body.title || body.name || "").trim();
+      if (!title) {
+        return jsonResponse({ success: false, message: "Project title is required." }, 400);
+      }
+      const newProj = {
+        id: body.id || `proj-${Date.now()}`,
+        name: title,
+        title: title,
+        developer: (body.developer || "NIRALI GROUP").trim(),
+        status: (body.status || "Under Construction").trim(),
+        type: (body.configurations || body.type || "Luxury Residential & Commercial Development").trim(),
+        configurations: (body.configurations || body.type || "Luxury Residential & Commercial Development").trim(),
+        location: (body.location || "Silvassa, Dadra & Nagar Haveli").trim(),
+        carpetArea: (body.carpetArea || "950 – 1850 sq.ft.").trim(),
+        elevation: (body.elevation || "G + 14 Storeys").trim(),
+        totalUnits: (body.totalUnits || "180").trim(),
+        amenitiesCount: (body.amenities || body.amenitiesCount || "40 Lifestyle Facilities").trim(),
+        amenities: (body.amenities || body.amenitiesCount || "40 Lifestyle Facilities").trim(),
+        image: (body.image || "assets/images/building-exterior.jpg").trim(),
+        description: (body.description || "").trim()
+      };
+      defaultProjects.unshift(newProj);
+      return jsonResponse({
+        success: true,
+        message: "Project added successfully.",
+        project: newProj
+      });
+    }
+
+    if (path.startsWith("/api/admin/projects/") && method === "PUT") {
+      const targetId = decodeURIComponent(path.split("/api/admin/projects/")[1]);
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      const title = (body.title || body.name || "").trim();
+      if (!title) {
+        return jsonResponse({ success: false, message: "Project title is required." }, 400);
+      }
+      const idx = defaultProjects.findIndex(p => String(p.id) === String(targetId));
+      if (idx !== -1) {
+        defaultProjects[idx] = {
+          ...defaultProjects[idx],
+          name: title,
+          title: title,
+          developer: (body.developer || defaultProjects[idx].developer).trim(),
+          status: (body.status || defaultProjects[idx].status).trim(),
+          type: (body.configurations || body.type || defaultProjects[idx].configurations).trim(),
+          configurations: (body.configurations || body.type || defaultProjects[idx].configurations).trim(),
+          location: (body.location || defaultProjects[idx].location).trim(),
+          carpetArea: (body.carpetArea || defaultProjects[idx].carpetArea).trim(),
+          elevation: (body.elevation || defaultProjects[idx].elevation).trim(),
+          totalUnits: (body.totalUnits || defaultProjects[idx].totalUnits).trim(),
+          amenitiesCount: (body.amenities || body.amenitiesCount || defaultProjects[idx].amenitiesCount).trim(),
+          amenities: (body.amenities || body.amenitiesCount || defaultProjects[idx].amenities).trim(),
+          image: body.image && body.image.trim() ? body.image.trim() : defaultProjects[idx].image,
+          description: body.description !== undefined ? body.description.trim() : defaultProjects[idx].description
+        };
+      }
+      return jsonResponse({ success: true, message: "Project updated successfully.", project: defaultProjects[idx] });
+    }
+
+    if (path.startsWith("/api/admin/projects/") && method === "DELETE") {
+      const targetId = decodeURIComponent(path.split("/api/admin/projects/")[1]);
+      if (defaultProjects.length <= 1) {
+        return jsonResponse({ success: false, message: "Cannot delete the only remaining project. At least one project must exist." }, 400);
+      }
+      defaultProjects = defaultProjects.filter(p => String(p.id) !== String(targetId));
+      return jsonResponse({ success: true, message: "Project deleted successfully." });
     }
 
     // 10. Gallery Items (CRUD: Fetch, Add, Edit, Delete)

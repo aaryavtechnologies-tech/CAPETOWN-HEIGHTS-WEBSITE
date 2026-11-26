@@ -38,7 +38,7 @@
   <link rel="alternate icon" type="image/x-icon" href="../favicon.ico">
 
   <!-- Admin Stylesheet -->
-  <link rel="stylesheet" href="admin.css?v=20261126_09_compact">
+  <link rel="stylesheet" href="admin.css?v=20261126_10_projects">
 </head>
 <body>
 
@@ -152,6 +152,7 @@
         <button class="nav-item" data-view="viewProjects">
           <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
           <span class="nav-label">Projects &amp; Inventory</span>
+          <span class="nav-badge gold" id="sidebarProjectsBadge">1</span>
         </button>
 
         <button class="nav-item" data-view="viewGallery">
@@ -494,6 +495,12 @@
             <div>
               <h2 class="panel-heading">Projects &amp; Inventory</h2>
               <p class="panel-sub">Live configuration and inventory details of Capetown Heights by Nirali infra.</p>
+            </div>
+            <div>
+              <button type="button" class="btn-action primary" id="openAddProjectBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>Add New Project</span>
+              </button>
             </div>
           </div>
 
@@ -984,6 +991,175 @@
     </div>
   </div>
 
+  <!-- Modal: Add New Project -->
+  <div id="addProjectModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog modal-compact">
+      <div class="modal-header">
+        <h3>Add New Project &amp; Inventory</h3>
+        <button class="modal-close" id="closeAddProjectModalBtn">&times;</button>
+      </div>
+      <form id="addProjectForm" class="modal-form">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Project Name / Title <span class="label-req">*</span></label>
+            <input type="text" id="addProjectTitle" class="form-control" placeholder="e.g. Capetown Heights" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Developer Entity <span class="label-req">*</span></label>
+            <input type="text" id="addProjectDev" class="form-control" placeholder="e.g. NIRALI GROUP" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Project Status <span class="label-req">*</span></label>
+            <input type="text" id="addProjectStatus" class="form-control" placeholder="e.g. Under Construction" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Location <span class="label-req">*</span></label>
+            <input type="text" id="addProjectLocation" class="form-control" placeholder="e.g. Silvassa, Dadra &amp; Nagar Haveli" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Configurations <span class="label-req">*</span></label>
+            <input type="text" id="addProjectConfig" class="form-control" placeholder="e.g. Luxury Residential &amp; Commercial Development" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Carpet Area</label>
+            <input type="text" id="addProjectCarpet" class="form-control" placeholder="e.g. 950 – 1850 sq.ft.">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Elevation</label>
+            <input type="text" id="addProjectElevation" class="form-control" placeholder="e.g. G + 14 Storeys">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Total Units</label>
+            <input type="text" id="addProjectUnits" class="form-control" placeholder="e.g. 180">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Amenities Summary</label>
+          <input type="text" id="addProjectAmenities" class="form-control" placeholder="e.g. 40 Lifestyle Facilities">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Photo / Elevation Image <span class="label-req">*</span></label>
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem;">
+            <input type="text" id="addProjectImg" class="form-control flex-1" placeholder="assets/images/building-exterior.jpg" required>
+            <input type="file" id="addProjectFileInput" accept="image/*" style="display: none;">
+            <button type="button" class="btn-action secondary" id="addProjectChangeBtn" style="white-space: nowrap; height: 35px; padding: 0 0.75rem; font-size: 0.8rem;">
+              <span>Upload Photo</span>
+            </button>
+          </div>
+          <div style="text-align: center; margin-top: 0.25rem;">
+            <img id="addProjectPreviewImg" src="" alt="Preview" style="max-height: 80px; border-radius: 4px; display: none; margin: 0 auto; object-fit: cover; border: 1px solid var(--border-color);">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Description</label>
+          <textarea id="addProjectDesc" class="form-control" rows="2" placeholder="Brief project summary and key lifestyle highlights..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelAddProjectModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Project -->
+  <div id="editProjectModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog modal-compact">
+      <div class="modal-header">
+        <h3>Edit Project &amp; Inventory</h3>
+        <button class="modal-close" id="closeEditProjectModalBtn">&times;</button>
+      </div>
+      <form id="editProjectForm" class="modal-form">
+        <input type="hidden" id="editProjectId">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Project Name / Title <span class="label-req">*</span></label>
+            <input type="text" id="editProjectTitle" class="form-control" placeholder="e.g. Capetown Heights" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Developer Entity <span class="label-req">*</span></label>
+            <input type="text" id="editProjectDev" class="form-control" placeholder="e.g. NIRALI GROUP" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Project Status <span class="label-req">*</span></label>
+            <input type="text" id="editProjectStatus" class="form-control" placeholder="e.g. Under Construction" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Location <span class="label-req">*</span></label>
+            <input type="text" id="editProjectLocation" class="form-control" placeholder="e.g. Silvassa, Dadra &amp; Nagar Haveli" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Configurations <span class="label-req">*</span></label>
+            <input type="text" id="editProjectConfig" class="form-control" placeholder="e.g. Luxury Residential &amp; Commercial Development" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Carpet Area</label>
+            <input type="text" id="editProjectCarpet" class="form-control" placeholder="e.g. 950 – 1850 sq.ft.">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Elevation</label>
+            <input type="text" id="editProjectElevation" class="form-control" placeholder="e.g. G + 14 Storeys">
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Total Units</label>
+            <input type="text" id="editProjectUnits" class="form-control" placeholder="e.g. 180">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Amenities Summary</label>
+          <input type="text" id="editProjectAmenities" class="form-control" placeholder="e.g. 40 Lifestyle Facilities">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Photo / Elevation Image <span class="label-req">*</span></label>
+          <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem;">
+            <input type="text" id="editProjectImg" class="form-control flex-1" placeholder="assets/images/building-exterior.jpg" required>
+            <input type="file" id="editProjectFileInput" accept="image/*" style="display: none;">
+            <button type="button" class="btn-action secondary" id="editProjectChangeBtn" style="white-space: nowrap; height: 35px; padding: 0 0.75rem; font-size: 0.8rem;">
+              <span>Change Photo</span>
+            </button>
+          </div>
+          <div style="text-align: center; margin-top: 0.25rem;">
+            <img id="editProjectPreviewImg" src="" alt="Preview" style="max-height: 80px; border-radius: 4px; display: none; margin: 0 auto; object-fit: cover; border: 1px solid var(--border-color);">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Project Description</label>
+          <textarea id="editProjectDesc" class="form-control" rows="2" placeholder="Brief project summary and key lifestyle highlights..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelEditProjectModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Update Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Modal: Add New Contact Office -->
   <div id="addContactModal" class="modal-backdrop" style="display: none;">
     <div class="modal-dialog modal-compact">
@@ -1155,6 +1331,6 @@
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Admin JS Script -->
-  <script src="admin.js?v=20261126_09_compact"></script>
+  <script src="admin.js?v=20261126_10_projects"></script>
 </body>
 </html>

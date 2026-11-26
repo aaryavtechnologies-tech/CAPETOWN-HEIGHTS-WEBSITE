@@ -487,6 +487,48 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeEditContactModalBtn = document.getElementById('closeEditContactModalBtn');
   const cancelEditContactModalBtn = document.getElementById('cancelEditContactModalBtn');
 
+  // DOM Elements - Projects Modals & Controls
+  const sidebarProjectsBadge = document.getElementById('sidebarProjectsBadge');
+  const openAddProjectBtn = document.getElementById('openAddProjectBtn');
+  const addProjectModal = document.getElementById('addProjectModal');
+  const addProjectForm = document.getElementById('addProjectForm');
+  const addProjectTitle = document.getElementById('addProjectTitle');
+  const addProjectDev = document.getElementById('addProjectDev');
+  const addProjectStatus = document.getElementById('addProjectStatus');
+  const addProjectLocation = document.getElementById('addProjectLocation');
+  const addProjectConfig = document.getElementById('addProjectConfig');
+  const addProjectCarpet = document.getElementById('addProjectCarpet');
+  const addProjectElevation = document.getElementById('addProjectElevation');
+  const addProjectUnits = document.getElementById('addProjectUnits');
+  const addProjectAmenities = document.getElementById('addProjectAmenities');
+  const addProjectImg = document.getElementById('addProjectImg');
+  const addProjectFileInput = document.getElementById('addProjectFileInput');
+  const addProjectChangeBtn = document.getElementById('addProjectChangeBtn');
+  const addProjectPreviewImg = document.getElementById('addProjectPreviewImg');
+  const addProjectDesc = document.getElementById('addProjectDesc');
+  const closeAddProjectModalBtn = document.getElementById('closeAddProjectModalBtn');
+  const cancelAddProjectModalBtn = document.getElementById('cancelAddProjectModalBtn');
+
+  const editProjectModal = document.getElementById('editProjectModal');
+  const editProjectForm = document.getElementById('editProjectForm');
+  const editProjectId = document.getElementById('editProjectId');
+  const editProjectTitle = document.getElementById('editProjectTitle');
+  const editProjectDev = document.getElementById('editProjectDev');
+  const editProjectStatus = document.getElementById('editProjectStatus');
+  const editProjectLocation = document.getElementById('editProjectLocation');
+  const editProjectConfig = document.getElementById('editProjectConfig');
+  const editProjectCarpet = document.getElementById('editProjectCarpet');
+  const editProjectElevation = document.getElementById('editProjectElevation');
+  const editProjectUnits = document.getElementById('editProjectUnits');
+  const editProjectAmenities = document.getElementById('editProjectAmenities');
+  const editProjectImg = document.getElementById('editProjectImg');
+  const editProjectFileInput = document.getElementById('editProjectFileInput');
+  const editProjectChangeBtn = document.getElementById('editProjectChangeBtn');
+  const editProjectPreviewImg = document.getElementById('editProjectPreviewImg');
+  const editProjectDesc = document.getElementById('editProjectDesc');
+  const closeEditProjectModalBtn = document.getElementById('closeEditProjectModalBtn');
+  const cancelEditProjectModalBtn = document.getElementById('cancelEditProjectModalBtn');
+
   const toastContainer = document.getElementById('toastContainer');
 
   // Set Current Date in Header
@@ -1205,95 +1247,474 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // =========================================================================
-  // 5. PROJECTS & INVENTORY MODULE
+  // 5. PROJECTS & INVENTORY MODULE (CRUD)
   // =========================================================================
 
-  async function loadProjects() {
+  const defaultProjectsList = [
+    {
+      id: 'proj-capetown-heights',
+      name: 'Capetown Heights',
+      title: 'Capetown Heights',
+      developer: 'NIRALI GROUP',
+      status: 'Under Construction',
+      type: 'Luxury Residential & Commercial Development',
+      configurations: 'Luxury Residential & Commercial Development',
+      location: 'Silvassa, Dadra & Nagar Haveli',
+      carpetArea: '950 – 1850 sq.ft.',
+      elevation: 'G + 14 Storeys',
+      totalUnits: '180',
+      amenitiesCount: '40 Lifestyle Facilities',
+      amenities: '40 Lifestyle Facilities',
+      image: 'assets/images/building-exterior.jpg',
+      description: 'Capetown Heights represents the pinnacle of luxury residential living in Silvassa, meticulously developed by Nirali infra with 40 lifestyle amenities, double basement parking, and landscaped sky gardens.'
+    }
+  ];
+
+  let liveProjects = [];
+
+  function updateProjectsBadge(count) {
+    if (sidebarProjectsBadge) sidebarProjectsBadge.textContent = count;
+  }
+
+  function resolveProjectImg(img) {
+    if (!img) return '../assets/images/building-exterior.jpg';
+    if (img.startsWith('http://') || img.startsWith('https://') || img.startsWith('data:image/')) return img;
+    if (img.startsWith('../')) return img;
+    if (img.startsWith('assets/')) return '../' + img;
+    if (img.startsWith('/')) return '..' + img;
+    return '../' + img;
+  }
+
+  function renderProjectsList(projects) {
     if (!projectsContainer) return;
-    projectsContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading projects from database...</span></div>';
+    if (!projects || projects.length === 0) {
+      projectsContainer.innerHTML = `
+        <div style="text-align: center; padding: 3rem; background: #fff; border-radius: 8px; border: 1px dashed var(--border-color);">
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">No projects currently registered in inventory.</p>
+          <button type="button" class="btn-action primary" onclick="document.getElementById('openAddProjectBtn')?.click()">+ Add First Project</button>
+        </div>
+      `;
+      return;
+    }
 
-    try {
-      const res = await fetch(API_URL + '/api/admin/projects', {
-        headers: { 'Authorization': 'Bearer ' + authToken }
-      });
-      const data = await res.json();
+    projectsContainer.innerHTML = projects.map(proj => {
+      const pId = escapeHtml(String(proj.id));
+      const pTitle = escapeHtml(proj.title || proj.name || 'Capetown Heights');
+      const pDev = escapeHtml(proj.developer || 'NIRALI GROUP');
+      const pStatus = escapeHtml(proj.status || 'Under Construction');
+      const pConfig = escapeHtml(proj.configurations || proj.type || 'Luxury Residential & Commercial Development');
+      const pLoc = escapeHtml(proj.location || 'Silvassa, Dadra & Nagar Haveli');
+      const pCarpet = escapeHtml(proj.carpetArea || '950 – 1850 sq.ft.');
+      const pElev = escapeHtml(proj.elevation || 'G + 14 Storeys');
+      const pUnits = escapeHtml(String(proj.totalUnits || '180'));
+      const pAmenities = escapeHtml(proj.amenities || proj.amenitiesCount || '40 Lifestyle Facilities');
+      const pImg = resolveProjectImg(proj.image);
+      const pDesc = escapeHtml(proj.description || '');
 
-      let projects = (res.ok && data.success && data.projects && data.projects.length > 0)
-        ? data.projects
-        : [
-            {
-              id: 1,
-              name: 'Capetown Heights',
-              developer: 'Nirali infra',
-              location: 'Silvassa, Dadra & Nagar Haveli',
-              type: '2 & 3 BHK Duplex Apartments',
-              carpetArea: '950 – 1850 sq.ft.',
-              elevation: 'G + 14 Storeys',
-              totalUnits: '120 Units Planned',
-              status: 'Under Construction (RERA Verified)',
-              image: '../assets/images/building-exterior.jpg',
-              description: 'Capetown Heights represents the pinnacle of luxury residential living in Silvassa, meticulously developed by Nirali infra with 40 lifestyle amenities, double basement parking, and landscaped sky gardens.'
-            }
-          ];
-
-      projectsContainer.innerHTML = projects.map(proj => `
-        <div class="project-card-full">
+      return `
+        <div class="project-card-full" data-project-id="${pId}">
           <div class="proj-full-img-wrap">
-            <img src="${proj.image || '../assets/images/building-exterior.jpg'}" alt="${escapeHtml(proj.name)}" class="proj-full-img">
+            <img src="${pImg}" alt="${pTitle}" class="proj-full-img" loading="lazy" onerror="this.src='../assets/images/building-exterior.jpg'">
           </div>
           <div class="proj-full-content">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-              <span class="auth-dev-badge">${escapeHtml(proj.developer || 'NIRALI INFRA')}</span>
-              <span class="badge-status-online">${escapeHtml(proj.status || 'Verified')}</span>
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <span class="auth-dev-badge">${pDev}</span>
+              <span class="badge-status-online" style="background: #EBF8FF; color: #2B6CB0; border-color: #BEE3F8;">${pStatus}</span>
             </div>
-            <h3 class="proj-full-title">${escapeHtml(proj.name)}</h3>
-            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">
-              ${escapeHtml(proj.description || '')}
-            </p>
+            <h3 class="proj-full-title">${pTitle}</h3>
+            ${pDesc ? `<p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1rem;">${pDesc}</p>` : ''}
 
             <div class="proj-full-meta">
               <div class="spec-item">
                 <span class="spec-label">Configurations</span>
-                <span class="spec-val">${escapeHtml(proj.type || '2 & 3 BHK Duplex')}</span>
+                <span class="spec-val">${pConfig}</span>
               </div>
               <div class="spec-item">
                 <span class="spec-label">Location</span>
-                <span class="spec-val">${escapeHtml(proj.location || 'Silvassa')}</span>
+                <span class="spec-val">${pLoc}</span>
               </div>
               <div class="spec-item">
                 <span class="spec-label">Carpet Area</span>
-                <span class="spec-val">${escapeHtml(proj.carpetArea || '950 – 1850 sq.ft.')}</span>
+                <span class="spec-val">${pCarpet}</span>
               </div>
               <div class="spec-item">
                 <span class="spec-label">Elevation</span>
-                <span class="spec-val">${escapeHtml(proj.elevation || 'G + 14 Storeys')}</span>
+                <span class="spec-val">${pElev}</span>
               </div>
               <div class="spec-item">
                 <span class="spec-label">Total Units</span>
-                <span class="spec-val">${escapeHtml(proj.totalUnits || '120 Units')}</span>
+                <span class="spec-val">${pUnits}</span>
               </div>
               <div class="spec-item">
                 <span class="spec-label">Amenities</span>
-                <span class="spec-val">40 Lifestyle Facilities</span>
+                <span class="spec-val">${pAmenities}</span>
               </div>
             </div>
 
-            <div style="display: flex; gap: 0.85rem; margin-top: auto;">
+            <div class="proj-card-actions">
               <a href="../project-details.html" target="_blank" class="btn-action secondary">
                 <span>View Public Project Details &rarr;</span>
               </a>
-              <button class="btn-action primary" onclick="document.querySelector('[data-view=viewAmenities]').click()">
+              <button type="button" class="btn-action secondary" onclick="document.querySelector('[data-view=viewAmenities]').click()">
                 <span>Inspect 40 Amenities</span>
+              </button>
+              <button type="button" class="btn-action primary" data-action="edit-project" data-id="${pId}">
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                <span>Edit Project</span>
+              </button>
+              <button type="button" class="btn-action danger" data-action="delete-project" data-id="${pId}">
+                <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                <span>Delete</span>
               </button>
             </div>
           </div>
         </div>
-      `).join('');
+      `;
+    }).join('');
+  }
 
-    } catch (err) {
-      console.error('Error loading projects', err);
-      projectsContainer.innerHTML = '<div style="color: #C53030; padding: 2rem;">Error loading project data.</div>';
+  async function loadProjects() {
+    if (!projectsContainer) return;
+
+    // Load from cache or defaults first
+    try {
+      const cached = localStorage.getItem('capetown_projects');
+      if (cached) {
+        liveProjects = JSON.parse(cached);
+      } else {
+        liveProjects = defaultProjectsList;
+      }
+    } catch (e) {
+      liveProjects = defaultProjectsList;
     }
+
+    renderProjectsList(liveProjects);
+    updateProjectsBadge(liveProjects.length);
+
+    try {
+      const res = await fetch(API_URL + '/api/admin/projects', {
+        headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+      });
+      const data = await res.json();
+      if (res.ok && data.success && Array.isArray(data.projects) && data.projects.length > 0) {
+        liveProjects = data.projects;
+        try {
+          localStorage.setItem('capetown_projects', JSON.stringify(liveProjects));
+        } catch (e) {}
+        renderProjectsList(liveProjects);
+        updateProjectsBadge(liveProjects.length);
+      }
+    } catch (err) {
+      console.warn('Unable to reach server for projects, using cached:', err);
+    }
+  }
+
+  // Helper for Project Image Upload
+  async function processProjectImageFile(file, imgInputEl, previewImgEl) {
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      showToast('Please select a valid image file (JPG, PNG, WEBP).', 'error');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const dataUrl = e.target.result;
+      if (previewImgEl) {
+        previewImgEl.src = dataUrl;
+        previewImgEl.style.display = 'block';
+      }
+      if (imgInputEl) imgInputEl.value = dataUrl;
+
+      try {
+        const res = await fetch(API_URL + '/api/admin/upload-image', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify({ image: dataUrl, name: file.name })
+        });
+        const d = await res.json();
+        if (res.ok && d.success && d.url) {
+          if (imgInputEl) imgInputEl.value = d.url;
+          showToast('Image uploaded successfully!', 'success');
+        }
+      } catch (uploadErr) {
+        console.warn('Fallback to Data URL:', uploadErr);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Open Add Project Modal
+  if (openAddProjectBtn && addProjectModal) {
+    openAddProjectBtn.addEventListener('click', () => {
+      if (addProjectForm) addProjectForm.reset();
+      if (addProjectPreviewImg) addProjectPreviewImg.style.display = 'none';
+      if (addProjectDev) addProjectDev.value = 'NIRALI GROUP';
+      if (addProjectStatus) addProjectStatus.value = 'Under Construction';
+      if (addProjectLocation) addProjectLocation.value = 'Silvassa, Dadra & Nagar Haveli';
+      if (addProjectElevation) addProjectElevation.value = 'G + 14 Storeys';
+      if (addProjectAmenities) addProjectAmenities.value = '40 Lifestyle Facilities';
+      addProjectModal.style.display = 'flex';
+      if (addProjectTitle) addProjectTitle.focus();
+    });
+  }
+
+  if (closeAddProjectModalBtn && addProjectModal) {
+    closeAddProjectModalBtn.addEventListener('click', () => addProjectModal.style.display = 'none');
+  }
+  if (cancelAddProjectModalBtn && addProjectModal) {
+    cancelAddProjectModalBtn.addEventListener('click', () => addProjectModal.style.display = 'none');
+  }
+
+  // Add Project Image File Picker
+  if (addProjectChangeBtn && addProjectFileInput) {
+    addProjectChangeBtn.addEventListener('click', () => addProjectFileInput.click());
+  }
+  if (addProjectFileInput) {
+    addProjectFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processProjectImageFile(e.target.files[0], addProjectImg, addProjectPreviewImg);
+      }
+    });
+  }
+
+  // Add Project Form Submission
+  if (addProjectForm) {
+    addProjectForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = addProjectTitle ? addProjectTitle.value.trim() : '';
+      const dev = addProjectDev ? addProjectDev.value.trim() : 'NIRALI GROUP';
+      const status = addProjectStatus ? addProjectStatus.value.trim() : 'Under Construction';
+      const location = addProjectLocation ? addProjectLocation.value.trim() : '';
+      const config = addProjectConfig ? addProjectConfig.value.trim() : '';
+      const carpet = addProjectCarpet ? addProjectCarpet.value.trim() : '';
+      const elevation = addProjectElevation ? addProjectElevation.value.trim() : 'G + 14 Storeys';
+      const units = addProjectUnits ? addProjectUnits.value.trim() : '';
+      const amenities = addProjectAmenities ? addProjectAmenities.value.trim() : '40 Lifestyle Facilities';
+      const img = addProjectImg ? addProjectImg.value.trim() : 'assets/images/building-exterior.jpg';
+      const desc = addProjectDesc ? addProjectDesc.value.trim() : '';
+
+      if (!title || !config) {
+        showToast('Please fill in Project Name and Configurations.', 'error');
+        return;
+      }
+
+      const newProj = {
+        id: `proj-${Date.now()}`,
+        name: title,
+        title: title,
+        developer: dev,
+        status: status,
+        type: config,
+        configurations: config,
+        location: location,
+        carpetArea: carpet,
+        elevation: elevation,
+        totalUnits: units,
+        amenitiesCount: amenities,
+        amenities: amenities,
+        image: img,
+        description: desc
+      };
+
+      liveProjects.unshift(newProj);
+      try {
+        localStorage.setItem('capetown_projects', JSON.stringify(liveProjects));
+      } catch (err) {}
+
+      renderProjectsList(liveProjects);
+      updateProjectsBadge(liveProjects.length);
+      addProjectModal.style.display = 'none';
+      showToast('Project added successfully!', 'success');
+
+      try {
+        await fetch(API_URL + '/api/admin/projects', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify(newProj)
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, saved locally:', apiErr);
+      }
+    });
+  }
+
+  // Close Edit Project Modal
+  if (closeEditProjectModalBtn && editProjectModal) {
+    closeEditProjectModalBtn.addEventListener('click', () => editProjectModal.style.display = 'none');
+  }
+  if (cancelEditProjectModalBtn && editProjectModal) {
+    cancelEditProjectModalBtn.addEventListener('click', () => editProjectModal.style.display = 'none');
+  }
+
+  // Edit Project Image File Picker
+  if (editProjectChangeBtn && editProjectFileInput) {
+    editProjectChangeBtn.addEventListener('click', () => editProjectFileInput.click());
+  }
+  if (editProjectFileInput) {
+    editProjectFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processProjectImageFile(e.target.files[0], editProjectImg, editProjectPreviewImg);
+      }
+    });
+  }
+
+  // Edit Project Form Submission
+  if (editProjectForm) {
+    editProjectForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const id = editProjectId ? editProjectId.value : '';
+      const title = editProjectTitle ? editProjectTitle.value.trim() : '';
+      const dev = editProjectDev ? editProjectDev.value.trim() : 'NIRALI GROUP';
+      const status = editProjectStatus ? editProjectStatus.value.trim() : 'Under Construction';
+      const location = editProjectLocation ? editProjectLocation.value.trim() : '';
+      const config = editProjectConfig ? editProjectConfig.value.trim() : '';
+      const carpet = editProjectCarpet ? editProjectCarpet.value.trim() : '';
+      const elevation = editProjectElevation ? editProjectElevation.value.trim() : 'G + 14 Storeys';
+      const units = editProjectUnits ? editProjectUnits.value.trim() : '';
+      const amenities = editProjectAmenities ? editProjectAmenities.value.trim() : '40 Lifestyle Facilities';
+      const img = editProjectImg ? editProjectImg.value.trim() : 'assets/images/building-exterior.jpg';
+      const desc = editProjectDesc ? editProjectDesc.value.trim() : '';
+
+      if (!title || !config) {
+        showToast('Please fill in Project Name and Configurations.', 'error');
+        return;
+      }
+
+      const idx = liveProjects.findIndex(p => String(p.id) === String(id));
+      if (idx !== -1) {
+        liveProjects[idx] = {
+          ...liveProjects[idx],
+          name: title,
+          title: title,
+          developer: dev,
+          status: status,
+          type: config,
+          configurations: config,
+          location: location,
+          carpetArea: carpet,
+          elevation: elevation,
+          totalUnits: units,
+          amenitiesCount: amenities,
+          amenities: amenities,
+          image: img,
+          description: desc
+        };
+      }
+
+      try {
+        localStorage.setItem('capetown_projects', JSON.stringify(liveProjects));
+      } catch (err) {}
+
+      renderProjectsList(liveProjects);
+      editProjectModal.style.display = 'none';
+      showToast('Project updated successfully!', 'success');
+
+      try {
+        await fetch(API_URL + '/api/admin/projects/' + encodeURIComponent(id), {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify({
+            title,
+            name: title,
+            developer: dev,
+            status,
+            configurations: config,
+            type: config,
+            location,
+            carpetArea: carpet,
+            elevation,
+            totalUnits: units,
+            amenities,
+            amenitiesCount: amenities,
+            image: img,
+            description: desc
+          })
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, updated locally:', apiErr);
+      }
+    });
+  }
+
+  // Event Delegation for Edit & Delete on #projectsContainer
+  if (projectsContainer) {
+    projectsContainer.addEventListener('click', async (e) => {
+      const editBtn = e.target.closest('[data-action="edit-project"]');
+      const deleteBtn = e.target.closest('[data-action="delete-project"]');
+
+      if (editBtn) {
+        const id = editBtn.getAttribute('data-id');
+        const proj = liveProjects.find(p => String(p.id) === String(id));
+        if (!proj) return;
+
+        if (editProjectId) editProjectId.value = proj.id;
+        if (editProjectTitle) editProjectTitle.value = proj.title || proj.name || '';
+        if (editProjectDev) editProjectDev.value = proj.developer || 'NIRALI GROUP';
+        if (editProjectStatus) editProjectStatus.value = proj.status || 'Under Construction';
+        if (editProjectLocation) editProjectLocation.value = proj.location || 'Silvassa, Dadra & Nagar Haveli';
+        if (editProjectConfig) editProjectConfig.value = proj.configurations || proj.type || '';
+        if (editProjectCarpet) editProjectCarpet.value = proj.carpetArea || '';
+        if (editProjectElevation) editProjectElevation.value = proj.elevation || 'G + 14 Storeys';
+        if (editProjectUnits) editProjectUnits.value = proj.totalUnits || '';
+        if (editProjectAmenities) editProjectAmenities.value = proj.amenities || proj.amenitiesCount || '40 Lifestyle Facilities';
+        if (editProjectImg) editProjectImg.value = proj.image || '';
+        if (editProjectPreviewImg) {
+          if (proj.image) {
+            editProjectPreviewImg.src = resolveProjectImg(proj.image);
+            editProjectPreviewImg.style.display = 'block';
+          } else {
+            editProjectPreviewImg.style.display = 'none';
+          }
+        }
+        if (editProjectDesc) editProjectDesc.value = proj.description || '';
+
+        editProjectModal.style.display = 'flex';
+        return;
+      }
+
+      if (deleteBtn) {
+        const id = deleteBtn.getAttribute('data-id');
+        if (liveProjects.length <= 1) {
+          showToast('Cannot delete the only remaining project.', 'error');
+          return;
+        }
+
+        const proj = liveProjects.find(p => String(p.id) === String(id));
+        const projTitle = proj ? (proj.title || proj.name) : id;
+
+        if (!confirm('Are you sure you want to delete "' + projTitle + '" from inventory?')) {
+          return;
+        }
+
+        liveProjects = liveProjects.filter(p => String(p.id) !== String(id));
+        try {
+          localStorage.setItem('capetown_projects', JSON.stringify(liveProjects));
+        } catch (err) {}
+
+        renderProjectsList(liveProjects);
+        updateProjectsBadge(liveProjects.length);
+        showToast('Project deleted successfully!', 'success');
+
+        try {
+          await fetch(API_URL + '/api/admin/projects/' + encodeURIComponent(id), {
+            method: 'DELETE',
+            headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+          });
+        } catch (apiErr) {
+          console.warn('Backend delete failed, deleted locally:', apiErr);
+        }
+      }
+    });
   }
 
   // =========================================================================
