@@ -161,8 +161,8 @@
 
         <button class="nav-item" data-view="viewAmenities">
           <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          <span class="nav-label">40 Verified Amenities</span>
-          <span class="nav-badge gold">40</span>
+          <span class="nav-label" id="sidebarAmenitiesLabel">40 Verified Amenities</span>
+          <span class="nav-badge gold" id="sidebarAmenitiesBadge">40</span>
         </button>
 
         <div class="nav-section-title">DATABASE &amp; SYSTEM</div>
@@ -517,12 +517,18 @@
         <section id="viewAmenities" class="view-panel">
           <div class="panel-header-row">
             <div>
-              <h2 class="panel-heading">All 40 Verified Project Amenities</h2>
-              <p class="panel-sub">Complete catalog of 40 lifestyle, wellness, and infrastructure facilities provided by Nirali Group.</p>
+              <h2 class="panel-heading" id="amenitiesHeading">All 40 Verified Project Amenities</h2>
+              <p class="panel-sub" id="amenitiesSubtitle">Complete catalog of 40 lifestyle, wellness, and infrastructure facilities provided by Nirali Group.</p>
             </div>
-            <a href="../index.html#amenities" target="_blank" class="btn-action secondary">
-              <span>View On Homepage ↗</span>
-            </a>
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+              <button type="button" class="btn-action primary" id="openAddAmenityBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                <span>+ Add Amenity</span>
+              </button>
+              <a href="../index.html#amenities" target="_blank" class="btn-action secondary">
+                <span>View On Homepage ↗</span>
+              </a>
+            </div>
           </div>
 
           <div class="admin-amenities-grid" id="adminAmenitiesGrid">
@@ -727,10 +733,91 @@
     </div>
   </div>
 
+  <!-- Modal: Add New Amenity -->
+  <div id="addAmenityModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Add Project Amenity</h3>
+        <button class="modal-close" id="closeAddAmenityModalBtn">&times;</button>
+      </div>
+      <form id="addAmenityForm" class="modal-form">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Amenity Number / Code <span class="label-req">*</span></label>
+            <input type="text" id="addAmenityNum" class="form-control" placeholder="e.g. 41" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Facility Title <span class="label-req">*</span></label>
+            <input type="text" id="addAmenityTitle" class="form-control" placeholder="e.g. Infinity Swimming Pool" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Image Path / URL <span class="label-req">*</span></label>
+          <input type="text" id="addAmenityImg" class="form-control" placeholder="assets/images/amenities/... or https://..." required>
+          <div class="amenity-img-preview-box" id="addAmenityPreviewBox" style="display: none; margin-top: 0.5rem;">
+            <img id="addAmenityPreviewImg" src="" alt="Preview" style="max-height: 120px; border-radius: 6px; object-fit: cover;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description <span class="label-req">*</span></label>
+          <textarea id="addAmenityDesc" class="form-control" rows="3" placeholder="Enter description of the facility and features..." required></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelAddAmenityModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Save Amenity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Amenity -->
+  <div id="editAmenityModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3>Edit Project Amenity</h3>
+        <button class="modal-close" id="closeEditAmenityModalBtn">&times;</button>
+      </div>
+      <form id="editAmenityForm" class="modal-form">
+        <input type="hidden" id="editAmenityOriginalNum">
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Amenity Number / Code <span class="label-req">*</span></label>
+            <input type="text" id="editAmenityNum" class="form-control" placeholder="e.g. 01" required>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Facility Title <span class="label-req">*</span></label>
+            <input type="text" id="editAmenityTitle" class="form-control" placeholder="e.g. Allotted Car Parking" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Image Path / URL <span class="label-req">*</span></label>
+          <input type="text" id="editAmenityImg" class="form-control" placeholder="assets/images/amenities/..." required>
+          <div class="amenity-img-preview-box" id="editAmenityPreviewBox" style="margin-top: 0.5rem;">
+            <img id="editAmenityPreviewImg" src="" alt="Preview" style="max-height: 120px; border-radius: 6px; object-fit: cover;">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Description <span class="label-req">*</span></label>
+          <textarea id="editAmenityDesc" class="form-control" rows="3" placeholder="Enter description of the facility and features..." required></textarea>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-action secondary" id="cancelEditAmenityModalBtn">Cancel</button>
+          <button type="submit" class="btn-action primary">Update Amenity</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Admin JS Script -->
-  <script src="admin.js?v=20261125_05"></script>
+  <script src="admin.js?v=20261126_02"></script>
 </body>
 </html>

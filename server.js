@@ -453,6 +453,92 @@ app.get('/api/admin/gallery', authenticateAdmin, async (req, res) => {
   }
 });
 
+// =========================================================================
+// AMENITIES CRUD API (Fetch, Add, Edit, Delete)
+// =========================================================================
+
+// Fetch All Amenities
+app.get(['/api/amenities', '/api/admin/amenities'], async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT num, title, img, description AS `desc` FROM amenities ORDER BY CAST(num AS UNSIGNED) ASC, num ASC');
+    res.json({ success: true, count: rows.length, amenities: rows });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Add New Amenity
+app.post('/api/admin/amenities', authenticateAdmin, async (req, res) => {
+  try {
+    const { num, title, img, desc, description } = req.body;
+    if (!title || !title.trim()) {
+      return res.status(400).json({ success: false, message: 'Amenity title is required.' });
+    }
+
+    let finalNum = (num || '').trim();
+    if (!finalNum) {
+      const [[maxRow]] = await pool.query('SELECT MAX(CAST(num AS UNSIGNED)) AS maxNum FROM amenities');
+      finalNum = String((maxRow && maxRow.maxNum ? maxRow.maxNum : 40) + 1).padStart(2, '0');
+    }
+
+    const finalImg = (img || '').trim() || 'assets/images/amenities/multipurpose-hall.jpg';
+    const finalDesc = (desc || description || '').trim();
+
+    await pool.query(
+      'INSERT INTO amenities (num, title, img, description) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE title=VALUES(title), img=VALUES(img), description=VALUES(description)',
+      [finalNum, title.trim(), finalImg, finalDesc]
+    );
+
+    res.json({
+      success: true,
+      message: 'Amenity added successfully.',
+      amenity: { num: finalNum, title: title.trim(), img: finalImg, desc: finalDesc }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Edit Existing Amenity
+app.put('/api/admin/amenities/:num', authenticateAdmin, async (req, res) => {
+  try {
+    const oldNum = req.params.num;
+    const { num, title, img, desc, description } = req.body;
+
+    if (!title || !title.trim()) {
+      return res.status(400).json({ success: false, message: 'Amenity title is required.' });
+    }
+
+    const newNum = (num || oldNum).trim();
+    const finalImg = (img || '').trim();
+    const finalDesc = (desc || description || '').trim();
+
+    await pool.query(
+      'UPDATE amenities SET num = ?, title = ?, img = ?, description = ? WHERE num = ?',
+      [newNum, title.trim(), finalImg, finalDesc, oldNum]
+    );
+
+    res.json({
+      success: true,
+      message: `Amenity #${newNum} updated successfully.`,
+      amenity: { num: newNum, title: title.trim(), img: finalImg, desc: finalDesc }
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Delete Amenity
+app.delete('/api/admin/amenities/:num', authenticateAdmin, async (req, res) => {
+  try {
+    const num = req.params.num;
+    await pool.query('DELETE FROM amenities WHERE num = ?', [num]);
+    res.json({ success: true, message: `Amenity #${num} deleted successfully.` });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+});
+
 // Fetch Database Diagnostics
 app.get('/api/admin/database', authenticateAdmin, async (req, res) => {
   try {

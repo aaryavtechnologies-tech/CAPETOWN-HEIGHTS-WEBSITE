@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let searchQuery = '';
   let allEnquiries = [];
   let currentActiveView = 'viewDashboard';
+  let liveAmenities = [];
 
   const DEFAULT_LEADS = [
     {
@@ -384,6 +385,31 @@ document.addEventListener('DOMContentLoaded', () => {
   const closeNotesModalBtn = document.getElementById('closeNotesModalBtn');
   const cancelNotesModalBtn = document.getElementById('cancelNotesModalBtn');
 
+  // DOM Elements - Amenities Modals & Controls
+  const openAddAmenityBtn = document.getElementById('openAddAmenityBtn');
+  const addAmenityModal = document.getElementById('addAmenityModal');
+  const addAmenityForm = document.getElementById('addAmenityForm');
+  const addAmenityNum = document.getElementById('addAmenityNum');
+  const addAmenityTitle = document.getElementById('addAmenityTitle');
+  const addAmenityImg = document.getElementById('addAmenityImg');
+  const addAmenityDesc = document.getElementById('addAmenityDesc');
+  const addAmenityPreviewBox = document.getElementById('addAmenityPreviewBox');
+  const addAmenityPreviewImg = document.getElementById('addAmenityPreviewImg');
+  const closeAddAmenityModalBtn = document.getElementById('closeAddAmenityModalBtn');
+  const cancelAddAmenityModalBtn = document.getElementById('cancelAddAmenityModalBtn');
+
+  const editAmenityModal = document.getElementById('editAmenityModal');
+  const editAmenityForm = document.getElementById('editAmenityForm');
+  const editAmenityOriginalNum = document.getElementById('editAmenityOriginalNum');
+  const editAmenityNum = document.getElementById('editAmenityNum');
+  const editAmenityTitle = document.getElementById('editAmenityTitle');
+  const editAmenityImg = document.getElementById('editAmenityImg');
+  const editAmenityDesc = document.getElementById('editAmenityDesc');
+  const editAmenityPreviewBox = document.getElementById('editAmenityPreviewBox');
+  const editAmenityPreviewImg = document.getElementById('editAmenityPreviewImg');
+  const closeEditAmenityModalBtn = document.getElementById('closeEditAmenityModalBtn');
+  const cancelEditAmenityModalBtn = document.getElementById('cancelEditAmenityModalBtn');
+
   const toastContainer = document.getElementById('toastContainer');
 
   // Set Current Date in Header
@@ -458,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Load initial data
     loadDashboardStats();
     loadEnquiries();
-    renderAmenities();
+    loadAmenities();
   }
 
   function clearAuth() {
@@ -651,7 +677,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (targetViewId === 'viewGallery') {
       loadGallery();
     } else if (targetViewId === 'viewAmenities') {
-      renderAmenities();
+      loadAmenities();
     } else if (targetViewId === 'viewDatabase') {
       loadDatabase();
     }
@@ -1194,16 +1220,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 6. SITE GALLERY MODULE
   // =========================================================================
 
-  function resolveAssetUrl(url) {
-    if (!url) return '';
-    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
-    const clean = url.replace(/^(\.\.\/|\.\/|\/)+/, '');
-    if (typeof window !== 'undefined' && window.location.protocol === 'file:') {
-      return '../' + clean;
-    }
-    return '/' + clean;
-  }
-
   async function loadGallery() {
     if (!galleryContainer) return;
     galleryContainer.innerHTML = '<div class="loading-state"><div class="spinner"></div><span>Loading gallery from database...</span></div>';
@@ -1218,59 +1234,59 @@ document.addEventListener('DOMContentLoaded', () => {
         ? data.gallery
         : [
             {
-              id: 'gal-01',
-              title: 'Actual Project Billboard & Entrance',
-              category: 'Surroundings',
-              image: '/assets/images/site-billboard.jpg',
-              caption: 'Prominent project billboard installed along the main access road.'
+              id: 1,
+              title: 'Building Architectural Elevation',
+              category: 'Architecture',
+              image: '../assets/images/building-exterior.jpg',
+              description: 'Modern elevation facade showcasing glass balconies, clean lines, and earth-tone textures.'
             },
             {
-              id: 'gal-02',
-              title: 'Boundary Sign & Security Enclosure',
-              category: 'Site',
-              image: '/assets/images/boundary-sign.jpg',
-              caption: 'Project demarcation board identifying Capetown Heights site.'
+              id: 2,
+              title: 'Grand Entrance & Landscaped Driveway',
+              category: 'Site Atmosphere',
+              image: '../assets/images/entrance-view.jpg',
+              description: 'Welcoming entrance gates with security barriers, fountain, and tree-lined avenues.'
             },
             {
-              id: 'gal-03',
-              title: 'Ground Level Preparation & Excavation',
-              category: 'Construction',
-              image: '/assets/images/ground-prep.jpg',
-              caption: 'Ongoing earthwork and ground preparation works at site.'
+              id: 3,
+              title: 'Double Basement & Covered Parking',
+              category: 'Infrastructure',
+              image: '../assets/images/amenities/double-basement.jpg',
+              description: 'Two-tier subterranean residential parking with dedicated bays and wide turning aisles.'
             },
             {
-              id: 'gal-04',
-              title: 'Site Office & Customer Experience Center',
-              category: 'Amenities',
-              image: '/assets/images/site-office-building.jpg',
-              caption: 'On-site facility building for site visits and engineering coordination.'
+              id: 4,
+              title: 'AC Multipurpose Banquet Hall',
+              category: 'Clubhouse',
+              image: '../assets/images/amenities/multipurpose-hall.jpg',
+              description: 'Climate-controlled social hall designed for family celebrations and community gatherings.'
             },
             {
-              id: 'gal-05',
-              title: 'Main Access Road & Approach Connectivity',
-              category: 'Surroundings',
-              image: '/assets/images/site-road-view.jpg',
-              caption: 'Wide paved municipal approach road connecting to Silvassa.'
+              id: 5,
+              title: 'Marble Temple Devotional Sanctum',
+              category: 'Spiritual',
+              image: '../assets/images/amenities/temple.jpg',
+              description: 'Serene white marble sanctum inside residential grounds for peaceful daily worship.'
             },
             {
-              id: 'gal-06',
-              title: 'High-Rise Architectural Elevation',
-              category: 'Exterior',
-              image: '/assets/images/building-exterior.jpg',
-              caption: 'Architectural rendering showcasing the complete building elevation.'
+              id: 6,
+              title: 'Rooftop Gazebo & Sky Garden',
+              category: 'Leisure',
+              image: '../assets/images/amenities/terrace-gazebo.jpg',
+              description: 'Terrace garden with sunset viewing deck, sit-outs, and panoramic Silvassa skyline views.'
             }
           ];
 
       galleryContainer.innerHTML = items.map(g => `
         <div class="gallery-admin-card">
           <div class="gallery-admin-img-wrap">
-            <img src="${resolveAssetUrl(g.image)}" alt="${escapeHtml(g.title)}" class="gallery-admin-img" loading="lazy" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='../'+this.getAttribute('src').replace(/^\\/+/,'');}">
+            <img src="${g.image}" alt="${escapeHtml(g.title)}" class="gallery-admin-img" loading="lazy">
             <span class="admin-amenity-badge">${escapeHtml(g.category || 'Gallery')}</span>
           </div>
           <div class="gallery-admin-body">
             <h4 class="gallery-admin-title">${escapeHtml(g.title)}</h4>
             <p style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.4;">
-              ${escapeHtml(g.caption || g.description || '')}
+              ${escapeHtml(g.description || '')}
             </p>
           </div>
         </div>
@@ -1283,25 +1299,365 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // =========================================================================
-  // 7. 40 VERIFIED AMENITIES MODULE
+  // 7. AMENITIES MANAGEMENT MODULE (CRUD)
   // =========================================================================
 
-  function renderAmenities() {
-    if (!adminAmenitiesGrid) return;
-    if (adminAmenitiesGrid.children.length > 0) return; // Already rendered
+  function resolveAmenityImg(url) {
+    if (!url) return '../assets/images/building-exterior.jpg';
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+    if (url.startsWith('../')) return url;
+    if (url.startsWith('/')) return '..' + url;
+    return '../' + url;
+  }
 
-    adminAmenitiesGrid.innerHTML = projectAmenities.map(am => `
-      <div class="admin-amenity-card">
-        <div class="admin-amenity-img-wrap">
-          <img src="${resolveAssetUrl(am.img)}" alt="${escapeHtml(am.title)}" class="admin-amenity-img" loading="lazy" onerror="if(!this.dataset.retried){this.dataset.retried=1;this.src='../'+this.getAttribute('src').replace(/^\\/+/,'');}">
-          <span class="admin-amenity-badge">#${escapeHtml(am.num)}</span>
+  function updateAmenitiesCounters(count) {
+    const heading = document.getElementById('amenitiesHeading');
+    if (heading) heading.textContent = `All ${count} Verified Project Amenities`;
+    const sub = document.getElementById('amenitiesSubtitle');
+    if (sub) sub.textContent = `Complete catalog of ${count} lifestyle, wellness, and infrastructure facilities provided by Nirali Group.`;
+    const sidebarBadge = document.getElementById('sidebarAmenitiesBadge');
+    if (sidebarBadge) sidebarBadge.textContent = String(count);
+    const sidebarLabel = document.getElementById('sidebarAmenitiesLabel');
+    if (sidebarLabel) sidebarLabel.textContent = `${count} Verified Amenities`;
+  }
+
+  function renderAmenitiesList(items) {
+    if (!adminAmenitiesGrid) return;
+    if (!items || items.length === 0) {
+      adminAmenitiesGrid.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; background: #fff; border-radius: 8px; border: 1px dashed var(--border-color);">
+          <p style="color: var(--text-muted); margin-bottom: 1rem;">No project amenities currently registered.</p>
+          <button type="button" class="btn-action primary" onclick="document.getElementById('openAddAmenityBtn')?.click()">+ Add First Amenity</button>
         </div>
-        <div class="admin-amenity-content">
-          <h4 class="admin-amenity-title">${escapeHtml(am.title)}</h4>
-          <p class="admin-amenity-desc">${escapeHtml(am.desc)}</p>
+      `;
+      return;
+    }
+
+    adminAmenitiesGrid.innerHTML = items.map(am => {
+      const numStr = escapeHtml(String(am.num || ''));
+      const titleStr = escapeHtml(am.title || 'Untitled Amenity');
+      const descStr = escapeHtml(am.desc || am.description || '');
+      const rawImg = am.img || '';
+      const imgPath = resolveAmenityImg(rawImg);
+
+      return `
+        <div class="admin-amenity-card" data-num="${numStr}">
+          <div class="admin-amenity-img-wrap">
+            <img src="${imgPath}" alt="${titleStr}" class="admin-amenity-img" loading="lazy" onerror="this.src='../assets/images/building-exterior.jpg'">
+            <span class="admin-amenity-badge">#${numStr}</span>
+          </div>
+          <div class="admin-amenity-content">
+            <h4 class="admin-amenity-title">${titleStr}</h4>
+            <p class="admin-amenity-desc">${descStr}</p>
+          </div>
+          <div class="admin-amenity-footer">
+            <button type="button" class="btn-amenity-action edit" data-action="edit" data-num="${numStr}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+              <span>Edit</span>
+            </button>
+            <button type="button" class="btn-amenity-action delete" data-action="delete" data-num="${numStr}">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              <span>Delete</span>
+            </button>
+          </div>
         </div>
-      </div>
-    `).join('');
+      `;
+    }).join('');
+  }
+
+  async function loadAmenities() {
+    if (!adminAmenitiesGrid) return;
+
+    // First load from localStorage or defaults
+    if (!liveAmenities || liveAmenities.length === 0) {
+      try {
+        const stored = localStorage.getItem('capetown_amenities');
+        if (stored) {
+          liveAmenities = JSON.parse(stored);
+        }
+      } catch (e) {}
+
+      if (!liveAmenities || liveAmenities.length === 0) {
+        liveAmenities = JSON.parse(JSON.stringify(projectAmenities));
+      }
+
+      renderAmenitiesList(liveAmenities);
+      updateAmenitiesCounters(liveAmenities.length);
+    }
+
+    // Attempt to fetch fresh from server
+    try {
+      const res = await fetch(API_URL + '/api/admin/amenities', {
+        headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.amenities) && data.amenities.length > 0) {
+          liveAmenities = data.amenities.map(a => ({
+            id: a.id,
+            num: String(a.num),
+            title: a.title,
+            img: a.img,
+            desc: a.description || a.desc || ''
+          }));
+          try {
+            localStorage.setItem('capetown_amenities', JSON.stringify(liveAmenities));
+          } catch(e) {}
+          renderAmenitiesList(liveAmenities);
+          updateAmenitiesCounters(liveAmenities.length);
+        }
+      }
+    } catch (err) {
+      console.warn('Unable to reach server for amenities, using cached data:', err);
+    }
+  }
+
+  // Open Add Amenity Modal
+  if (openAddAmenityBtn && addAmenityModal) {
+    openAddAmenityBtn.addEventListener('click', () => {
+      if (addAmenityForm) addAmenityForm.reset();
+      if (addAmenityPreviewBox) addAmenityPreviewBox.style.display = 'none';
+
+      let nextNum = 1;
+      if (liveAmenities && liveAmenities.length > 0) {
+        const numericValues = liveAmenities
+          .map(a => parseInt(a.num, 10))
+          .filter(n => !isNaN(n));
+        if (numericValues.length > 0) {
+          nextNum = Math.max(...numericValues) + 1;
+        } else {
+          nextNum = liveAmenities.length + 1;
+        }
+      }
+      if (addAmenityNum) {
+        addAmenityNum.value = nextNum < 10 ? '0' + nextNum : String(nextNum);
+      }
+      addAmenityModal.style.display = 'flex';
+      if (addAmenityTitle) addAmenityTitle.focus();
+    });
+  }
+
+  // Close Add Amenity Modal
+  if (closeAddAmenityModalBtn && addAmenityModal) {
+    closeAddAmenityModalBtn.addEventListener('click', () => {
+      addAmenityModal.style.display = 'none';
+    });
+  }
+  if (cancelAddAmenityModalBtn && addAmenityModal) {
+    cancelAddAmenityModalBtn.addEventListener('click', () => {
+      addAmenityModal.style.display = 'none';
+    });
+  }
+
+  // Add Amenity Image Preview
+  if (addAmenityImg && addAmenityPreviewBox && addAmenityPreviewImg) {
+    addAmenityImg.addEventListener('input', () => {
+      const val = addAmenityImg.value.trim();
+      if (val) {
+        addAmenityPreviewImg.src = resolveAmenityImg(val);
+        addAmenityPreviewBox.style.display = 'block';
+      } else {
+        addAmenityPreviewBox.style.display = 'none';
+      }
+    });
+  }
+
+  // Save New Amenity Form Submission
+  if (addAmenityForm) {
+    addAmenityForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const num = addAmenityNum ? addAmenityNum.value.trim() : '';
+      const title = addAmenityTitle ? addAmenityTitle.value.trim() : '';
+      const img = addAmenityImg ? addAmenityImg.value.trim() : '';
+      const desc = addAmenityDesc ? addAmenityDesc.value.trim() : '';
+
+      if (!num || !title || !img) {
+        showToast('Please fill in Amenity Number, Title, and Image URL.', 'error');
+        return;
+      }
+
+      // Check duplicate number
+      if (liveAmenities.some(a => String(a.num).toLowerCase() === num.toLowerCase())) {
+        showToast('An amenity with number #' + num + ' already exists. Please choose another number.', 'error');
+        return;
+      }
+
+      const newAmenity = { num, title, img, desc, description: desc };
+
+      // Local update
+      liveAmenities.push(newAmenity);
+      liveAmenities.sort((a, b) => {
+        const na = parseInt(a.num, 10);
+        const nb = parseInt(b.num, 10);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return String(a.num).localeCompare(String(b.num));
+      });
+
+      try {
+        localStorage.setItem('capetown_amenities', JSON.stringify(liveAmenities));
+      } catch (err) {}
+
+      renderAmenitiesList(liveAmenities);
+      updateAmenitiesCounters(liveAmenities.length);
+      addAmenityModal.style.display = 'none';
+      showToast('Amenity #' + num + ' added successfully!', 'success');
+
+      // Persist to Backend API
+      try {
+        await fetch(API_URL + '/api/admin/amenities', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify(newAmenity)
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, saved locally:', apiErr);
+      }
+    });
+  }
+
+  // Close Edit Amenity Modal
+  if (closeEditAmenityModalBtn && editAmenityModal) {
+    closeEditAmenityModalBtn.addEventListener('click', () => {
+      editAmenityModal.style.display = 'none';
+    });
+  }
+  if (cancelEditAmenityModalBtn && editAmenityModal) {
+    cancelEditAmenityModalBtn.addEventListener('click', () => {
+      editAmenityModal.style.display = 'none';
+    });
+  }
+
+  // Edit Amenity Image Preview
+  if (editAmenityImg && editAmenityPreviewBox && editAmenityPreviewImg) {
+    editAmenityImg.addEventListener('input', () => {
+      const val = editAmenityImg.value.trim();
+      if (val) {
+        editAmenityPreviewImg.src = resolveAmenityImg(val);
+        editAmenityPreviewBox.style.display = 'block';
+      } else {
+        editAmenityPreviewBox.style.display = 'none';
+      }
+    });
+  }
+
+  // Update Amenity Form Submission
+  if (editAmenityForm) {
+    editAmenityForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const origNum = editAmenityOriginalNum ? editAmenityOriginalNum.value : '';
+      const num = editAmenityNum ? editAmenityNum.value.trim() : '';
+      const title = editAmenityTitle ? editAmenityTitle.value.trim() : '';
+      const img = editAmenityImg ? editAmenityImg.value.trim() : '';
+      const desc = editAmenityDesc ? editAmenityDesc.value.trim() : '';
+
+      if (!num || !title || !img) {
+        showToast('Please fill in Amenity Number, Title, and Image URL.', 'error');
+        return;
+      }
+
+      // Check duplicate number if changed
+      if (num.toLowerCase() !== origNum.toLowerCase() &&
+          liveAmenities.some(a => String(a.num).toLowerCase() === num.toLowerCase())) {
+        showToast('Another amenity with number #' + num + ' already exists.', 'error');
+        return;
+      }
+
+      const idx = liveAmenities.findIndex(a => String(a.num).toLowerCase() === origNum.toLowerCase());
+      if (idx !== -1) {
+        liveAmenities[idx] = { ...liveAmenities[idx], num, title, img, desc, description: desc };
+      }
+
+      liveAmenities.sort((a, b) => {
+        const na = parseInt(a.num, 10);
+        const nb = parseInt(b.num, 10);
+        if (!isNaN(na) && !isNaN(nb)) return na - nb;
+        return String(a.num).localeCompare(String(b.num));
+      });
+
+      try {
+        localStorage.setItem('capetown_amenities', JSON.stringify(liveAmenities));
+      } catch (err) {}
+
+      renderAmenitiesList(liveAmenities);
+      updateAmenitiesCounters(liveAmenities.length);
+      editAmenityModal.style.display = 'none';
+      showToast('Amenity #' + num + ' updated successfully!', 'success');
+
+      // Persist to Backend API
+      try {
+        await fetch(API_URL + '/api/admin/amenities/' + encodeURIComponent(origNum), {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(authToken ? { 'Authorization': 'Bearer ' + authToken } : {})
+          },
+          body: JSON.stringify({ num, title, img, desc, description: desc })
+        });
+      } catch (apiErr) {
+        console.warn('Backend sync failed, updated locally:', apiErr);
+      }
+    });
+  }
+
+  // Event Delegation on Amenities Grid for Edit & Delete buttons
+  if (adminAmenitiesGrid) {
+    adminAmenitiesGrid.addEventListener('click', async (e) => {
+      const editBtn = e.target.closest('[data-action="edit"]');
+      const deleteBtn = e.target.closest('[data-action="delete"]');
+
+      if (editBtn) {
+        const num = editBtn.getAttribute('data-num');
+        const item = liveAmenities.find(a => String(a.num) === String(num));
+        if (!item) return;
+
+        if (editAmenityOriginalNum) editAmenityOriginalNum.value = item.num;
+        if (editAmenityNum) editAmenityNum.value = item.num;
+        if (editAmenityTitle) editAmenityTitle.value = item.title;
+        if (editAmenityImg) editAmenityImg.value = item.img;
+        if (editAmenityDesc) editAmenityDesc.value = item.desc || item.description || '';
+
+        if (editAmenityPreviewImg && editAmenityPreviewBox) {
+          editAmenityPreviewImg.src = resolveAmenityImg(item.img);
+          editAmenityPreviewBox.style.display = 'block';
+        }
+
+        if (editAmenityModal) editAmenityModal.style.display = 'flex';
+        return;
+      }
+
+      if (deleteBtn) {
+        const num = deleteBtn.getAttribute('data-num');
+        const item = liveAmenities.find(a => String(a.num) === String(num));
+        const itemTitle = item ? item.title : '#' + num;
+
+        if (!confirm('Are you sure you want to delete Amenity #' + num + ' (' + itemTitle + ')? This will remove it from the catalog.')) {
+          return;
+        }
+
+        // Optimistic delete
+        liveAmenities = liveAmenities.filter(a => String(a.num) !== String(num));
+        try {
+          localStorage.setItem('capetown_amenities', JSON.stringify(liveAmenities));
+        } catch (err) {}
+
+        renderAmenitiesList(liveAmenities);
+        updateAmenitiesCounters(liveAmenities.length);
+        showToast('Amenity #' + num + ' deleted successfully!', 'success');
+
+        // Persist to Backend API
+        try {
+          await fetch(API_URL + '/api/admin/amenities/' + encodeURIComponent(num), {
+            method: 'DELETE',
+            headers: authToken ? { 'Authorization': 'Bearer ' + authToken } : {}
+          });
+        } catch (apiErr) {
+          console.warn('Backend delete failed, updated locally:', apiErr);
+        }
+      }
+    });
   }
 
   // =========================================================================

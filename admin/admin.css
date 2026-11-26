@@ -1710,6 +1710,61 @@ body {
   line-height: 1.4;
 }
 
+.admin-amenity-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.65rem 0.85rem;
+  background: #FAF8F5;
+  border-top: 1px solid var(--border-color);
+  margin-top: auto;
+}
+
+.btn-amenity-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.32rem 0.65rem;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  background: #FFFFFF;
+  color: var(--dark-espresso);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-amenity-action svg {
+  flex-shrink: 0;
+}
+
+.btn-amenity-action:hover {
+  background: #F0EAE1;
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.btn-amenity-action.delete {
+  color: #C53030;
+  border-color: #FED7D7;
+}
+
+.btn-amenity-action.delete:hover {
+  background: #FFF5F5;
+  border-color: #E53E3E;
+  color: #9B2C2C;
+}
+
+.amenity-img-preview-box {
+  background: #F7FAFC;
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  text-align: center;
+}
+
 /* DATABASE CONSOLE */
 .db-console-card {
   background: #FFFFFF;

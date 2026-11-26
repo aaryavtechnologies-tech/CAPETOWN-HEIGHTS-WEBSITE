@@ -75,6 +75,41 @@ async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
+    // Ensure amenities table exists
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS amenities (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        num VARCHAR(20) NOT NULL UNIQUE,
+        title VARCHAR(255) NOT NULL,
+        img VARCHAR(255) NOT NULL,
+        description TEXT NULL,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+    `);
+
+    // Seed amenities if table is empty
+    const [amenityCount] = await conn.query('SELECT COUNT(*) AS count FROM amenities');
+    if (amenityCount[0].count === 0) {
+      const fs = require('fs');
+      const path = require('path');
+      const dataPath = path.join(__dirname, 'scratch', 'amenities_data.json');
+      if (fs.existsSync(dataPath)) {
+        try {
+          const initialAmenities = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+          for (const am of initialAmenities) {
+            await conn.query(
+              'INSERT INTO amenities (num, title, img, description) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE title=VALUES(title), img=VALUES(img), description=VALUES(description)',
+              [am.num, am.title, am.img, am.desc || '']
+            );
+          }
+          console.log(`[MySQL] Seeded ${initialAmenities.length} default amenities into 'amenities' table`);
+        } catch (e) {
+          console.error('[MySQL] Error seeding amenities:', e.message);
+        }
+      }
+    }
+
     conn.release();
     return true;
   } catch (err) {
