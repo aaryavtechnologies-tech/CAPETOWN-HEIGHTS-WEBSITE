@@ -145,7 +145,7 @@ let defaultAmenities = [
   {
     "num": "05",
     "img": "assets/images/amenities/gym.jpg",
-    "title": "Gym",
+    "title": "Big Gym",
     "desc": "Contemporary fitness center equipped with premium cardio and strength-training equipment for daily health routines."
   },
   {
@@ -543,11 +543,16 @@ export async function onRequest(context) {
       const targetNum = decodeURIComponent(path.split("/api/admin/amenities/")[1]);
       let body = {};
       try { body = await request.json(); } catch (e) {}
-      const target = defaultAmenities.find(a => a.num === targetNum);
+      const target = defaultAmenities.find(a => 
+        a.num === targetNum || 
+        String(parseInt(a.num, 10)) === String(parseInt(targetNum, 10)) ||
+        String(a.num).padStart(2, '0') === String(targetNum).padStart(2, '0')
+      );
       if (target) {
         if (body.title) target.title = body.title.trim();
         if (body.img) target.img = body.img.trim();
         if (body.desc !== undefined) target.desc = body.desc.trim();
+        if (body.description !== undefined) target.desc = body.description.trim();
         if (body.num) target.num = body.num.trim();
       }
       return jsonResponse({ success: true, message: "Amenity updated successfully." });
@@ -555,7 +560,11 @@ export async function onRequest(context) {
 
     if (path.startsWith("/api/admin/amenities/") && method === "DELETE") {
       const targetNum = decodeURIComponent(path.split("/api/admin/amenities/")[1]);
-      defaultAmenities = defaultAmenities.filter(a => a.num !== targetNum);
+      defaultAmenities = defaultAmenities.filter(a => 
+        a.num !== targetNum && 
+        String(parseInt(a.num, 10)) !== String(parseInt(targetNum, 10)) &&
+        String(a.num).padStart(2, '0') !== String(targetNum).padStart(2, '0')
+      );
       return jsonResponse({ success: true, message: "Amenity deleted successfully." });
     }
 

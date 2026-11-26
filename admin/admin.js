@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
   {
     "num": "05",
     "img": "assets/images/amenities/gym.jpg",
-    "title": "Gym",
+    "title": "Big Gym",
     "desc": "Contemporary fitness center equipped with premium cardio and strength-training equipment for daily health routines."
   },
   {

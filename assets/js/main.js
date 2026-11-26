@@ -462,6 +462,151 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 8b. Dynamic Amenities Synchronization with Admin & Database Updates
+  async function loadDynamicAmenities() {
+    const cards = document.querySelectorAll('.amenity-bg-card');
+    if (cards.length === 0) return;
+
+    function applyAmenities(amenities) {
+      if (!Array.isArray(amenities) || amenities.length === 0) return;
+
+      const map = new Map();
+      amenities.forEach(a => {
+        const rawNum = String(a.num || '').replace(/[^0-9]/g, '');
+        const parsed = parseInt(rawNum, 10);
+        if (!isNaN(parsed)) {
+          map.set(parsed, a);
+          map.set(String(parsed).padStart(2, '0'), a);
+        }
+        if (a.num) map.set(String(a.num).trim(), a);
+      });
+
+      const currentCards = document.querySelectorAll('.amenity-bg-card');
+      const seenNums = new Set();
+
+      currentCards.forEach(card => {
+        const badgeEl = card.querySelector('.amenity-badge-num');
+        if (!badgeEl) return;
+        const numText = badgeEl.textContent.trim().replace(/[^0-9]/g, '');
+        const numVal = parseInt(numText, 10);
+        if (isNaN(numVal)) return;
+
+        const item = map.get(numVal) || map.get(numText) || map.get(String(numVal).padStart(2, '0'));
+        if (!item) {
+          // If deleted in admin, hide card
+          card.style.display = 'none';
+          return;
+        }
+
+        seenNums.add(numVal);
+        card.style.display = '';
+
+        // Update Title
+        const titleEl = card.querySelector('.amenity-bg-title');
+        if (titleEl && item.title) {
+          titleEl.textContent = item.title;
+        }
+
+        // Update Description
+        const descEl = card.querySelector('.amenity-bg-desc');
+        const descText = item.desc || item.description || '';
+        if (descEl && descText) {
+          descEl.textContent = descText;
+        }
+
+        // Update Image
+        const imgEl = card.querySelector('.amenity-bg-img');
+        if (imgEl && item.img) {
+          let resolved = item.img.trim().replace(/^\.\.\//, '');
+          if (imgEl.getAttribute('src') !== resolved) {
+            imgEl.src = resolved;
+          }
+          if (item.title) {
+            imgEl.alt = item.title;
+          }
+        }
+      });
+
+      // Handle any newly added amenities that don't have cards yet
+      const lastGrid = document.querySelector('.amenities-group-wrapper[data-batch="batch-4"] .amenities-card-grid') ||
+                       document.querySelector('.amenities-card-grid');
+      if (lastGrid) {
+        amenities.forEach(a => {
+          const rawNum = String(a.num || '').replace(/[^0-9]/g, '');
+          const parsed = parseInt(rawNum, 10);
+          if (!isNaN(parsed) && !seenNums.has(parsed)) {
+            const existing = document.querySelector(`[data-dynamic-num="${parsed}"]`);
+            if (!existing) {
+              const newCard = document.createElement('div');
+              newCard.className = 'amenity-bg-card';
+              newCard.setAttribute('data-dynamic-num', String(parsed));
+              const numStr = String(parsed).padStart(2, '0');
+              const imgSrc = (a.img || '').trim().replace(/^\.\.\//, '') || 'assets/images/amenities/multipurpose-hall.jpg';
+              newCard.innerHTML = `
+                <img src="${imgSrc}" alt="${(a.title || '').replace(/"/g, '&quot;')}" class="amenity-bg-img" loading="lazy">
+                <div class="amenity-bg-overlay"></div>
+                <span class="amenity-badge-num">${numStr}</span>
+                <div class="amenity-bg-content">
+                  <span class="amenity-gold-accent" aria-hidden="true"></span>
+                  <h4 class="amenity-bg-title">${(a.title || '').replace(/</g, '&lt;')}</h4>
+                  <p class="amenity-bg-desc">${(a.desc || a.description || '').replace(/</g, '&lt;')}</p>
+                </div>
+              `;
+              lastGrid.appendChild(newCard);
+              seenNums.add(parsed);
+            }
+          }
+        });
+      }
+    }
+
+    // 1. Instantly apply from localStorage (immediate, zero waiting)
+    try {
+      const cached = localStorage.getItem('capetown_amenities');
+      if (cached) {
+        const list = JSON.parse(cached);
+        if (Array.isArray(list) && list.length > 0) {
+          applyAmenities(list);
+        }
+      }
+    } catch (e) {}
+
+    // 2. Fetch fresh from backend API
+    const apiUrl = (function() {
+      if (typeof window === 'undefined') return '';
+      if (window.location.port === '8000') return '';
+      const host = window.location.hostname || 'localhost';
+      const proto = window.location.protocol || 'http:';
+      if (host === 'localhost' || host === '127.0.0.1' || /^(\d{1,3}\.){3}\d{1,3}$/.test(host)) {
+        return proto + '//' + host + ':8000';
+      }
+      return '';
+    })();
+
+    try {
+      const res = await fetch(apiUrl + '/api/amenities');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.amenities) && data.amenities.length > 0) {
+          applyAmenities(data.amenities);
+          try {
+            localStorage.setItem('capetown_amenities', JSON.stringify(data.amenities));
+          } catch (e) {}
+        }
+      }
+    } catch (err) {}
+
+    // 3. Listen to cross-tab storage changes so updates are instant across tabs
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'capetown_amenities' && e.newValue) {
+        try {
+          const list = JSON.parse(e.newValue);
+          applyAmenities(list);
+        } catch (err) {}
+      }
+    });
+  }
+
   // 9. Dynamic Contact Page Details Synchronization
   async function loadDynamicContactInfo() {
     const titleEl = document.getElementById('projectOfficeTitle');
@@ -535,5 +680,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {}
   }
 
+  loadDynamicAmenities();
   loadDynamicContactInfo();
 });

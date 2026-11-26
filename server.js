@@ -805,8 +805,8 @@ app.put('/api/admin/amenities/:num', authenticateAdmin, async (req, res) => {
     const finalDesc = (desc || description || '').trim();
 
     await pool.query(
-      'UPDATE amenities SET num = ?, title = ?, img = ?, description = ? WHERE num = ?',
-      [newNum, title.trim(), finalImg, finalDesc, oldNum]
+      'UPDATE amenities SET num = ?, title = ?, img = ?, description = ? WHERE num = ? OR CAST(num AS UNSIGNED) = CAST(? AS UNSIGNED)',
+      [newNum, title.trim(), finalImg, finalDesc, oldNum, oldNum]
     );
 
     res.json({
@@ -823,7 +823,7 @@ app.put('/api/admin/amenities/:num', authenticateAdmin, async (req, res) => {
 app.delete('/api/admin/amenities/:num', authenticateAdmin, async (req, res) => {
   try {
     const num = req.params.num;
-    await pool.query('DELETE FROM amenities WHERE num = ?', [num]);
+    await pool.query('DELETE FROM amenities WHERE num = ? OR CAST(num AS UNSIGNED) = CAST(? AS UNSIGNED)', [num, num]);
     res.json({ success: true, message: `Amenity #${num} deleted successfully.` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
