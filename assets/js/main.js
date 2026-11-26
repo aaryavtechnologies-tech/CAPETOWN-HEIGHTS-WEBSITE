@@ -746,6 +746,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
+      // LinkedIn
+      if (c.linkedin_url) {
+        document.querySelectorAll('a#footerLinkedInLink, .footer-social-btn[aria-label="LinkedIn"]').forEach(el => {
+          el.href = c.linkedin_url;
+        });
+      }
+
       // Email
       if (c.email) {
         const cleanEmail = String(c.email).trim();
