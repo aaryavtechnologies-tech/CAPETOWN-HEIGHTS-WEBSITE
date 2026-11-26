@@ -2104,9 +2104,95 @@ body {
   border-radius: var(--radius-lg);
   max-width: 580px;
   width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   animation: modalFadeIn 0.25s ease;
+}
+
+/* COMPACT MODAL STYLING FOR CONTACT & TALL FORMS */
+.modal-dialog.modal-compact {
+  max-width: 500px;
+}
+
+.modal-dialog.modal-compact .modal-header {
+  padding: 0.85rem 1.25rem;
+  background: #FAF8F5;
+  border-bottom: 1px solid var(--border-color);
+  flex-shrink: 0;
+}
+
+.modal-dialog.modal-compact .modal-header h3 {
+  font-size: 1.15rem;
+}
+
+.modal-dialog.modal-compact .modal-form {
+  padding: 0.9rem 1.25rem;
+  gap: 0.65rem;
+  overflow-y: auto;
+  max-height: calc(90vh - 110px);
+}
+
+.modal-dialog.modal-compact .modal-form::-webkit-scrollbar {
+  width: 5px;
+}
+
+.modal-dialog.modal-compact .modal-form::-webkit-scrollbar-thumb {
+  background: #D2C4B5;
+  border-radius: 4px;
+}
+
+.modal-dialog.modal-compact .form-row {
+  gap: 0.65rem;
+}
+
+.modal-dialog.modal-compact .form-group {
+  margin: 0;
+}
+
+.modal-dialog.modal-compact .form-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent-gold);
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.modal-dialog.modal-compact .form-control {
+  height: 35px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.84rem;
+  border-radius: 6px;
+}
+
+.modal-dialog.modal-compact textarea.form-control {
+  height: 48px;
+  min-height: 48px;
+  max-height: 65px;
+  padding: 0.35rem 0.65rem;
+  resize: vertical;
+}
+
+.modal-dialog.modal-compact .links-grid-compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+
+.modal-dialog.modal-compact .links-grid-compact .form-control {
+  font-size: 0.78rem;
+}
+
+.modal-dialog.modal-compact .modal-footer {
+  padding: 0.75rem 1.25rem;
+  background: #FAF8F5;
+  border-top: 1px solid var(--border-color);
+  margin-top: 0.25rem;
+  flex-shrink: 0;
 }
 
 @keyframes modalFadeIn {
