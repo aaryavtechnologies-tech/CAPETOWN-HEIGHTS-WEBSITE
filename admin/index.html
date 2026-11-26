@@ -753,10 +753,40 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Image Path / URL <span class="label-req">*</span></label>
-          <input type="text" id="addAmenityImg" class="form-control" placeholder="assets/images/amenities/... or https://..." required>
-          <div class="amenity-img-preview-box" id="addAmenityPreviewBox" style="display: none; margin-top: 0.5rem;">
-            <img id="addAmenityPreviewImg" src="" alt="Preview" style="max-height: 120px; border-radius: 6px; object-fit: cover;">
+          <label class="form-label">Facility Image <span class="label-req">*</span></label>
+          
+          <div class="amenity-img-uploader-wrap">
+            <div class="amenity-img-toolbar">
+              <input type="file" id="addAmenityFileInput" accept="image/*" style="display: none;">
+              <button type="button" class="btn-img-picker primary" id="addAmenityUploadBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Upload from Device</span>
+              </button>
+              <button type="button" class="btn-img-picker secondary" id="addAmenityChangeBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+                <span>Change Image</span>
+              </button>
+            </div>
+
+            <!-- Image Dropzone & Click-to-Replace Box -->
+            <div class="amenity-img-dropzone" id="addAmenityDropzone" title="Click or drop file to change image">
+              <img id="addAmenityPreviewImg" src="" alt="Preview" class="amenity-dropzone-img" style="display: none;">
+              <div class="amenity-dropzone-placeholder" id="addAmenityPlaceholder">
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="var(--accent-gold)"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+                <span>Click or tap to upload photo from device</span>
+                <span style="font-size: 0.72rem; color: var(--text-light);">Supports JPG, PNG, WEBP</span>
+              </div>
+              <div class="amenity-dropzone-overlay" id="addAmenityOverlay">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+                <span>Click to Change Image</span>
+              </div>
+            </div>
+
+            <div class="amenity-url-wrap">
+              <label class="form-label" style="font-size: 0.76rem; margin-top: 0.35rem; color: var(--text-muted);">Or enter Image Path / URL:</label>
+              <input type="text" id="addAmenityImg" class="form-control" placeholder="assets/images/amenities/... or https://..." required>
+              <span class="amenity-img-status-text" id="addAmenityStatusText">No new image selected yet</span>
+            </div>
           </div>
         </div>
 
@@ -794,10 +824,35 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">Image Path / URL <span class="label-req">*</span></label>
-          <input type="text" id="editAmenityImg" class="form-control" placeholder="assets/images/amenities/..." required>
-          <div class="amenity-img-preview-box" id="editAmenityPreviewBox" style="margin-top: 0.5rem;">
-            <img id="editAmenityPreviewImg" src="" alt="Preview" style="max-height: 120px; border-radius: 6px; object-fit: cover;">
+          <label class="form-label">Facility Image <span class="label-req">*</span></label>
+          
+          <div class="amenity-img-uploader-wrap">
+            <div class="amenity-img-toolbar">
+              <input type="file" id="editAmenityFileInput" accept="image/*" style="display: none;">
+              <button type="button" class="btn-img-picker primary" id="editAmenityUploadBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+                <span>Upload from Device</span>
+              </button>
+              <button type="button" class="btn-img-picker secondary" id="editAmenityChangeBtn">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+                <span>Change Image</span>
+              </button>
+            </div>
+
+            <!-- Image Dropzone & Click-to-Replace Box -->
+            <div class="amenity-img-dropzone" id="editAmenityDropzone" title="Click or drop file to change image">
+              <img id="editAmenityPreviewImg" src="" alt="Preview" class="amenity-dropzone-img">
+              <div class="amenity-dropzone-overlay">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#fff"><path d="M4 4h3l2-2h6l2 2h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg>
+                <span>Click to Change Image</span>
+              </div>
+            </div>
+
+            <div class="amenity-url-wrap">
+              <label class="form-label" style="font-size: 0.76rem; margin-top: 0.35rem; color: var(--text-muted);">Or enter Image Path / URL:</label>
+              <input type="text" id="editAmenityImg" class="form-control" placeholder="assets/images/amenities/..." required>
+              <span class="amenity-img-status-text" id="editAmenityStatusText">Current image loaded</span>
+            </div>
           </div>
         </div>
 
@@ -818,6 +873,6 @@
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- Admin JS Script -->
-  <script src="admin.js?v=20261126_02"></script>
+  <script src="admin.js?v=20261126_03"></script>
 </body>
 </html>

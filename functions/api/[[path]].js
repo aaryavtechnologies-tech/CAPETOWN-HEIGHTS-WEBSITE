@@ -487,6 +487,16 @@ export async function onRequest(context) {
       return jsonResponse({ success: true, message: "Amenity deleted successfully." });
     }
 
+    if (path === "/api/admin/upload-image" && method === "POST") {
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      return jsonResponse({
+        success: true,
+        url: body.image || "",
+        message: "Image uploaded successfully."
+      });
+    }
+
     // 9. Projects & Inventory
     if (path === "/api/admin/projects") {
       return jsonResponse({

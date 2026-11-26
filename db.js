@@ -81,7 +81,7 @@ async function initDatabase() {
         id INT AUTO_INCREMENT PRIMARY KEY,
         num VARCHAR(20) NOT NULL UNIQUE,
         title VARCHAR(255) NOT NULL,
-        img VARCHAR(255) NOT NULL,
+        img MEDIUMTEXT NOT NULL,
         description TEXT NULL,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP

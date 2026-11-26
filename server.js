@@ -6,16 +6,17 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const crypto = require('crypto');
 const { pool, initDatabase } = require('./db');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
 
-// Middleware
+// Middleware (with 25mb payload limit for image uploads)
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json({ limit: '25mb' }));
+app.use(express.urlencoded({ limit: '25mb', extended: true }));
 
 // In-Memory Session Token Storage (Active Admin Sessions)
 const activeSessions = new Map();
@@ -536,6 +537,56 @@ app.delete('/api/admin/amenities/:num', authenticateAdmin, async (req, res) => {
     res.json({ success: true, message: `Amenity #${num} deleted successfully.` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+});
+
+// Upload Amenity Image (Base64 data or multipart)
+app.post('/api/admin/upload-image', authenticateAdmin, async (req, res) => {
+  try {
+    const { image, name } = req.body;
+    if (!image) {
+      return res.status(400).json({ success: false, message: 'Image data is required.' });
+    }
+
+    // If it's a data URL, decode and write to disk
+    if (image.startsWith('data:image/')) {
+      const matches = image.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+      if (matches && matches.length === 3) {
+        let ext = matches[1].toLowerCase();
+        if (ext === 'jpeg') ext = 'jpg';
+        if (ext.includes('+xml')) ext = 'svg';
+        const base64Data = matches[2];
+        const buffer = Buffer.from(base64Data, 'base64');
+        
+        const uploadsDir = path.join(__dirname, 'assets', 'images', 'amenities', 'uploads');
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        const safeName = (name || 'amenity').replace(/[^a-zA-Z0-9_-]/g, '_').toLowerCase();
+        const filename = `${safeName}_${Date.now()}.${ext}`;
+        const filePath = path.join(uploadsDir, filename);
+
+        fs.writeFileSync(filePath, buffer);
+        const relativeUrl = `assets/images/amenities/uploads/${filename}`;
+        
+        return res.json({
+          success: true,
+          url: relativeUrl,
+          message: 'Image uploaded successfully.'
+        });
+      }
+    }
+
+    // Otherwise, return provided string URL
+    res.json({
+      success: true,
+      url: image,
+      message: 'Image URL registered.'
+    });
+  } catch (err) {
+    console.error('[Upload Error]', err);
+    res.status(500).json({ success: false, message: 'Image upload failed: ' + err.message });
   }
 });
 
