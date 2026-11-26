@@ -394,11 +394,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const addAmenityImg = document.getElementById('addAmenityImg');
   const addAmenityDesc = document.getElementById('addAmenityDesc');
   const addAmenityFileInput = document.getElementById('addAmenityFileInput');
-  const addAmenityUploadBtn = document.getElementById('addAmenityUploadBtn');
   const addAmenityChangeBtn = document.getElementById('addAmenityChangeBtn');
-  const addAmenityDropzone = document.getElementById('addAmenityDropzone');
+  const addAmenityBtnText = document.getElementById('addAmenityBtnText');
   const addAmenityPreviewImg = document.getElementById('addAmenityPreviewImg');
-  const addAmenityPlaceholder = document.getElementById('addAmenityPlaceholder');
   const addAmenityStatusText = document.getElementById('addAmenityStatusText');
   const closeAddAmenityModalBtn = document.getElementById('closeAddAmenityModalBtn');
   const cancelAddAmenityModalBtn = document.getElementById('cancelAddAmenityModalBtn');
@@ -411,9 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const editAmenityImg = document.getElementById('editAmenityImg');
   const editAmenityDesc = document.getElementById('editAmenityDesc');
   const editAmenityFileInput = document.getElementById('editAmenityFileInput');
-  const editAmenityUploadBtn = document.getElementById('editAmenityUploadBtn');
   const editAmenityChangeBtn = document.getElementById('editAmenityChangeBtn');
-  const editAmenityDropzone = document.getElementById('editAmenityDropzone');
   const editAmenityPreviewImg = document.getElementById('editAmenityPreviewImg');
   const editAmenityStatusText = document.getElementById('editAmenityStatusText');
   const closeEditAmenityModalBtn = document.getElementById('closeEditAmenityModalBtn');
@@ -1422,7 +1418,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Process and Upload Image File
-  async function processAmenityImageFile(file, imgInputEl, previewImgEl, statusTextEl, placeholderEl) {
+  async function processAmenityImageFile(file, imgInputEl, previewImgEl, statusTextEl, isAddModal) {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       showToast('Please select a valid image file (JPG, PNG, WEBP).', 'error');
@@ -1442,8 +1438,9 @@ document.addEventListener('DOMContentLoaded', () => {
         previewImgEl.src = dataUrl;
         previewImgEl.style.display = 'block';
       }
-      if (placeholderEl) {
-        placeholderEl.style.display = 'none';
+
+      if (isAddModal && addAmenityBtnText) {
+        addAmenityBtnText.textContent = 'Change Image';
       }
 
       // Pre-set dataUrl into input so form is valid even if backend is offline
@@ -1451,7 +1448,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Upload to backend API to store in uploads directory
       try {
-        if (statusTextEl) statusTextEl.textContent = `Uploading ${file.name} to server...`;
+        if (statusTextEl) statusTextEl.textContent = `Saving ${file.name}...`;
         const res = await fetch(API_URL + '/api/admin/upload-image', {
           method: 'POST',
           headers: {
@@ -1464,10 +1461,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (res.ok && d.success && d.url) {
           if (imgInputEl) imgInputEl.value = d.url;
           if (statusTextEl) {
-            statusTextEl.textContent = `✓ Image updated & saved: ${d.url}`;
+            statusTextEl.textContent = `✓ Image selected: ${file.name}`;
             statusTextEl.classList.add('success');
           }
-          showToast('Image changed successfully!', 'success');
+          showToast('Image updated successfully!', 'success');
           return;
         }
       } catch (err) {
@@ -1475,10 +1472,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (statusTextEl) {
-        statusTextEl.textContent = `✓ Image loaded from device: ${file.name} (${fileSizeKb} KB)`;
+        statusTextEl.textContent = `✓ Image selected: ${file.name} (${fileSizeKb} KB)`;
         statusTextEl.classList.add('success');
       }
-      showToast('Image changed from device!', 'success');
+      showToast('Image updated!', 'success');
     };
 
     reader.onerror = () => {
@@ -1495,11 +1492,14 @@ document.addEventListener('DOMContentLoaded', () => {
         addAmenityPreviewImg.src = '';
         addAmenityPreviewImg.style.display = 'none';
       }
-      if (addAmenityPlaceholder) {
-        addAmenityPlaceholder.style.display = 'flex';
+      if (addAmenityImg) {
+        addAmenityImg.value = '';
+      }
+      if (addAmenityBtnText) {
+        addAmenityBtnText.textContent = 'Choose Image';
       }
       if (addAmenityStatusText) {
-        addAmenityStatusText.textContent = 'No new image selected yet';
+        addAmenityStatusText.textContent = 'No photo selected';
         addAmenityStatusText.classList.remove('success');
       }
 
@@ -1534,55 +1534,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Add Amenity - Image File Upload & Dropzone triggers
-  if (addAmenityUploadBtn && addAmenityFileInput) {
-    addAmenityUploadBtn.addEventListener('click', () => addAmenityFileInput.click());
-  }
+  // Add Amenity - Image Picker (Single Click)
   if (addAmenityChangeBtn && addAmenityFileInput) {
     addAmenityChangeBtn.addEventListener('click', () => addAmenityFileInput.click());
   }
-  if (addAmenityDropzone && addAmenityFileInput) {
-    addAmenityDropzone.addEventListener('click', (e) => {
-      if (e.target !== addAmenityFileInput) addAmenityFileInput.click();
-    });
-    addAmenityDropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      addAmenityDropzone.classList.add('dragover');
-    });
-    addAmenityDropzone.addEventListener('dragleave', () => {
-      addAmenityDropzone.classList.remove('dragover');
-    });
-    addAmenityDropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      addAmenityDropzone.classList.remove('dragover');
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        processAmenityImageFile(e.dataTransfer.files[0], addAmenityImg, addAmenityPreviewImg, addAmenityStatusText, addAmenityPlaceholder);
-      }
-    });
+  if (addAmenityPreviewImg && addAmenityFileInput) {
+    addAmenityPreviewImg.addEventListener('click', () => addAmenityFileInput.click());
   }
   if (addAmenityFileInput) {
     addAmenityFileInput.addEventListener('change', (e) => {
       if (e.target.files && e.target.files[0]) {
-        processAmenityImageFile(e.target.files[0], addAmenityImg, addAmenityPreviewImg, addAmenityStatusText, addAmenityPlaceholder);
-      }
-    });
-  }
-
-  // Add Amenity - Manual URL input
-  if (addAmenityImg) {
-    addAmenityImg.addEventListener('input', () => {
-      const val = addAmenityImg.value.trim();
-      if (val && addAmenityPreviewImg) {
-        addAmenityPreviewImg.src = resolveAmenityImg(val);
-        addAmenityPreviewImg.style.display = 'block';
-        if (addAmenityPlaceholder) addAmenityPlaceholder.style.display = 'none';
-        if (addAmenityStatusText) {
-          addAmenityStatusText.textContent = 'Custom image path specified';
-          addAmenityStatusText.classList.remove('success');
-        }
-      } else if (!val && addAmenityPlaceholder) {
-        if (addAmenityPreviewImg) addAmenityPreviewImg.style.display = 'none';
-        addAmenityPlaceholder.style.display = 'flex';
+        processAmenityImageFile(e.target.files[0], addAmenityImg, addAmenityPreviewImg, addAmenityStatusText, true);
       }
     });
   }
@@ -1596,8 +1558,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const img = addAmenityImg ? addAmenityImg.value.trim() : '';
       const desc = addAmenityDesc ? addAmenityDesc.value.trim() : '';
 
-      if (!num || !title || !img) {
-        showToast('Please fill in Amenity Number, Title, and select an Image.', 'error');
+      if (!num || !title) {
+        showToast('Please fill in Amenity Number and Title.', 'error');
+        return;
+      }
+      if (!img) {
+        showToast('Please choose an image for the amenity.', 'error');
+        if (addAmenityFileInput) addAmenityFileInput.click();
         return;
       }
 
@@ -1655,51 +1622,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Edit Amenity - Image File Upload & Dropzone triggers
-  if (editAmenityUploadBtn && editAmenityFileInput) {
-    editAmenityUploadBtn.addEventListener('click', () => editAmenityFileInput.click());
-  }
+  // Edit Amenity - Image Picker (Single Click)
   if (editAmenityChangeBtn && editAmenityFileInput) {
     editAmenityChangeBtn.addEventListener('click', () => editAmenityFileInput.click());
   }
-  if (editAmenityDropzone && editAmenityFileInput) {
-    editAmenityDropzone.addEventListener('click', (e) => {
-      if (e.target !== editAmenityFileInput) editAmenityFileInput.click();
-    });
-    editAmenityDropzone.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      editAmenityDropzone.classList.add('dragover');
-    });
-    editAmenityDropzone.addEventListener('dragleave', () => {
-      editAmenityDropzone.classList.remove('dragover');
-    });
-    editAmenityDropzone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      editAmenityDropzone.classList.remove('dragover');
-      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-        processAmenityImageFile(e.dataTransfer.files[0], editAmenityImg, editAmenityPreviewImg, editAmenityStatusText, null);
-      }
-    });
+  if (editAmenityPreviewImg && editAmenityFileInput) {
+    editAmenityPreviewImg.addEventListener('click', () => editAmenityFileInput.click());
   }
   if (editAmenityFileInput) {
     editAmenityFileInput.addEventListener('change', (e) => {
       if (e.target.files && e.target.files[0]) {
-        processAmenityImageFile(e.target.files[0], editAmenityImg, editAmenityPreviewImg, editAmenityStatusText, null);
-      }
-    });
-  }
-
-  // Edit Amenity - Manual URL input
-  if (editAmenityImg) {
-    editAmenityImg.addEventListener('input', () => {
-      const val = editAmenityImg.value.trim();
-      if (val && editAmenityPreviewImg) {
-        editAmenityPreviewImg.src = resolveAmenityImg(val);
-        editAmenityPreviewImg.style.display = 'block';
-        if (editAmenityStatusText) {
-          editAmenityStatusText.textContent = 'Custom image path specified';
-          editAmenityStatusText.classList.remove('success');
-        }
+        processAmenityImageFile(e.target.files[0], editAmenityImg, editAmenityPreviewImg, editAmenityStatusText, false);
       }
     });
   }
@@ -1785,7 +1718,7 @@ document.addEventListener('DOMContentLoaded', () => {
           editAmenityPreviewImg.style.display = 'block';
         }
         if (editAmenityStatusText) {
-          editAmenityStatusText.textContent = `Current image: ${item.img}`;
+          editAmenityStatusText.textContent = 'Current photo loaded';
           editAmenityStatusText.classList.remove('success');
         }
 
