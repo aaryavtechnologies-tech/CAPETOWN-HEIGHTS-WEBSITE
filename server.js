@@ -356,12 +356,7 @@ app.patch('/api/admin/enquiries/:id', authenticateAdmin, async (req, res) => {
 app.delete('/api/admin/enquiries/:id', authenticateAdmin, async (req, res) => {
   try {
     const { id } = req.params;
-    const [result] = await pool.query('DELETE FROM enquiries WHERE id = ?', [id]);
-
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: 'Enquiry not found.' });
-    }
-
+    await pool.query('DELETE FROM enquiries WHERE id = ?', [id]);
     res.json({ success: true, message: 'Enquiry deleted successfully.' });
   } catch (err) {
     console.error('[Admin Delete Enquiry Error]', err);

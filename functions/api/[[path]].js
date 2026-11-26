@@ -545,6 +545,54 @@ export async function onRequest(context) {
       });
     }
 
+    // 7b. Admin Enquiries (Add, Status/Notes Patch, Delete)
+    if (path === "/api/admin/enquiries" && method === "POST") {
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+      const name = (body.name || "").trim();
+      const phone = (body.phone || "").trim();
+      if (!name || !phone) {
+        return jsonResponse({ success: false, message: "Name and Phone number are required." }, 400);
+      }
+      const newEnq = {
+        id: body.id || `enq-${Date.now()}`,
+        name,
+        phone,
+        email: (body.email || "").trim(),
+        projectName: (body.projectName || "Capetown Heights").trim(),
+        interestType: (body.interestType || "Direct Website Form").trim(),
+        message: (body.message || "").trim(),
+        status: body.status || "New",
+        source: body.source || "Admin Logged",
+        notes: (body.notes || "").trim(),
+        createdAt: new Date().toISOString()
+      };
+      defaultEnquiries.unshift(newEnq);
+      return jsonResponse({ success: true, message: "New lead added successfully.", enquiry: newEnq });
+    }
+
+    if (path.startsWith("/api/admin/enquiries/") && method === "PATCH") {
+      const targetId = decodeURIComponent(path.split("/api/admin/enquiries/")[1]);
+      let body = {};
+      try { body = await request.json(); } catch (e) {}
+
+      const idx = defaultEnquiries.findIndex(e => String(e.id) === String(targetId));
+      if (idx !== -1) {
+        defaultEnquiries[idx] = {
+          ...defaultEnquiries[idx],
+          ...(body.status ? { status: body.status } : {}),
+          ...(body.notes !== undefined ? { notes: body.notes } : {})
+        };
+      }
+      return jsonResponse({ success: true, message: "Enquiry updated successfully." });
+    }
+
+    if (path.startsWith("/api/admin/enquiries/") && method === "DELETE") {
+      const targetId = decodeURIComponent(path.split("/api/admin/enquiries/")[1]);
+      defaultEnquiries = defaultEnquiries.filter(e => String(e.id) !== String(targetId));
+      return jsonResponse({ success: true, message: "Enquiry deleted successfully." });
+    }
+
     // 8. Amenities CRUD APIs
     if ((path === "/api/amenities" || path === "/api/admin/amenities") && method === "GET") {
       return jsonResponse({

@@ -1144,8 +1144,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function updateLeadStatus(id, status) {
+    const targetAll = allEnquiries.find(l => String(l.id) === String(id));
+    if (targetAll) targetAll.status = status;
+
+    const leads = getLocalEnquiries();
+    const target = leads.find(l => String(l.id) === String(id));
+    if (target) {
+      target.status = status;
+      localStorage.setItem('capetown_enquiries', JSON.stringify(leads));
+    }
+    showToast('Status updated to ' + status);
+
     try {
-      await fetch(API_URL + '/api/admin/enquiries/' + id, {
+      await fetch(API_URL + '/api/admin/enquiries/' + encodeURIComponent(id), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -1155,29 +1166,26 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     } catch (err) {}
 
-    // Update local cache as well
-    const leads = getLocalEnquiries();
-    const target = leads.find(l => l.id === id);
-    if (target) {
-      target.status = status;
-      localStorage.setItem('capetown_enquiries', JSON.stringify(leads));
-    }
-    showToast('Status updated to ' + status);
     loadDashboardStats();
     loadEnquiries();
   }
 
   async function deleteLead(id) {
+    allEnquiries = allEnquiries.filter(l => String(l.id) !== String(id));
+    const leads = getLocalEnquiries().filter(l => String(l.id) !== String(id));
+    localStorage.setItem('capetown_enquiries', JSON.stringify(leads));
+
+    renderTable(allEnquiries);
+    renderRecentLeadsStream(allEnquiries);
+    showToast('Inquiry #' + id + ' deleted successfully');
+
     try {
-      await fetch(API_URL + '/api/admin/enquiries/' + id, {
+      await fetch(API_URL + '/api/admin/enquiries/' + encodeURIComponent(id), {
         method: 'DELETE',
         headers: { 'Authorization': 'Bearer ' + authToken }
       });
     } catch (err) {}
 
-    const leads = getLocalEnquiries().filter(l => l.id !== id);
-    localStorage.setItem('capetown_enquiries', JSON.stringify(leads));
-    showToast('Inquiry #' + id + ' deleted successfully');
     loadDashboardStats();
     loadEnquiries();
   }
