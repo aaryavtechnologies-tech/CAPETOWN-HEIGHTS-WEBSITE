@@ -3,7 +3,7 @@
  * Powers backend APIs when deployed on Cloudflare Pages (capetown-heights-website.pages.dev)
  */
 
-const defaultEnquiries = [
+let defaultEnquiries = [
   {
     id: "enq-101",
     name: "Rohan Sharma",
@@ -523,9 +523,25 @@ export async function onRequest(context) {
         }, 400);
       }
 
+      const newEnq = {
+        id: body.id || `enq-${Date.now()}`,
+        name,
+        phone,
+        email: (body.email || "").trim(),
+        projectName: (body.projectName || "Capetown Heights").trim(),
+        interestType: (body.interestType || "Direct Website Form").trim(),
+        message: (body.message || body.note || "").trim(),
+        status: "New",
+        source: "Website Direct",
+        notes: "",
+        createdAt: new Date().toISOString()
+      };
+      defaultEnquiries.unshift(newEnq);
+
       return jsonResponse({
         success: true,
-        message: "Thank you, " + name + "! Your inquiry has been received. Our sales team will connect with you shortly."
+        message: "Thank you, " + name + "! Your inquiry has been saved into our system. For immediate project assistance, please call 9081464545.",
+        enquiry: newEnq
       });
     }
 

@@ -226,6 +226,29 @@ document.addEventListener('DOMContentLoaded', () => {
           interestType: 'Direct Website Form'
         };
 
+        // Cache locally for instant multi-tab visibility in Admin Console
+        const localEnquiry = {
+          id: `enq-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+          name: nameInput.value.trim(),
+          phone: phoneVal,
+          email: '',
+          projectName: 'Capetown Heights',
+          interestType: 'Direct Website Form',
+          message: noteInput.value.trim(),
+          status: 'New',
+          source: 'Website Direct',
+          notes: '',
+          createdAt: new Date().toISOString()
+        };
+
+        try {
+          const stored = localStorage.getItem('capetown_enquiries');
+          let leads = stored ? JSON.parse(stored) : [];
+          if (!Array.isArray(leads)) leads = [];
+          leads.unshift(localEnquiry);
+          localStorage.setItem('capetown_enquiries', JSON.stringify(leads));
+        } catch (e) {}
+
         const API_URL = (function() {
           if (typeof window === 'undefined') return 'http://localhost:8000';
           if (window.location.protocol === 'file:') return 'http://localhost:8000';

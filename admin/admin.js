@@ -3286,6 +3286,16 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/'/g, '&#039;');
   }
 
+  // Real-time Cross-tab Sync for New Enquiries submitted from Public Website
+  window.addEventListener('storage', (e) => {
+    if (e.key === 'capetown_enquiries') {
+      try {
+        loadDashboardStats();
+        loadEnquiries();
+      } catch (err) {}
+    }
+  });
+
   // Start Auth Check on load
   checkAuth();
 });
