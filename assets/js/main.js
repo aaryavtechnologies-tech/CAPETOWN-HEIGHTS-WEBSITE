@@ -611,6 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
   async function loadDynamicContactInfo() {
     const titleEl = document.getElementById('projectOfficeTitle');
     const phoneLinkEl = document.getElementById('projectOfficePhoneLink');
+    const phoneDeskEl = document.getElementById('projectOfficePhoneDesk');
     const phoneSubEl = document.getElementById('projectOfficePhoneSub');
     const addressEl = document.getElementById('projectOfficeAddress');
     const plusCodeEl = document.getElementById('projectOfficePlusCode');
@@ -618,31 +619,105 @@ document.addEventListener('DOMContentLoaded', () => {
     const devDescEl = document.getElementById('projectOfficeDevDesc');
     const ratingEl = document.getElementById('projectOfficeRating');
     const dirLinkEl = document.getElementById('projectOfficeDirectionsLink');
+    const mapBtnEl = document.getElementById('projectOfficeMapBtn');
     const revLinkEl = document.getElementById('projectOfficeReviewsLink');
     const igLinkEl = document.getElementById('projectOfficeInstagramLink');
     const fbLinkEl = document.getElementById('projectOfficeFacebookLink');
-
-    if (!titleEl && !phoneLinkEl && !addressEl) return;
+    const emailLinkEl = document.getElementById('projectOfficeEmailLink');
+    const emailTextEl = document.getElementById('projectOfficeEmailText');
 
     function applyContact(c) {
       if (!c) return;
+
+      // Title
       if (titleEl && c.title) titleEl.textContent = c.title;
-      if (phoneLinkEl && c.phone) {
-        phoneLinkEl.textContent = c.phone;
-        phoneLinkEl.href = 'tel:' + c.phone.replace(/\s+/g, '');
+
+      // Phone Number
+      if (c.phone) {
+        const cleanPhone = String(c.phone).trim();
+        const telHref = 'tel:' + cleanPhone.replace(/\s+/g, '');
+        if (phoneLinkEl) {
+          phoneLinkEl.textContent = cleanPhone;
+          phoneLinkEl.href = telHref;
+        }
+        if (phoneDeskEl) {
+          phoneDeskEl.textContent = cleanPhone;
+        }
+        // Footer phone links
+        document.querySelectorAll('a#footerPhoneLink, .footer-contact-item a[href^="tel:"]').forEach(el => {
+          el.textContent = cleanPhone;
+          el.href = telHref;
+        });
       }
-      if (phoneSubEl && c.phone_subtitle) phoneSubEl.textContent = c.phone_subtitle;
-      if (addressEl && c.address) addressEl.textContent = c.address;
-      if (plusCodeEl && c.plus_code) plusCodeEl.textContent = c.plus_code;
+
+      // Phone Subtitle
+      if (phoneSubEl && c.phone_subtitle) {
+        phoneSubEl.textContent = c.phone_subtitle;
+      }
+
+      // Address
+      if (c.address) {
+        const cleanAddr = String(c.address).trim();
+        if (addressEl) addressEl.textContent = cleanAddr;
+        document.querySelectorAll('#footerAddress, .site-footer .footer-contact-item:nth-child(2) div').forEach(el => {
+          el.textContent = cleanAddr;
+        });
+      }
+
+      // Plus Code
+      if (plusCodeEl && c.plus_code) {
+        plusCodeEl.textContent = c.plus_code;
+      }
+
+      // Developer Info
       if (devNameEl && c.developer_name) devNameEl.textContent = c.developer_name;
       if (devDescEl && c.developer_desc) devDescEl.textContent = c.developer_desc;
+
+      // Google Rating
       if (ratingEl && c.google_rating) ratingEl.textContent = c.google_rating;
-      if (dirLinkEl && c.directions_url) dirLinkEl.href = c.directions_url;
-      if (revLinkEl && c.reviews_url) revLinkEl.href = c.reviews_url;
-      if (igLinkEl && c.instagram_url) igLinkEl.href = c.instagram_url;
-      if (fbLinkEl && c.facebook_url) fbLinkEl.href = c.facebook_url;
+
+      // Directions / Google Maps
+      if (c.directions_url) {
+        if (dirLinkEl) dirLinkEl.href = c.directions_url;
+        if (mapBtnEl) mapBtnEl.href = c.directions_url;
+        document.querySelectorAll('.footer-links-list a[href*="maps.app.goo.gl"]').forEach(el => {
+          el.href = c.directions_url;
+        });
+      }
+
+      // Google Reviews
+      if (c.reviews_url) {
+        if (revLinkEl) revLinkEl.href = c.reviews_url;
+        document.querySelectorAll('a#footerReviewsLink, .footer-social-btn[aria-label="Google Reviews"], .footer-links-list a[href*="g.page"]').forEach(el => {
+          el.href = c.reviews_url;
+        });
+      }
+
+      // Instagram
+      if (c.instagram_url) {
+        if (igLinkEl) igLinkEl.href = c.instagram_url;
+        document.querySelectorAll('a#footerInstagramLink, .footer-social-btn[aria-label="Instagram"]').forEach(el => {
+          el.href = c.instagram_url;
+        });
+      }
+
+      // Facebook
+      if (c.facebook_url) {
+        if (fbLinkEl) fbLinkEl.href = c.facebook_url;
+        document.querySelectorAll('a#footerFacebookLink, .footer-social-btn[aria-label="Facebook"]').forEach(el => {
+          el.href = c.facebook_url;
+        });
+      }
+
+      // Email
+      if (c.email) {
+        const cleanEmail = String(c.email).trim();
+        if (emailLinkEl) emailLinkEl.href = 'mailto:' + cleanEmail;
+        if (emailTextEl) emailTextEl.textContent = cleanEmail;
+      }
     }
 
+    // 1. Instantly apply from localStorage
     try {
       const stored = localStorage.getItem('capetown_contacts');
       if (stored) {
@@ -654,6 +729,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (e) {}
 
+    // 2. Fetch fresh from backend API
     const apiUrl = (function() {
       if (typeof window === 'undefined') return '';
       if (window.location.port === '8000') return '';
@@ -678,6 +754,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     } catch (err) {}
+
+    // 3. Listen to cross-tab storage changes for instant real-time live sync
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'capetown_contacts' && e.newValue) {
+        try {
+          const list = JSON.parse(e.newValue);
+          if (Array.isArray(list) && list.length > 0) {
+            const primary = list.find(c => c.is_primary == 1 || c.is_primary === true) || list[0];
+            applyContact(primary);
+          }
+        } catch (err) {}
+      }
+    });
   }
 
   loadDynamicAmenities();

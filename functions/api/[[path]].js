@@ -793,7 +793,7 @@ export async function onRequest(context) {
     }
 
     if ((path.startsWith("/api/admin/contact/") || path.startsWith("/api/admin/contacts/")) && method === "PUT") {
-      const targetId = decodeURIComponent(path.split("/admin/contact")[1].replace(/^\/s?\//, ""));
+      const targetId = decodeURIComponent(path.replace(/^\/api\/admin\/contacts?\//, ""));
       let body = {};
       try { body = await request.json(); } catch (e) {}
       const idx = defaultContacts.findIndex(c => String(c.id) === String(targetId));
@@ -823,7 +823,7 @@ export async function onRequest(context) {
     }
 
     if ((path.startsWith("/api/admin/contact/") || path.startsWith("/api/admin/contacts/")) && method === "DELETE") {
-      const targetId = decodeURIComponent(path.split("/admin/contact")[1].replace(/^\/s?\//, ""));
+      const targetId = decodeURIComponent(path.replace(/^\/api\/admin\/contacts?\//, ""));
       if (defaultContacts.length <= 1) {
         return jsonResponse({ success: false, message: "Cannot delete the only remaining contact office." }, 400);
       }
