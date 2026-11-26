@@ -54,19 +54,21 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // 3. Gallery Lightbox Functionality
-  const galleryItems = document.querySelectorAll('.gallery-item');
+  // 3. Gallery Lightbox Functionality (Event Delegation for Dynamic & Static Items)
   const lightboxModal = document.getElementById('lightboxModal');
   const lightboxImg = document.getElementById('lightboxImg');
   const lightboxCaption = document.getElementById('lightboxCaption');
   const lightboxClose = document.getElementById('lightboxClose');
 
-  if (lightboxModal && galleryItems.length > 0) {
-    galleryItems.forEach(item => {
-      item.addEventListener('click', () => {
-        const fullSrc = item.getAttribute('data-full') || item.querySelector('img').src;
-        const caption = item.getAttribute('data-title') || item.querySelector('.gallery-title')?.textContent || '';
-        
+  if (lightboxModal) {
+    document.addEventListener('click', (e) => {
+      const item = e.target.closest('.gallery-item');
+      if (!item) return;
+
+      const fullSrc = item.getAttribute('data-full') || item.querySelector('img')?.src;
+      const caption = item.getAttribute('data-title') || item.querySelector('.gallery-title')?.textContent || '';
+
+      if (fullSrc && lightboxImg) {
         lightboxImg.src = fullSrc;
         lightboxImg.alt = caption;
         if (lightboxCaption) {
@@ -74,14 +76,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         lightboxModal.classList.add('active');
         document.body.style.overflow = 'hidden';
-      });
+      }
     });
 
     const closeLightbox = () => {
       lightboxModal.classList.remove('active');
       document.body.style.overflow = '';
       setTimeout(() => {
-        lightboxImg.src = '';
+        if (lightboxImg) lightboxImg.src = '';
       }, 300);
     };
 
@@ -109,11 +111,22 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.addEventListener('click', () => {
         filterBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        const filterVal = btn.getAttribute('data-filter');
+        const filterVal = (btn.getAttribute('data-filter') || 'all').toLowerCase();
 
-        galleryItems.forEach(item => {
-          const category = item.getAttribute('data-category');
-          if (filterVal === 'all' || category === filterVal) {
+        const currentItems = document.querySelectorAll('.gallery-grid .gallery-item');
+        currentItems.forEach(item => {
+          const category = (item.getAttribute('data-category') || '').toLowerCase();
+          if (filterVal === 'all') {
+            item.style.display = 'block';
+          } else if (
+            category === filterVal ||
+            category.includes(filterVal) ||
+            (filterVal === 'overview' && (category.includes('overview') || category.includes('project'))) ||
+            (filterVal === 'construction' && (category.includes('construction') || category.includes('prep') || category.includes('excavation'))) ||
+            (filterVal === 'site' && (category.includes('site') || category.includes('infrastructure') || category.includes('amenities') || category.includes('office'))) ||
+            (filterVal === 'exterior' && (category.includes('exterior') || category.includes('architecture') || category.includes('elevation') || category.includes('interior'))) ||
+            (filterVal === 'surroundings' && (category.includes('surroundings') || category.includes('signage') || category.includes('road') || category.includes('billboard') || category.includes('location')))
+          ) {
             item.style.display = 'block';
           } else {
             item.style.display = 'none';
@@ -769,6 +782,123 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // 10. Dynamic Gallery Synchronization with Admin & Database
+  async function loadDynamicGallery() {
+    const galleryGrids = document.querySelectorAll('.gallery-grid');
+    if (galleryGrids.length === 0) return;
+
+    function resolvePublicImg(url) {
+      if (!url) return 'assets/images/hero-site.jpg';
+      url = url.trim();
+      if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) return url;
+      return url.replace(/^\.\.\//, '');
+    }
+
+    function escapeAttr(str) {
+      return String(str || '').replace(/"/g, '&quot;');
+    }
+    function escapeHtml(str) {
+      return String(str || '').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderGallery(photos) {
+      if (!Array.isArray(photos) || photos.length === 0) return;
+
+      galleryGrids.forEach(grid => {
+        const isPreview = !document.querySelector('.gallery-filter-nav');
+        const displayPhotos = isPreview ? photos.slice(0, 6) : photos;
+
+        grid.innerHTML = '';
+        displayPhotos.forEach(p => {
+          const title = p.title || 'Capetown Heights Photograph';
+          const cat = p.category || 'Site';
+          const img = resolvePublicImg(p.image || p.img || '');
+          const desc = p.caption || p.description || title;
+
+          const itemEl = document.createElement('div');
+          itemEl.className = 'gallery-item';
+          itemEl.setAttribute('data-category', cat.toLowerCase());
+          itemEl.setAttribute('data-full', img);
+          itemEl.setAttribute('data-title', desc);
+
+          itemEl.innerHTML = `
+            <div class="gallery-img-container">
+              <img src="${img}" alt="${escapeAttr(title)}" class="gallery-img" loading="lazy" onerror="this.src='assets/images/building-exterior.jpg'">
+            </div>
+            <div class="gallery-caption-overlay">
+              <div>
+                <span class="gallery-tag">${escapeHtml(cat)}</span>
+                <h4 class="gallery-title">${escapeHtml(title)}</h4>
+              </div>
+              <div class="gallery-zoom-icon">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+              </div>
+            </div>
+          `;
+          grid.appendChild(itemEl);
+        });
+
+        // Re-apply current category filter if on gallery page
+        const activeFilterBtn = document.querySelector('.gallery-filter-btn.active');
+        if (activeFilterBtn) {
+          const filterVal = (activeFilterBtn.getAttribute('data-filter') || 'all').toLowerCase();
+          if (filterVal !== 'all') {
+            activeFilterBtn.click();
+          }
+        }
+      });
+    }
+
+    // 1. Instantly apply from localStorage (zero delay)
+    try {
+      const stored = localStorage.getItem('capetown_gallery');
+      if (stored) {
+        const list = JSON.parse(stored);
+        if (Array.isArray(list) && list.length > 0) {
+          renderGallery(list);
+        }
+      }
+    } catch (e) {}
+
+    // 2. Fetch fresh from backend API
+    const apiUrl = (function() {
+      if (typeof window === 'undefined') return '';
+      if (window.location.port === '8000') return '';
+      const host = window.location.hostname || 'localhost';
+      const proto = window.location.protocol || 'http:';
+      if (host === 'localhost' || host === '127.0.0.1' || /^(\d{1,3}\.){3}\d{1,3}$/.test(host)) {
+        return proto + '//' + host + ':8000';
+      }
+      return '';
+    })();
+
+    try {
+      const res = await fetch(apiUrl + '/api/gallery');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success && Array.isArray(data.gallery) && data.gallery.length > 0) {
+          renderGallery(data.gallery);
+          try {
+            localStorage.setItem('capetown_gallery', JSON.stringify(data.gallery));
+          } catch (e) {}
+        }
+      }
+    } catch (err) {}
+
+    // 3. Listen to cross-tab storage changes for instant real-time live sync
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'capetown_gallery' && e.newValue) {
+        try {
+          const list = JSON.parse(e.newValue);
+          if (Array.isArray(list) && list.length > 0) {
+            renderGallery(list);
+          }
+        } catch (err) {}
+      }
+    });
+  }
+
   loadDynamicAmenities();
   loadDynamicContactInfo();
+  loadDynamicGallery();
 });
