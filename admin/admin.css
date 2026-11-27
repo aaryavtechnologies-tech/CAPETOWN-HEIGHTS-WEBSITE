@@ -25,7 +25,7 @@
   --shadow-sm: 0 2px 6px rgba(35, 21, 14, 0.04);
   --shadow-md: 0 8px 24px rgba(35, 21, 14, 0.08);
   --shadow-lg: 0 16px 40px rgba(35, 21, 14, 0.12);
-  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-serif: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   --sidebar-width: 280px;
