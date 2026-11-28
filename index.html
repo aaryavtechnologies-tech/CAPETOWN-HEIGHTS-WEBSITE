@@ -39,7 +39,7 @@
     rel="stylesheet">
 
   <!-- Stylesheet -->
-  <link rel="stylesheet" href="assets/css/style.css?v=20261128_emi_calc">
+  <link rel="stylesheet" href="assets/css/style.css?v=20261128_reviews_slider">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
 </head>
@@ -524,196 +524,194 @@
         </div>
       </div>
 
-      <div class="reviews-grid">
-        <div class="review-card">
-          <div class="review-stars">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-          </div>
-          <p class="review-text">"Very nice place. Plan for your future"</p>
-          <div class="review-author">
-            <div class="author-avatar">
-              <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                aria-label="Google Review">
-                <defs>
-                  <linearGradient id="googleGradRedYellow" x1="12" y1="1" x2="3" y2="14" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#EA4335" />
-                    <stop offset="65%" stop-color="#F26D21" />
-                    <stop offset="100%" stop-color="#FBBC05" />
-                  </linearGradient>
-                  <linearGradient id="googleGradYellowGreen" x1="3" y1="10" x2="12" y2="23"
-                    gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#FBBC05" />
-                    <stop offset="55%" stop-color="#8BC34A" />
-                    <stop offset="100%" stop-color="#34A853" />
-                  </linearGradient>
-                  <linearGradient id="googleGradGreenBlue" x1="9" y1="22" x2="22" y2="12"
-                    gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#34A853" />
-                    <stop offset="45%" stop-color="#1E9688" />
-                    <stop offset="100%" stop-color="#4285F4" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4" />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="url(#googleGradGreenBlue)" />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="url(#googleGradYellowGreen)" />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="url(#googleGradRedYellow)" />
-              </svg>
+      <div class="reviews-slider-container">
+        <!-- Prev Arrow (Desktop) -->
+        <button type="button" class="reviews-slider-arrow prev" id="reviewsPrevBtn" aria-label="Previous Reviews">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+
+        <!-- Slider Track -->
+        <div class="reviews-slider-track" id="reviewsSliderTrack">
+          <!-- Review 1 -->
+          <div class="review-card">
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
             </div>
-            <div class="author-details">
-              <span class="author-name">Amazing World</span>
-              <span class="author-verified">Verified Google Review</span>
+            <p class="review-text">"Very nice place. Plan for your future"</p>
+            <div class="review-author">
+              <div class="author-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Review">
+                  <defs>
+                    <linearGradient id="googleGradRedYellow" x1="12" y1="1" x2="3" y2="14" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#EA4335" /><stop offset="65%" stop-color="#F26D21" /><stop offset="100%" stop-color="#FBBC05" />
+                    </linearGradient>
+                    <linearGradient id="googleGradYellowGreen" x1="3" y1="10" x2="12" y2="23" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#FBBC05" /><stop offset="55%" stop-color="#8BC34A" /><stop offset="100%" stop-color="#34A853" />
+                    </linearGradient>
+                    <linearGradient id="googleGradGreenBlue" x1="9" y1="22" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+                      <stop offset="0%" stop-color="#34A853" /><stop offset="45%" stop-color="#1E9688" /><stop offset="100%" stop-color="#4285F4" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="url(#googleGradGreenBlue)" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="url(#googleGradYellowGreen)" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="url(#googleGradRedYellow)" />
+                </svg>
+              </div>
+              <div class="author-details">
+                <span class="author-name">Amazing World</span>
+                <span class="author-verified">Verified Google Review</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 2 -->
+          <div class="review-card">
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+            </div>
+            <p class="review-text">"Nice project"</p>
+            <div class="review-author">
+              <div class="author-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Review">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="url(#googleGradGreenBlue)" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="url(#googleGradYellowGreen)" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="url(#googleGradRedYellow)" />
+                </svg>
+              </div>
+              <div class="author-details">
+                <span class="author-name">Estkhar Ansari</span>
+                <span class="author-verified">Verified Google Review</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 3 -->
+          <div class="review-card">
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+            </div>
+            <p class="review-text">"good project, great site maintenance, amazing countless amenities"</p>
+            <div class="review-author">
+              <div class="author-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Review">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="url(#googleGradGreenBlue)" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="url(#googleGradYellowGreen)" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="url(#googleGradRedYellow)" />
+                </svg>
+              </div>
+              <div class="author-details">
+                <span class="author-name">Mr.Jminati</span>
+                <span class="author-verified">Verified Google Review</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 4 -->
+          <div class="review-card">
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+            </div>
+            <p class="review-text">"Excellent residential project in Silvassa. Double basement parking and spacious planning make it top class."</p>
+            <div class="review-author">
+              <div class="author-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Review">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="url(#googleGradGreenBlue)" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="url(#googleGradYellowGreen)" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="url(#googleGradRedYellow)" />
+                </svg>
+              </div>
+              <div class="author-details">
+                <span class="author-name">Prakash Patel</span>
+                <span class="author-verified">Verified Google Review</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 5 -->
+          <div class="review-card">
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+            </div>
+            <p class="review-text">"Beautiful environment and peaceful atmosphere for families. Club facilities and pool are exceptionally designed."</p>
+            <div class="review-author">
+              <div class="author-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Review">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="url(#googleGradGreenBlue)" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="url(#googleGradYellowGreen)" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="url(#googleGradRedYellow)" />
+                </svg>
+              </div>
+              <div class="author-details">
+                <span class="author-name">Kavita Mehta</span>
+                <span class="author-verified">Verified Google Review</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Review 6 -->
+          <div class="review-card">
+            <div class="review-stars">
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+              <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" /></svg>
+            </div>
+            <p class="review-text">"Top-notch construction quality by Nirali infra with modern architecture and complete 24/7 security."</p>
+            <div class="review-author">
+              <div class="author-avatar">
+                <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-label="Google Review">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="url(#googleGradGreenBlue)" />
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="url(#googleGradYellowGreen)" />
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="url(#googleGradRedYellow)" />
+                </svg>
+              </div>
+              <div class="author-details">
+                <span class="author-name">Sanjay Deshmukh</span>
+                <span class="author-verified">Verified Google Review</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="review-card">
-          <div class="review-stars">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-          </div>
-          <p class="review-text">"Nice project"</p>
-          <div class="review-author">
-            <div class="author-avatar">
-              <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                aria-label="Google Review">
-                <defs>
-                  <linearGradient id="googleGradRedYellow" x1="12" y1="1" x2="3" y2="14" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#EA4335" />
-                    <stop offset="65%" stop-color="#F26D21" />
-                    <stop offset="100%" stop-color="#FBBC05" />
-                  </linearGradient>
-                  <linearGradient id="googleGradYellowGreen" x1="3" y1="10" x2="12" y2="23"
-                    gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#FBBC05" />
-                    <stop offset="55%" stop-color="#8BC34A" />
-                    <stop offset="100%" stop-color="#34A853" />
-                  </linearGradient>
-                  <linearGradient id="googleGradGreenBlue" x1="9" y1="22" x2="22" y2="12"
-                    gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#34A853" />
-                    <stop offset="45%" stop-color="#1E9688" />
-                    <stop offset="100%" stop-color="#4285F4" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4" />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="url(#googleGradGreenBlue)" />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="url(#googleGradYellowGreen)" />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="url(#googleGradRedYellow)" />
-              </svg>
-            </div>
-            <div class="author-details">
-              <span class="author-name">Estkhar Ansari</span>
-              <span class="author-verified">Verified Google Review</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="review-card">
-          <div class="review-stars">
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-            <svg viewBox="0 0 24 24">
-              <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
-            </svg>
-          </div>
-          <p class="review-text">"good project, great site maintenance, amazing countless amenities"</p>
-          <div class="review-author">
-            <div class="author-avatar">
-              <svg width="20" height="20" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
-                aria-label="Google Review">
-                <defs>
-                  <linearGradient id="googleGradRedYellow" x1="12" y1="1" x2="3" y2="14" gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#EA4335" />
-                    <stop offset="65%" stop-color="#F26D21" />
-                    <stop offset="100%" stop-color="#FBBC05" />
-                  </linearGradient>
-                  <linearGradient id="googleGradYellowGreen" x1="3" y1="10" x2="12" y2="23"
-                    gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#FBBC05" />
-                    <stop offset="55%" stop-color="#8BC34A" />
-                    <stop offset="100%" stop-color="#34A853" />
-                  </linearGradient>
-                  <linearGradient id="googleGradGreenBlue" x1="9" y1="22" x2="22" y2="12"
-                    gradientUnits="userSpaceOnUse">
-                    <stop offset="0%" stop-color="#34A853" />
-                    <stop offset="45%" stop-color="#1E9688" />
-                    <stop offset="100%" stop-color="#4285F4" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                  fill="#4285F4" />
-                <path
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                  fill="url(#googleGradGreenBlue)" />
-                <path
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                  fill="url(#googleGradYellowGreen)" />
-                <path
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                  fill="url(#googleGradRedYellow)" />
-              </svg>
-            </div>
-            <div class="author-details">
-              <span class="author-name">Mr.Jminati</span>
-              <span class="author-verified">Verified Google Review</span>
-            </div>
-          </div>
-        </div>
+        <!-- Next Arrow (Desktop) -->
+        <button type="button" class="reviews-slider-arrow next" id="reviewsNextBtn" aria-label="Next Reviews">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
       </div>
+
+      <!-- Pagination Dots -->
+      <div class="reviews-dots-wrap" id="reviewsDots"></div>
     </div>
   </section>
 
@@ -892,7 +890,7 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="assets/js/main.js?v=20261128_emi_calc"></script>
+  <script src="assets/js/main.js?v=20261128_reviews_slider"></script>
 </body>
 
 </html>

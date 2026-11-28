@@ -981,8 +981,118 @@ document.addEventListener('DOMContentLoaded', () => {
     calculate();
   }
 
+  // =========================================================================
+  // 10. Customer Reviews & Ratings Slider
+  // =========================================================================
+  function initReviewsSlider() {
+    const track = document.getElementById('reviewsSliderTrack');
+    const prevBtn = document.getElementById('reviewsPrevBtn');
+    const nextBtn = document.getElementById('reviewsNextBtn');
+    const dotsContainer = document.getElementById('reviewsDots');
+
+    if (!track) return;
+
+    const cards = track.querySelectorAll('.review-card');
+    if (cards.length === 0) return;
+
+    // Create pagination dots
+    if (dotsContainer) {
+      dotsContainer.innerHTML = '';
+      cards.forEach((_, idx) => {
+        const dot = document.createElement('button');
+        dot.type = 'button';
+        dot.className = 'reviews-dot' + (idx === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', `Go to review slide ${idx + 1}`);
+        dot.addEventListener('click', () => {
+          scrollToCard(idx);
+        });
+        dotsContainer.appendChild(dot);
+      });
+    }
+
+    function getCardWidth() {
+      const firstCard = cards[0];
+      if (!firstCard) return 320;
+      const style = window.getComputedStyle(track);
+      const gap = parseFloat(style.gap) || 28;
+      return firstCard.offsetWidth + gap;
+    }
+
+    function scrollToCard(index) {
+      const cardWidth = getCardWidth();
+      track.scrollTo({
+        left: index * cardWidth,
+        behavior: 'smooth'
+      });
+      updateActiveDot(index);
+    }
+
+    function updateActiveDot(index) {
+      if (!dotsContainer) return;
+      const dots = dotsContainer.querySelectorAll('.reviews-dot');
+      dots.forEach((d, i) => {
+        d.classList.toggle('active', i === index);
+      });
+    }
+
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        const cardWidth = getCardWidth();
+        track.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+      });
+    }
+
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        const cardWidth = getCardWidth();
+        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 15) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        }
+      });
+    }
+
+    // Update active dot on scroll
+    let scrollTimeout;
+    track.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const cardWidth = getCardWidth();
+        const activeIndex = Math.round(track.scrollLeft / cardWidth);
+        updateActiveDot(Math.min(activeIndex, cards.length - 1));
+      }, 50);
+    }, { passive: true });
+
+    // Subtle auto-slide every 5 seconds (pauses on hover)
+    let autoPlayTimer = setInterval(() => {
+      if (track.matches(':hover')) return;
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 20) {
+        track.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        const cardWidth = getCardWidth();
+        track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+      }
+    }, 5000);
+
+    track.addEventListener('mouseenter', () => clearInterval(autoPlayTimer));
+    track.addEventListener('mouseleave', () => {
+      clearInterval(autoPlayTimer);
+      autoPlayTimer = setInterval(() => {
+        if (track.matches(':hover')) return;
+        if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 20) {
+          track.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          const cardWidth = getCardWidth();
+          track.scrollBy({ left: cardWidth, behavior: 'smooth' });
+        }
+      }, 5000);
+    });
+  }
+
   loadDynamicAmenities();
   loadDynamicContactInfo();
   loadDynamicGallery();
   initEmiCalculator();
+  initReviewsSlider();
 });

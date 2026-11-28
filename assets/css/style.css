@@ -2126,11 +2126,117 @@ body.menu-open {
   color: var(--primary-mocha);
 }
 
-/* Reviews Grid */
-.reviews-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+/* ==========================================================================
+   CUSTOMER REVIEWS & TESTIMONIALS SLIDER
+   ========================================================================== */
+.reviews-slider-container {
+  position: relative;
+  margin-top: 2rem;
+  padding: 0 4px;
+}
+
+.reviews-slider-track {
+  display: flex;
   gap: 1.75rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding: 0.75rem 0.25rem 1.25rem;
+}
+
+.reviews-slider-track::-webkit-scrollbar {
+  display: none;
+}
+
+.reviews-slider-track .review-card {
+  flex: 0 0 calc(33.333% - 1.17rem);
+  min-width: 300px;
+  scroll-snap-align: start;
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .reviews-slider-track .review-card {
+    flex: 0 0 calc(50% - 0.88rem);
+    min-width: 280px;
+  }
+}
+
+@media (max-width: 640px) {
+  .reviews-slider-track .review-card {
+    flex: 0 0 100%;
+    min-width: 100%;
+  }
+}
+
+/* Slider Nav Arrows */
+.reviews-slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color, #D8C3A8);
+  color: var(--primary-mocha, #613E29);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 6px 20px rgba(57, 37, 26, 0.15);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reviews-slider-arrow.prev {
+  left: -24px;
+}
+
+.reviews-slider-arrow.next {
+  right: -24px;
+}
+
+.reviews-slider-arrow:hover {
+  background: var(--primary-mocha, #613E29);
+  color: #FFFFFF;
+  border-color: var(--primary-mocha, #613E29);
+  transform: translateY(-50%) scale(1.08);
+  box-shadow: 0 8px 24px rgba(57, 37, 26, 0.25);
+}
+
+@media (max-width: 860px) {
+  .reviews-slider-arrow {
+    display: none;
+  }
+}
+
+/* Slider Dots */
+.reviews-dots-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+
+.reviews-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #D8C3A8;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.35s ease;
+}
+
+.reviews-dot.active {
+  width: 28px;
+  border-radius: 999px;
+  background: var(--accent-gold, #C69A64);
 }
 
 .review-card {
@@ -2794,11 +2900,6 @@ body.menu-open {
   .footer-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 2.5rem 1.5rem;
-  }
-
-  .reviews-grid {
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
   }
 }
 
