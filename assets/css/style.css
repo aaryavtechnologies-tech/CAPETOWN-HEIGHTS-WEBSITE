@@ -1325,23 +1325,7 @@ body.menu-open {
 }
 
 .amenity-badge-num {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 4;
-  background: rgba(35, 21, 14, 0.84);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  color: var(--highlight-gold);
-  border: 1px solid var(--accent-gold);
-  font-family: var(--font-serif);
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.5px;
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: transform 0.35s ease, background 0.35s ease;
+  display: none !important;
 }
 
 .amenity-bg-card:hover .amenity-badge-num {
