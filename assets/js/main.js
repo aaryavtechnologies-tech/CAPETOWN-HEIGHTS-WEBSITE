@@ -346,24 +346,24 @@ document.addEventListener('DOMContentLoaded', () => {
   if (heroEl && trackEl && dotsEl) {
     const architecturalSlides = [
       {
-        url: 'assets/images/hero-carousel/hero-slide-1.jpg',
-        alt: 'Capetown Heights Iconic High-Rise Residential Tower Elevation',
-        positionClass: 'pos-center-25'
-      },
-      {
         url: 'assets/images/hero-carousel/hero-slide-2.jpg',
         alt: 'Capetown Heights Grand Entrance Gate & Cascading Water Fountain',
         positionClass: 'pos-center'
       },
       {
-        url: 'assets/images/hero-carousel/hero-slide-3.jpg',
-        alt: 'Capetown Heights Modern Architectural Tower Perspective View',
-        positionClass: 'pos-center-30'
+        url: 'assets/images/hero-carousel/hero-slide-1.jpg',
+        alt: 'Capetown Heights Iconic High-Rise Residential Tower Elevation',
+        positionClass: 'pos-center-20'
       },
       {
         url: 'assets/images/hero-carousel/hero-slide-4.jpg',
         alt: 'Capetown Heights Ground Floor Commercial High-Street Retail Arcade',
         positionClass: 'pos-center'
+      },
+      {
+        url: 'assets/images/hero-carousel/hero-slide-3.jpg',
+        alt: 'Capetown Heights Modern Architectural Tower Perspective View',
+        positionClass: 'pos-center-25'
       },
       {
         url: 'assets/images/hero-carousel/hero-slide-5.jpg',
