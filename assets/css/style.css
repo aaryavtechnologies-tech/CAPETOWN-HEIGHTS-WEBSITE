@@ -398,6 +398,25 @@ p {
   gap: 1rem;
 }
 
+/* Enquire Now CTA in Header Navbar - Ultra Crisp & Standout Visibility */
+.nav-actions .btn {
+  background-color: #FFFFFF !important;
+  color: #55331C !important;
+  border: 1.5px solid #FFFFFF !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.03em !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25), 0 1px 3px rgba(0, 0, 0, 0.15) !important;
+  transition: all 0.25s ease !important;
+}
+
+.nav-actions .btn:hover {
+  background-color: #F8F3ED !important;
+  color: #381E0D !important;
+  border-color: #E1C08E !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
+  transform: translateY(-2px);
+}
+
 /* Mobile Toggle */
 .mobile-toggle {
   display: none;
@@ -2388,17 +2407,34 @@ body.menu-open {
     margin-top: 1.25rem;
     padding: 0.85rem 1.5rem;
     font-size: 0.95rem;
-    font-weight: 600;
+    font-weight: 700 !important;
     letter-spacing: 0.04em;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background-color: #FFFFFF !important;
+    color: #55331C !important;
+    border: 1.5px solid #FFFFFF !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
+  }
+
+  .mobile-menu-cta:hover {
+    background-color: #F8F3ED !important;
+    color: #381E0D !important;
+    border-color: #E1C08E !important;
   }
 
   .mobile-toggle {
     display: flex;
   }
 
+  .nav-actions {
+    gap: 0.65rem;
+  }
+
   .nav-actions .btn {
-    display: none;
+    display: inline-flex !important;
+    padding: 0.5rem 1rem;
+    font-size: 0.82rem;
+    font-weight: 700 !important;
+    white-space: nowrap;
   }
 
   .contact-layout {
@@ -2423,6 +2459,11 @@ body.menu-open {
   .container {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
+  }
+
+  .nav-actions .btn {
+    padding: 0.42rem 0.8rem;
+    font-size: 0.78rem;
   }
 
   .brand-logo-img {
@@ -2604,6 +2645,15 @@ body.menu-open {
   .container {
     padding-left: 0.85rem;
     padding-right: 0.85rem;
+  }
+
+  .nav-actions {
+    gap: 0.4rem;
+  }
+
+  .nav-actions .btn {
+    padding: 0.35rem 0.65rem;
+    font-size: 0.72rem;
   }
 
   .brand-logo-img {
