@@ -305,38 +305,38 @@ document.addEventListener('DOMContentLoaded', () => {
   if (heroEl && trackEl && dotsEl) {
     const architecturalSlides = [
       {
-        url: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=2000&q=90',
-        alt: 'Capetown Heights Cantilevered Modern White Villa',
-        positionClass: 'pos-center'
-      },
-      {
-        url: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=2000&q=90',
-        alt: 'Capetown Heights Modern Luxury Residential Apartment Building Towers',
+        url: 'assets/images/hero-carousel/hero-slide-1.jpg',
+        alt: 'Capetown Heights Iconic High-Rise Residential Tower Elevation',
         positionClass: 'pos-center-25'
       },
       {
-        url: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=2000&q=90',
-        alt: 'Capetown Heights Poolside Courtyard & Lounge Terrace',
+        url: 'assets/images/hero-carousel/hero-slide-2.jpg',
+        alt: 'Capetown Heights Grand Entrance Gate & Cascading Water Fountain',
         positionClass: 'pos-center'
       },
       {
-        url: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=90',
-        alt: 'Capetown Heights Contemporary Multi-Story Residential Tower Facade',
+        url: 'assets/images/hero-carousel/hero-slide-3.jpg',
+        alt: 'Capetown Heights Modern Architectural Tower Perspective View',
         positionClass: 'pos-center-30'
       },
       {
-        url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=2000&q=90',
-        alt: 'Capetown Heights Double-Height Glass Pavilion',
+        url: 'assets/images/hero-carousel/hero-slide-4.jpg',
+        alt: 'Capetown Heights Ground Floor Commercial High-Street Retail Arcade',
         positionClass: 'pos-center'
       },
       {
-        url: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=2000&q=90',
-        alt: 'Capetown Heights Contemporary Sunset Architecture',
+        url: 'assets/images/hero-carousel/hero-slide-5.jpg',
+        alt: 'Capetown Heights Air-Conditioned Multi-Purpose Banquet & Celebration Hall',
         positionClass: 'pos-center'
       },
       {
-        url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=2000&q=90',
-        alt: 'Capetown Heights Landscaped Residence Facade',
+        url: 'assets/images/hero-carousel/hero-slide-6.jpg',
+        alt: 'Capetown Heights Luxury Master Bedroom Suite with Designer Wood Paneling',
+        positionClass: 'pos-center'
+      },
+      {
+        url: 'assets/images/hero-carousel/hero-slide-7.jpg',
+        alt: 'Capetown Heights Premium Bedroom Suite with Contemporary Ambient Niche Lighting',
         positionClass: 'pos-center'
       }
     ];
