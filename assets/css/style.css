@@ -1723,6 +1723,369 @@ body.menu-open {
 }
 
 /* ==========================================================================
+   HOME LOAN EMI CALCULATOR SECTION
+   ========================================================================== */
+.emi-calc-section {
+  background-color: var(--bg-ivory, #F7F1E8);
+}
+
+.emi-calc-wrapper {
+  background: #FFFFFF;
+  border: 1px solid #E8DDD0;
+  border-radius: 18px;
+  padding: 2.5rem 2.75rem;
+  box-shadow: 0 10px 32px rgba(57, 37, 26, 0.07);
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+.emi-calc-header {
+  display: flex;
+  align-items: center;
+  gap: 1.15rem;
+  margin-bottom: 2.25rem;
+}
+
+.emi-calc-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background-color: var(--accent-gold, #C69A64);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(198, 154, 100, 0.3);
+}
+
+.emi-calc-title {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--secondary-chocolate, #2D211A);
+  margin-bottom: 0.2rem;
+  line-height: 1.25;
+}
+
+.emi-calc-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-muted, #796352);
+  margin: 0;
+}
+
+.emi-calc-body {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2.5rem;
+  align-items: stretch;
+}
+
+.emi-controls-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.emi-field-group {
+  margin-bottom: 1.5rem;
+}
+
+.emi-field-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.emi-field-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #2D211A;
+}
+
+.emi-val-pill {
+  background: #FFFDF9;
+  border: 1px solid #D8C3A8;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--primary-mocha, #613E29);
+  min-width: 95px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(57, 37, 26, 0.04);
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.emi-slider-wrap {
+  width: 100%;
+  padding: 4px 0;
+}
+
+.emi-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 6px;
+  background: #EADCC9;
+  outline: none;
+  cursor: pointer;
+  margin: 0;
+  transition: background 0.15s ease;
+}
+
+.emi-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-gold, #C69A64);
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(57, 37, 26, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+.emi-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  background: #B2834E;
+}
+
+.emi-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-gold, #C69A64);
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 2px 6px rgba(57, 37, 26, 0.35);
+  cursor: pointer;
+}
+
+.emi-range-limits {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #8C7A6B;
+  margin-top: 0.45rem;
+}
+
+.emi-bank-notice {
+  background: #FAF6F0;
+  border: 1px solid #E6D8C8;
+  border-radius: 10px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  gap: 0.85rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.emi-bank-badge {
+  color: var(--accent-gold, #C69A64);
+  font-weight: 700;
+  font-size: 1.15rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.emi-bank-text {
+  font-size: 0.82rem;
+  color: #6E5A4B;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.emi-summary-card {
+  background: #0E0A08;
+  border: 1px solid rgba(198, 154, 100, 0.3);
+  border-radius: 16px;
+  padding: 2rem 1.85rem;
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 12px 35px rgba(20, 12, 8, 0.3);
+}
+
+.emi-summary-top {
+  margin-bottom: 1.25rem;
+}
+
+.emi-summary-eyebrow {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent-gold, #C69A64);
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.emi-main-figure {
+  font-size: 2.35rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.emi-main-unit {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #A89B91;
+}
+
+.emi-ratio-bar {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  display: flex;
+  background: #332B25;
+  width: 100%;
+  margin-bottom: 0.65rem;
+}
+
+.emi-ratio-principal {
+  background: var(--accent-gold, #C69A64);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.emi-ratio-interest {
+  background: #4E423A;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.emi-ratio-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: #D1C5BC;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.dot-principal {
+  background: var(--accent-gold, #C69A64);
+}
+
+.dot-interest {
+  background: #77695F;
+}
+
+.emi-breakdown-list {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 1.1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.emi-breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.88rem;
+}
+
+.emi-row-label {
+  color: #A89B91;
+}
+
+.emi-row-val {
+  color: #FFFFFF;
+  font-weight: 600;
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.emi-breakdown-row.total-row {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  padding-top: 0.8rem;
+  margin-top: 0.2rem;
+}
+
+.emi-breakdown-row.total-row .emi-row-label {
+  color: #FFFFFF;
+  font-weight: 700;
+}
+
+.emi-breakdown-row.total-row .emi-row-val {
+  color: #FFFFFF;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.btn-emi-assist {
+  background: var(--accent-gold, #C69A64);
+  background: linear-gradient(135deg, #C69A64 0%, #D4A977 100%);
+  color: #1E140E;
+  font-weight: 700;
+  font-size: 0.84rem;
+  letter-spacing: 0.6px;
+  border-radius: 8px;
+  padding: 14px 18px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(198, 154, 100, 0.35);
+  text-transform: uppercase;
+}
+
+.btn-emi-assist:hover {
+  background: linear-gradient(135deg, #D4A977 0%, #E2C18F 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(198, 154, 100, 0.5);
+  color: #1E140E;
+}
+
+@media (max-width: 900px) {
+  .emi-calc-body {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .emi-calc-wrapper {
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .emi-calc-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  .emi-main-figure {
+    font-size: 1.95rem;
+  }
+  .btn-emi-assist {
+    font-size: 0.78rem;
+    padding: 12px 14px;
+  }
+}
+
+/* ==========================================================================
    DEVELOPER & TESTIMONIALS
    ========================================================================== */
 .developer-card {

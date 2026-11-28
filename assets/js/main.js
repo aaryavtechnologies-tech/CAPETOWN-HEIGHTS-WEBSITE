@@ -884,7 +884,105 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // =========================================================================
+  // 9. Interactive Home Loan EMI Calculator
+  // =========================================================================
+  function initEmiCalculator() {
+    const loanSlider = document.getElementById('loanAmountSlider');
+    const interestSlider = document.getElementById('interestRateSlider');
+    const tenureSlider = document.getElementById('tenureSlider');
+
+    if (!loanSlider || !interestSlider || !tenureSlider) return;
+
+    const loanBadge = document.getElementById('loanAmountBadge');
+    const interestBadge = document.getElementById('interestRateBadge');
+    const tenureBadge = document.getElementById('tenureBadge');
+
+    const emiDisplay = document.getElementById('emiDisplay');
+    const principalDisplay = document.getElementById('principalDisplay');
+    const interestDisplay = document.getElementById('interestDisplay');
+    const totalDisplay = document.getElementById('totalDisplay');
+
+    const ratioPrincipalBar = document.getElementById('ratioPrincipalBar');
+    const ratioInterestBar = document.getElementById('ratioInterestBar');
+    const principalPercent = document.getElementById('principalPercent');
+    const interestPercent = document.getElementById('interestPercent');
+
+    function formatIndianCurrency(num) {
+      const rounded = Math.round(num);
+      return '₹' + rounded.toLocaleString('en-IN');
+    }
+
+    function updateSliderTrack(slider) {
+      const min = parseFloat(slider.min) || 0;
+      const max = parseFloat(slider.max) || 100;
+      const val = parseFloat(slider.value) || 0;
+      const pct = ((val - min) / (max - min)) * 100;
+      slider.style.background = `linear-gradient(to right, #C69A64 0%, #C69A64 ${pct}%, #EADCC9 ${pct}%, #EADCC9 100%)`;
+    }
+
+    function calculate() {
+      const P = parseFloat(loanSlider.value) || 0;
+      const annualR = parseFloat(interestSlider.value) || 0;
+      const years = parseFloat(tenureSlider.value) || 0;
+
+      // Update badges
+      if (loanBadge) loanBadge.textContent = formatIndianCurrency(P);
+      if (interestBadge) interestBadge.textContent = annualR.toFixed(1) + '%';
+      if (tenureBadge) tenureBadge.textContent = years + (years === 1 ? ' Year' : ' Years');
+
+      // Update slider fill gradients
+      updateSliderTrack(loanSlider);
+      updateSliderTrack(interestSlider);
+      updateSliderTrack(tenureSlider);
+
+      // Calculations:
+      const n = years * 12; // total months
+      const r = (annualR / 12) / 100; // monthly interest rate
+
+      let emi = 0;
+      if (r > 0 && n > 0 && P > 0) {
+        const factor = Math.pow(1 + r, n);
+        emi = P * r * (factor / (factor - 1));
+      } else if (n > 0) {
+        emi = P / n;
+      }
+
+      const totalAmount = emi * n;
+      const totalInterest = Math.max(0, totalAmount - P);
+
+      // Display results
+      if (emiDisplay) emiDisplay.textContent = formatIndianCurrency(emi);
+      if (principalDisplay) principalDisplay.textContent = formatIndianCurrency(P);
+      if (interestDisplay) interestDisplay.textContent = formatIndianCurrency(totalInterest);
+      if (totalDisplay) totalDisplay.textContent = formatIndianCurrency(totalAmount);
+
+      // Percentage breakdown
+      let principalPct = 50;
+      let interestPct = 50;
+      if (totalAmount > 0) {
+        principalPct = Math.round((P / totalAmount) * 100);
+        interestPct = Math.max(0, 100 - principalPct);
+      }
+
+      if (ratioPrincipalBar) ratioPrincipalBar.style.width = principalPct + '%';
+      if (ratioInterestBar) ratioInterestBar.style.width = interestPct + '%';
+      if (principalPercent) principalPercent.textContent = principalPct + '%';
+      if (interestPercent) interestPercent.textContent = interestPct + '%';
+    }
+
+    // Attach real-time listeners for instant responsive calculation
+    [loanSlider, interestSlider, tenureSlider].forEach(slider => {
+      slider.addEventListener('input', calculate);
+      slider.addEventListener('change', calculate);
+    });
+
+    // Initial calculation on load
+    calculate();
+  }
+
   loadDynamicAmenities();
   loadDynamicContactInfo();
   loadDynamicGallery();
+  initEmiCalculator();
 });
