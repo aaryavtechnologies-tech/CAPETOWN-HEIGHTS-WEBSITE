@@ -2760,6 +2760,18 @@ body.menu-open {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
 }
 
+.dev-link-logo.nirali-footer-logo {
+  width: auto;
+  height: 20px;
+  max-height: 20px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: #FFFFFF;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .dev-link-ext {
   width: 12px;
   height: 12px;
