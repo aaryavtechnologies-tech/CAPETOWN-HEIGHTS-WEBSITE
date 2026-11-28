@@ -62,20 +62,61 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (lightboxModal) {
     document.addEventListener('click', (e) => {
-      const item = e.target.closest('.gallery-item');
-      if (!item) return;
+      // 1. Gallery Items
+      const galleryItem = e.target.closest('.gallery-item');
+      if (galleryItem) {
+        const fullSrc = galleryItem.getAttribute('data-full') || galleryItem.querySelector('img')?.src;
+        const caption = galleryItem.getAttribute('data-title') || galleryItem.querySelector('.gallery-title')?.textContent || '';
 
-      const fullSrc = item.getAttribute('data-full') || item.querySelector('img')?.src;
-      const caption = item.getAttribute('data-title') || item.querySelector('.gallery-title')?.textContent || '';
-
-      if (fullSrc && lightboxImg) {
-        lightboxImg.src = fullSrc;
-        lightboxImg.alt = caption;
-        if (lightboxCaption) {
-          lightboxCaption.textContent = caption;
+        if (fullSrc && lightboxImg) {
+          lightboxImg.src = fullSrc;
+          lightboxImg.alt = caption;
+          if (lightboxCaption) {
+            lightboxCaption.textContent = caption;
+          }
+          lightboxModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
         }
-        lightboxModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        return;
+      }
+
+      // 2. Amenity Cards (Project Details & Home page)
+      const amenityCard = e.target.closest('.amenity-bg-card');
+      if (amenityCard) {
+        const img = amenityCard.querySelector('.amenity-bg-img');
+        const title = amenityCard.getAttribute('data-title') || amenityCard.querySelector('.amenity-bg-title')?.textContent || '';
+        const desc = amenityCard.querySelector('.amenity-bg-desc')?.textContent || '';
+        const fullSrc = amenityCard.getAttribute('data-full') || img?.src;
+
+        if (fullSrc && lightboxImg) {
+          lightboxImg.src = fullSrc;
+          lightboxImg.alt = title;
+          if (lightboxCaption) {
+            lightboxCaption.innerHTML = `<strong>${title}</strong>${desc ? `<span style="display:block; font-size:0.875rem; opacity:0.85; margin-top:0.35rem; font-family:var(--font-sans, sans-serif); font-weight:normal;">${desc}</span>` : ''}`;
+          }
+          lightboxModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+        return;
+      }
+
+      // 3. Generic Lightbox Triggers or Zoomable Images
+      const trigger = e.target.closest('.lightbox-trigger, .zoomable-img');
+      if (trigger) {
+        const img = trigger.tagName === 'IMG' ? trigger : trigger.querySelector('img');
+        const fullSrc = trigger.getAttribute('data-full') || img?.src;
+        const caption = trigger.getAttribute('data-title') || trigger.getAttribute('data-caption') || img?.alt || '';
+
+        if (fullSrc && lightboxImg) {
+          lightboxImg.src = fullSrc;
+          lightboxImg.alt = caption;
+          if (lightboxCaption) {
+            lightboxCaption.textContent = caption;
+          }
+          lightboxModal.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+        return;
       }
     });
 
