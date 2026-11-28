@@ -1679,6 +1679,29 @@ body.menu-open {
   fill: currentColor;
 }
 
+.gallery-authenticity-note {
+  max-width: 650px;
+  margin: 2rem auto 0;
+  padding: 0.65rem 1.25rem;
+  background: #FFFFFF;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.gallery-authenticity-note p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+}
+
+.gallery-authenticity-note strong {
+  color: var(--primary-mocha);
+  font-weight: 600;
+}
+
 /* Lightbox Modal */
 .lightbox-modal {
   position: fixed;
