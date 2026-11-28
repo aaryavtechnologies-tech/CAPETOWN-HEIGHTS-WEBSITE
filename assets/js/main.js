@@ -507,39 +507,26 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyAmenities(amenities) {
       if (!Array.isArray(amenities) || amenities.length === 0) return;
 
-      const map = new Map();
-      amenities.forEach(a => {
-        const rawNum = String(a.num || '').replace(/[^0-9]/g, '');
-        const parsed = parseInt(rawNum, 10);
-        if (!isNaN(parsed)) {
-          map.set(parsed, a);
-          map.set(String(parsed).padStart(2, '0'), a);
-        }
-        if (a.num) map.set(String(a.num).trim(), a);
-      });
-
       const currentCards = document.querySelectorAll('.amenity-bg-card');
-      const seenNums = new Set();
 
       currentCards.forEach(card => {
+        const titleEl = card.querySelector('.amenity-bg-title');
+        const cardTitle = titleEl ? titleEl.textContent.trim().toLowerCase() : '';
         const badgeEl = card.querySelector('.amenity-badge-num');
-        if (!badgeEl) return;
-        const numText = badgeEl.textContent.trim().replace(/[^0-9]/g, '');
-        const numVal = parseInt(numText, 10);
-        if (isNaN(numVal)) return;
+        const numText = badgeEl ? badgeEl.textContent.trim().replace(/[^0-9]/g, '') : '';
+        const dynNum = card.getAttribute('data-dynamic-num');
 
-        const item = map.get(numVal) || map.get(numText) || map.get(String(numVal).padStart(2, '0'));
-        if (!item) {
-          // If deleted in admin, hide card
-          card.style.display = 'none';
-          return;
-        }
+        // Match amenity item by title or num identifier
+        const item = amenities.find(a => {
+          if (a.title && a.title.trim().toLowerCase() === cardTitle) return true;
+          if (dynNum && String(a.num).replace(/[^0-9]/g, '') === String(dynNum).replace(/[^0-9]/g, '')) return true;
+          if (numText && String(a.num).replace(/[^0-9]/g, '') === numText) return true;
+          return false;
+        });
 
-        seenNums.add(numVal);
-        card.style.display = '';
+        if (!item) return;
 
         // Update Title
-        const titleEl = card.querySelector('.amenity-bg-title');
         if (titleEl && item.title) {
           titleEl.textContent = item.title;
         }
@@ -563,38 +550,6 @@ document.addEventListener('DOMContentLoaded', () => {
           }
         }
       });
-
-      // Handle any newly added amenities that don't have cards yet
-      const lastGrid = document.querySelector('.amenities-group-wrapper[data-batch="batch-4"] .amenities-card-grid') ||
-                       document.querySelector('.amenities-card-grid');
-      if (lastGrid) {
-        amenities.forEach(a => {
-          const rawNum = String(a.num || '').replace(/[^0-9]/g, '');
-          const parsed = parseInt(rawNum, 10);
-          if (!isNaN(parsed) && !seenNums.has(parsed)) {
-            const existing = document.querySelector(`[data-dynamic-num="${parsed}"]`);
-            if (!existing) {
-              const newCard = document.createElement('div');
-              newCard.className = 'amenity-bg-card';
-              newCard.setAttribute('data-dynamic-num', String(parsed));
-              const numStr = String(parsed).padStart(2, '0');
-              const imgSrc = (a.img || '').trim().replace(/^\.\.\//, '') || 'assets/images/amenities/multipurpose-hall.jpg';
-              newCard.innerHTML = `
-                <img src="${imgSrc}" alt="${(a.title || '').replace(/"/g, '&quot;')}" class="amenity-bg-img" loading="lazy">
-                <div class="amenity-bg-overlay"></div>
-                <span class="amenity-badge-num">${numStr}</span>
-                <div class="amenity-bg-content">
-                  <span class="amenity-gold-accent" aria-hidden="true"></span>
-                  <h4 class="amenity-bg-title">${(a.title || '').replace(/</g, '&lt;')}</h4>
-                  <p class="amenity-bg-desc">${(a.desc || a.description || '').replace(/</g, '&lt;')}</p>
-                </div>
-              `;
-              lastGrid.appendChild(newCard);
-              seenNums.add(parsed);
-            }
-          }
-        });
-      }
     }
 
     // 1. Instantly apply from localStorage (immediate, zero waiting)

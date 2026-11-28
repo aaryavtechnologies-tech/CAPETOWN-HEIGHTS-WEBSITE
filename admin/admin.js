@@ -125,19 +125,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return combined;
   }
 
-  // 40 Verified Project Amenities Catalog
+  // Verified Project Amenities Catalog
   const projectAmenities = [
   {
     "num": "01",
-    "img": "assets/images/amenities/allotted-car-parking.jpg",
-    "title": "Allotted Car Parking",
-    "desc": "Dedicated, covered private vehicular parking space allocated for residents with organized wide driving aisles."
+    "img": "assets/images/amenities/swimming-pool.jpg",
+    "title": "Swimming Pool",
+    "desc": "Resort-style swimming pool featuring crystal-clear waters and an expansive sun deck for relaxation."
   },
   {
     "num": "02",
-    "img": "assets/images/amenities/double-basement.jpg",
-    "title": "Double Basement",
-    "desc": "Modern two-level subterranean parking facility with gentle vehicular access ramps and round-the-clock illumination."
+    "img": "assets/images/amenities/gym.jpg",
+    "title": "Big Gym",
+    "desc": "Contemporary fitness center equipped with premium cardio and strength-training equipment for daily health routines."
   },
   {
     "num": "03",
@@ -147,27 +147,27 @@ document.addEventListener('DOMContentLoaded', () => {
   },
   {
     "num": "04",
+    "img": "assets/images/amenities/double-basement.jpg",
+    "title": "Double Basement Parking",
+    "desc": "Modern two-level subterranean parking facility with gentle vehicular access ramps and round-the-clock illumination."
+  },
+  {
+    "num": "05",
     "img": "assets/images/amenities/temple.jpg",
     "title": "Temple",
     "desc": "A serene and exquisitely crafted white marble devotional sanctum within the residential grounds for daily peace and spiritual harmony."
   },
   {
-    "num": "05",
-    "img": "assets/images/amenities/gym.jpg",
-    "title": "Big Gym",
-    "desc": "Contemporary fitness center equipped with premium cardio and strength-training equipment for daily health routines."
-  },
-  {
     "num": "06",
-    "img": "assets/images/amenities/indoor-game.jpg",
-    "title": "Indoor Game",
-    "desc": "Dedicated indoor recreation lounge featuring table tennis, leisure activities, and engaging tabletop games."
+    "img": "assets/images/amenities/terrace-garden.jpg",
+    "title": "Terrace Garden",
+    "desc": "Landscaped sky garden on the rooftop offering lush greenery and panoramic skyline vistas."
   },
   {
     "num": "07",
-    "img": "assets/images/amenities/library.jpg",
-    "title": "Library",
-    "desc": "Quiet, sophisticated reading enclave and study hall stocked with books and comfortable reading armchairs."
+    "img": "assets/images/amenities/kids-play-area.jpg",
+    "title": "Kids Play Area",
+    "desc": "Vibrant, secure playground with child-safe rubberized flooring, modern slides, and recreational activity units."
   },
   {
     "num": "08",
@@ -177,195 +177,15 @@ document.addEventListener('DOMContentLoaded', () => {
   },
   {
     "num": "09",
-    "img": "assets/images/amenities/gazebo.jpg",
-    "title": "Gazebo",
-    "desc": "Classic shaded garden pavilion offering a tranquil retreat amidst landscaped flower beds and lush greenery."
+    "img": "assets/images/amenities/cctv.jpg",
+    "title": "24/7 CCTV Surveillance",
+    "desc": "High-definition digital surveillance cameras monitoring key community access zones, gates, and perimeter walls."
   },
   {
     "num": "10",
-    "img": "assets/images/amenities/swimming-pool.jpg",
-    "title": "Swimming pool",
-    "desc": "Resort-style swimming pool featuring crystal-clear waters and an expansive sun deck for relaxation."
-  },
-  {
-    "num": "11",
-    "img": "assets/images/amenities/baby-pool.jpg",
-    "title": "Baby Pool",
-    "desc": "Dedicated shallow splash pool with child-safe depths and non-slip coping for young children."
-  },
-  {
-    "num": "12",
-    "img": "assets/images/amenities/open-stage.jpg",
-    "title": "Open Stage",
-    "desc": "Elevated open-air amphitheater and performance deck for vibrant community cultural events and celebrations."
-  },
-  {
-    "num": "13",
-    "img": "assets/images/amenities/open-projector.jpg",
-    "title": "Open Projector",
-    "desc": "Outdoor open-sky cinema viewing lawn equipped for weekend community movie screenings under the stars."
-  },
-  {
-    "num": "14",
-    "img": "assets/images/amenities/landscape-garden.jpg",
-    "title": "Landscape Garden",
-    "desc": "Expansive manicured lawns featuring sculptured flora, decorative topiaries, and ambient garden walkways."
-  },
-  {
-    "num": "15",
-    "img": "assets/images/amenities/flower-garden.jpg",
-    "title": "Flower Garden",
-    "desc": "Curated seasonal botanical flower beds creating vibrant color palettes and aromatic natural surroundings."
-  },
-  {
-    "num": "16",
-    "img": "assets/images/amenities/terrace-garden.jpg",
-    "title": "Terrace Garden",
-    "desc": "Landscaped sky garden on the rooftop offering lush greenery and panoramic skyline vistas."
-  },
-  {
-    "num": "17",
-    "img": "assets/images/amenities/terrace-gazebo.jpg",
-    "title": "Terrace Gazebo",
-    "desc": "Elevated rooftop sheltered pavilion designed for relaxed evening seating with panoramic horizon views."
-  },
-  {
-    "num": "18",
-    "img": "assets/images/amenities/terrace-walk-way.jpg",
-    "title": "Terrace Walk Way",
-    "desc": "Paved skywalk promenade on the terrace level for peaceful morning and sunset rooftop walks."
-  },
-  {
-    "num": "19",
-    "img": "assets/images/amenities/yoga-deck.jpg",
-    "title": "Yoga Deck",
-    "desc": "Dedicated open-air wooden meditation and yoga platform set in a tranquil, nature-infused ambiance."
-  },
-  {
-    "num": "20",
-    "img": "assets/images/amenities/entry-garden.jpg",
-    "title": "Entry Garden",
-    "desc": "Grand landscaped gateway garden welcoming residents and guests with curated ornamental foliage."
-  },
-  {
-    "num": "21",
-    "img": "assets/images/amenities/guest-room.jpg",
-    "title": "Guest Room",
-    "desc": "Elegantly appointed on-site hospitality bedroom suites for visiting family members and personal guests."
-  },
-  {
-    "num": "22",
-    "img": "assets/images/amenities/kids-play-area.jpg",
-    "title": "Kids play Area",
-    "desc": "Vibrant, secure playground with child-safe rubberized flooring, modern slides, and recreational activity units."
-  },
-  {
-    "num": "23",
-    "img": "assets/images/amenities/senior-citizen-garden.jpg",
-    "title": "Senior Citizen Garden",
-    "desc": "Peaceful, shaded leisure haven with ergonomic park benches and gentle reflexology walking paths."
-  },
-  {
-    "num": "24",
-    "img": "assets/images/amenities/jogging-track.jpg",
-    "title": "Jogging Track",
-    "desc": "Specially cushioned, all-weather fitness running circuit bordered by fresh greenery and ambient lighting."
-  },
-  {
-    "num": "25",
-    "img": "assets/images/amenities/walk-way.jpg",
-    "title": "Walk Way",
-    "desc": "Continuous paved pedestrian boulevard connecting residential towers, garden zones, and lifestyle amenities."
-  },
-  {
-    "num": "26",
-    "img": "assets/images/amenities/cctv.jpg",
-    "title": "CCTV",
-    "desc": "24/7 high-definition digital surveillance cameras monitoring key community access zones, gates, and perimeter walls."
-  },
-  {
-    "num": "27",
-    "img": "assets/images/amenities/video-door-security-system.jpg",
-    "title": "Video Door Security System",
-    "desc": "Modern two-way audio-video intercom communication linking individual residences with the main security entry."
-  },
-  {
-    "num": "28",
-    "img": "assets/images/amenities/main-door-digital-lock.jpg",
-    "title": "Main Door (Digital Lock)",
-    "desc": "Contemporary smart biometric and digital keypad locking mechanism securing every private apartment entrance."
-  },
-  {
-    "num": "29",
-    "img": "assets/images/amenities/gas-line.jpg",
-    "title": "Gas Line",
-    "desc": "Reticulated piped cooking gas connection delivered directly to every kitchen for maximum safety and convenience."
-  },
-  {
-    "num": "30",
-    "img": "assets/images/amenities/internet-connectivity.jpg",
-    "title": "Internet Connectivity",
-    "desc": "High-speed fiber-optic telecommunication infrastructure pre-wired for seamless connectivity and smart living."
-  },
-  {
-    "num": "31",
-    "img": "assets/images/amenities/main-gate-fountain.jpg",
-    "title": "Main Gate Fountain",
-    "desc": "Majestic architectural cascading water fountain creating a grand, welcoming entrance statement."
-  },
-  {
-    "num": "32",
-    "img": "assets/images/amenities/garden-fountain.jpg",
-    "title": "Garden Fountain",
-    "desc": "Sculpted central water fountain providing soothing aquatic sounds within the landscaped courtyard."
-  },
-  {
-    "num": "33",
-    "img": "assets/images/amenities/elevated-main-gate.jpg",
-    "title": "Elevated Main Gate",
-    "desc": "Imposing modern security portal with controlled vehicular access barriers and visitor management posts."
-  },
-  {
-    "num": "34",
-    "img": "assets/images/amenities/fire-safety.jpg",
-    "title": "Fire Safety",
-    "desc": "Comprehensive multi-tier fire prevention network including hydrants, hose reels, and automated ceiling sprinklers."
-  },
-  {
-    "num": "35",
-    "img": "assets/images/amenities/rain-harvesting-system.jpg",
-    "title": "Rain Harvesting System",
-    "desc": "Integrated environmental recharge pits capturing rainwater runoff for sustainable groundwater replenishment."
-  },
-  {
-    "num": "36",
-    "img": "assets/images/amenities/generator-backup.jpg",
-    "title": "Generator Backup",
-    "desc": "High-capacity industrial standby power generation system ensuring uninterrupted common service operations."
-  },
-  {
-    "num": "37",
-    "img": "assets/images/amenities/free-mobile-charging-facility.jpg",
-    "title": "Free Mobile Charging Facility",
-    "desc": "Convenient, accessible charging kiosks located in public clubhouse lounges and waiting areas."
-  },
-  {
-    "num": "38",
-    "img": "assets/images/amenities/visitors-parking.jpg",
-    "title": "Visitors Parking",
-    "desc": "Specially demarcated, secure on-site parking bays accommodating visiting cars without resident congestion."
-  },
-  {
-    "num": "39",
-    "img": "assets/images/amenities/10-yrs-maintenance.jpg",
-    "title": "10 Yrs Maintenance",
-    "desc": "Comprehensive professional facility maintenance program guaranteeing pristine long-term property upkeep."
-  },
-  {
-    "num": "40",
     "img": "assets/images/amenities/24-hours-water.jpg",
-    "title": "24 Hours Water",
-    "desc": "Dual-source treated water distribution network with hydro-pneumatic pumping for round-the-clock water pressure."
+    "title": "24 Hours Water & Backup",
+    "desc": "Dual-source treated water distribution network with generator power backup for uninterrupted living comfort."
   }
 ];
 
@@ -799,7 +619,7 @@ document.addEventListener('DOMContentLoaded', () => {
     'viewLeads': 'Leads & Inquiries',
     'viewProjects': 'Projects & Inventory',
     'viewGallery': 'Site Gallery',
-    'viewAmenities': '40 Verified Amenities',
+    'viewAmenities': 'Verified Amenities',
     'viewContact': 'Contact & Offices',
     'viewDatabase': 'MySQL: captown',
     'viewSettings': 'Admin Settings'
@@ -1348,10 +1168,10 @@ document.addEventListener('DOMContentLoaded', () => {
       carpetArea: '950 – 1850 sq.ft.',
       elevation: 'G + 14 Storeys',
       totalUnits: '180',
-      amenitiesCount: '40 Lifestyle Facilities',
-      amenities: '40 Lifestyle Facilities',
+      amenitiesCount: '10 Signature Facilities',
+      amenities: '10 Signature Facilities',
       image: 'assets/images/building-exterior.jpg',
-      description: 'Capetown Heights represents the pinnacle of luxury residential living in Silvassa, meticulously developed by Nirali infra with 40 lifestyle amenities, double basement parking, and landscaped sky gardens.'
+      description: 'Capetown Heights represents the pinnacle of luxury residential living in Silvassa, meticulously developed by Nirali infra with signature lifestyle amenities, double basement parking, and landscaped sky gardens.'
     }
   ];
 
