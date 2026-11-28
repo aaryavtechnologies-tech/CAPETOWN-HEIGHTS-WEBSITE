@@ -651,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (c.address) {
         const cleanAddr = String(c.address).trim();
         if (addressEl) addressEl.textContent = cleanAddr;
-        document.querySelectorAll('#footerAddress, .site-footer .footer-contact-item:nth-child(2) div').forEach(el => {
+        document.querySelectorAll('#footerAddress').forEach(el => {
           el.textContent = cleanAddr;
         });
       }
@@ -713,6 +713,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const cleanEmail = String(c.email).trim();
         if (emailLinkEl) emailLinkEl.href = 'mailto:' + cleanEmail;
         if (emailTextEl) emailTextEl.textContent = cleanEmail;
+        document.querySelectorAll('a#footerEmailLink, .footer-contact-item a[href^="mailto:"]').forEach(el => {
+          el.textContent = cleanEmail;
+          el.href = 'mailto:' + cleanEmail;
+        });
       }
     }
 
